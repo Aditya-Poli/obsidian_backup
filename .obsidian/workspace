@@ -1,0 +1,99 @@
+{
+  "main": {
+    "id": "759caa853a485c25",
+    "type": "split",
+    "children": [
+      {
+        "id": "f1c27a7373921fa8",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "Module 3 - Extending expressive power pointers, fu dc33296891704e50b3e1b001452cef80.md",
+            "mode": "source",
+            "source": false
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "55cecf9f71731736",
+    "type": "split",
+    "children": [
+      {
+        "id": "ad7e1c7a56f1412d",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0797987a14150268",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "7e5614cb36c96789",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "right": {
+    "id": "c27cdf432a4115ed",
+    "type": "split",
+    "children": [
+      {
+        "id": "ef82e161d5eba145",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c0324384341d0739",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Module 3 - Extending expressive power pointers, fu dc33296891704e50b3e1b001452cef80.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "active": "f1c27a7373921fa8",
+  "lastOpenFiles": [
+    "Module 3 - Extending expressive power pointers, fu dc33296891704e50b3e1b001452cef80.md",
+    "Module 1 - Introduction to computer programming, v 7c8c4db1e07640babaab85542bbe9160.md",
+    "Module 1 - Introduction to computer programming, v 7c8c4db1e07640babaab85542bbe9160/Untitled.png.md",
+    "Linear_Data_Structures.md",
+    "Module_1_-_Introduction_to_computer_programming_variables_comments_basic_IO_operations_flow_control_(if).pdf"
+  ]
+}

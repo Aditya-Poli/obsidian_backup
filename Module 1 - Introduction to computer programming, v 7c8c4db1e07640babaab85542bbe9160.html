@@ -1,0 +1,1564 @@
+<!DOCTYPE html []>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="author" content="MarkdownViewer++" />
+    <title>Module 1 - Introduction to computer programming, v 7c8c4db1e07640babaab85542bbe9160.md</title>
+    <style type="text/css">
+            
+/* Avoid page breaks inside the most common attributes, especially for exports (i.e. PDF) */
+td, h1, h2, h3, h4, h5, p, ul, ol, li {
+    page-break-inside: avoid; 
+}
+
+        </style>
+  </head>
+  <body>
+    <h1 id="module-1-introduction-to-computer-programming-variables-comments-basic-io-operations-flow-control-ifexternal-tool">Module 1 - Introduction to computer programming, variables, comments, basic I/O operations, flow control (if)External tool</h1>
+    <p>Class: C++
+Created: June 5, 2022 12:05 PM
+Reviewed: No
+Type: Lecture</p>
+    <h1 id="your-first-program">
+      <strong>Your first program</strong>
+    </h1>
+    <p>Now we’re going to show you a very simple (and, at the same time, completely useless) program written in the C++ language. We’re going to use this example to present you some basic rules governing the language. The program itself will be modified many times, as it becomes enriched by various additional elements in expanding our programming knowledge. Ready? All right then, let’s go.</p>
+    <p>First we need to define our expectations for the program. They’ll be very modest. We want a short text to appear on the screen. Let's assume that the text will state:</p>
+    <pre>
+      <code>It's me, your first program.
+</code>
+    </pre>
+    <p>
+      <strong>output</strong>
+    </p>
+    <blockquote>
+      <p>That’s all we want at the moment</p>
+    </blockquote>
+    <p>What further steps should our first program perform? Let's try to enumerate them here:</p>
+    <ol>
+      <li>to <strong>start</strong>;</li>
+      <li>to <strong>write</strong> the text on the screen;</li>
+      <li>to <strong>stop</strong></li>
+    </ol>
+    <p>This type of structured and semi-formal description of each step of the program is called an <strong>algorithm</strong>. Sources of the word algorithm can be traced back to the Arabic language and originated in early medieval times, and for us, this represents the beginning of computer programming.</p>
+    <p>Now it's time to see our program. It’s on the right side of the screen, in the editor.</p>
+    <p>It looks a bit mysterious, doesn't it? Let’s check out each line of the program carefully, and uncover its meaning and purpose. The description is not particularly accurate and those of you who know a little C++ already will probably conclude that it’s too simplistic and somewhat childish. We did this on purpose – we’re not building Rome in a day. Not even in a week!</p>
+    <p>Let's move on.</p>
+    <pre>
+      <code class="language-cpp">#include &lt;iostream&gt;
+
+using namespace std;
+
+int main()
+{
+  cout &lt;&lt; "It's me, your first program.";
+  return 0;
+}
+</code>
+    </pre>
+    <p>Pay attention to the character # (hash) at the beginning of the first line. It means that the content of this line is the so-called <strong>preprocessor directive</strong>. We’re going to tell you more about the preprocessor later, but for now we’ll only say that it’s a separate part of the compiler whose task is to pre-read the text of the program and make some modifications in it. The prefix "pre" suggests that these operations are performed before the full processing (compilation) takes place.</p>
+    <p>The changes the <strong>preprocessor</strong> will introduce are fully controlled by its directives. In our program, we are dealing with the <strong><em>include</em> directive</strong>. When the preprocessor meets that directive, it replaces the directive with the content of the file whose name is listed in the directive (in our case, this is the file named <code>iostream</code>). The changes made by the preprocessor never modify the content of your source file in any way. Any alterations are made on a volatile copy of your program that disappears immediately after the compiler finishes its work.</p>
+    <p>So why do need the preprocessor to include the content of a completely unknown file called iostream? Writing a program is similar to building a construction with ready-made blocks. In our program, we are going to use one such block and it will happen when we want to write something on the screen. That block is called <code>cout</code> (you can find it inside our code), but the compiler knows nothing about it so far. In particular, the compiler has no idea that <code>cout</code> is a valid name for that block while <code>cuot</code> isn't. The compiler must be warned about it – it needs to be aware of the fact.</p>
+    <p>A set of preliminary information that the compiler needs is included in <strong>header files</strong>. These files contain a collection of preliminary information about ready-made blocks which can be used by a program to write text on the screen, or to read letters from the keyboard. So when our program is going to write something, it will use a block called cout, which is able to do the trick (and much more). We don't want the compiler to be surprised, so we need to warn it about that. The compiler’s developers put a set of this anticipatory information in the iostream file. All we have to do is use the file. This is exactly what we expect from the include directive.</p>
+    <p>But where is the <code>iostream</code> file located? The answer is simple, but not as clear as you might want: that’s not our problem. The preprocessor knows where it is. Good job, preprocessor!</p>
+    <p>In the C++ language, all elements of the standard C++ infrastructure are declared inside the <strong>namespace</strong> called <code>std</code>. A namespace is an abstract container or environment created to hold a logical grouping of unique entities (blocks).</p>
+    <p>An entity defined in a namespace is associated only with that namespace. If you want to use many of the standard C++ entities (we’re going to tell you all about them later) you must insert the <code>using namespace</code> instruction at the top of each file, outside of any function.</p>
+    <p>The instruction should specify the name of the desired namespace (<code>std</code> in our case). This will make the standard facilities available throughout the program.</p>
+    <p>It's worth to add (although you're not obliged to use the knowledge just know) that you may omit putting <code>using namespace</code> in your code but the cost of such omission is non-zero. Now you have to inform the compiler where <code>cout</code> block come from and you must do it each time you use any of the entities derived from the <code>std</code> namespace. In other words, you need to write:</p>
+    <pre>
+      <code class="language-cpp">std::cout
+</code>
+    </pre>
+    <p>instead of:</p>
+    <pre>
+      <code class="language-cpp">cout
+</code>
+    </pre>
+    <p>Judge for yourself if it pays off. The compiler doesn't care what you choose. Anyway, we prefer to use <code>using namespace</code> as it makes code clearer and more consistent.</p>
+    <p>We’ve already said something about the blocks. Now let's go a little deeper. One of the most common types of blocks used to build C++ programs are <strong>functions</strong>.</p>
+    <p>If you associate a function with mathematics, you’re on the right track. Imagine a function as a black box, where you can insert something into it (though this is not always necessary) and take something new out of it, as if from a magic hat. Things to be put into the box are called <strong>function arguments</strong>. Things to be taken out of the box are called <strong>function results</strong>. In addition, a function can do something else on the side.</p>
+    <p>If this sounds rather vague, don't worry, we’ll talk about functions many times and in much more detail later.</p>
+    <p>Back to our program. The standard of the C++ language assumes that among many different blocks that may be put into a program, one specific block must always be present, otherwise the program won't be correct. This block is always a function with the same name: <code>main</code>.</p>
+    <p>Every function in C++ begins with the following set of information:</p>
+    <ul>
+      <li>what is the result of the function?</li>
+      <li>what is the name of the function?</li>
+      <li>how many arguments does the function accept and what are their names?</li>
+    </ul>
+    <p>Take a close look at our program and try to read it properly, accepting the fact that you won’t yet fully understand everything.</p>
+    <ul>
+      <li>the result of the function is an <strong>integer</strong> value (we can read it from the word <code>int</code>, which is short for integer)</li>
+      <li>the name of the function is main (we know why already)</li>
+      <li>the function doesn't require any arguments (what we can deduce from the absence of anything between parentheses).</li>
+    </ul>
+    <p>This set of information is sometimes called a <strong>prototype</strong>, and it’s like a label affixed to a function announcing how you can use that function in your program. The prototype says nothing about what the function is intended to do. It’s written inside the function and the interior of the function is called the <strong>function body</strong>. The function body begins with the first opening bracket <code>{</code> and ends with the corresponding closing bracket <code>}</code>. It might sound surprising, but the function body can be empty, which means that the function does exactly nothing.</p>
+    <p>We can even create a function that is lazy – it can be encoded like this:</p>
+    <p>
+      <code>void lazy() { }</code>
+    </p>
+    <p>The word <code>void</code> put in front of function's name (<code>main</code>) instructs the compiler that the function provides no result. Indeed, laziness rarely has utilizable results so don't be surprised.</p>
+    <p>Summing up, this drone produces no result (in other words, result is void), its name is "lazy", it doesn't take any arguments (there is nothing between parentheses) and it does absolutely nothing (there is nothing between brackets).</p>
+    <p>By the way, the names of the functions are subject to some fairly rigid constraints. More on this later.</p>
+    <p>
+      <strong>TIME MACHINE:</strong> It's worth to mention that previous versions of C++ preferred to use somewhat different notation to declare the fact that a particular function (including main) doesn't accept any arguments. This is how it looked:
+<code>int main(void) {}</code>
+Note the <code>void</code> put inside the parentheses. Such a convention derived from C language where the clause <code>()</code> had definitely different meaning. We prefere not to stay in the past so you won't see <code>void</code> in this role in our snippets.</p>
+    <p>Inside the main function body we need to write what our function (and thus the program) is supposed to do. If we look inside, we find a reference to a block named <code>cout</code>.</p>
+    <p>Firstly, note the <strong>semicolon</strong> at the end of the line. Each instruction (more precisely, each <strong>statement</strong>) in C++ must end with a semicolon – without it the program will be incorrect.</p>
+    <p>This particular statement says: instruct the entity named <code>cout</code> to show the following text on the screen (as indicated by the <code>&lt;&lt;</code> digraph, which specifies the direction in which the text is sent). You might ask – how do we know that <code>cout</code> will do that for us? Well, we know it because it says so in the C++ language standards.</p>
+    <p>The <code>cout</code> entity (in fact, it's an <strong>object</strong>, but we don't want to bring up this word too soon – more on it later) must be fed with something that is intended to be shown on the screen. In our example, the feed is just text (<strong>string</strong>). For simplicity, we can assume that strings in the program in C++ are always enclosed in quotes – that way the compiler recognizes the text that is sent to the user of the program, and the text that is intended to be compiled is translated into machine language. This distinction is very important. Take a look:</p>
+    <pre>
+      <code class="language-cpp">int main();
+</code>
+    </pre>
+    <p>The line above is the main function <strong>prototype</strong> (i.e. a hint saying what can we expect from a particular function).</p>
+    <pre>
+      <code class="language-cpp">"int main();"
+</code>
+    </pre>
+    <p>The line above is <strong>not</strong> the main function prototype, but a <strong>string</strong> that only looks like part of a source code. The compiler is not interested in what is between the quotes, and therefore doesn’t recognize such strings as code.</p>
+    <p>How does it work? We can picture it like this: the execution of our main function is suspended (we can say that the main function falls asleep) and during that time <code>cout</code>, together with <code>&lt;&lt;</code> (this kind of symbol is named <strong>operator</strong>) prints the text on the screen. When the text is printed, the main function wakes up and continues its activity.</p>
+    <p>The above form of source code is the most natural and perhaps the most easily read by humans, but you’re still free to write it in a different way. For example:</p>
+    <pre>
+      <code class="language-cpp">cout
+&lt;&lt;
+"It's me, your first program."
+;
+</code>
+    </pre>
+    <p>In the C++ language it isn’t necessary to write just one statement per line. You can place two (or more) statements on the same line, or split one statement into several lines, but bear in mind that <strong>readability</strong> (for humans) is a very important factor. However, compilers, unlike humans, will never complain about your style.</p>
+    <pre>
+      <code class="language-cpp">#include &lt;iostream&gt;
+
+using namespace std;
+
+int main()
+{
+  cout &lt;&lt; "It's me, your first program.";
+  return 0;
+}
+</code>
+    </pre>
+    <p>We’re almost at the end now. There’s only one line left in our program. This is:</p>
+    <p>
+      <code>return 0;</code>
+    </p>
+    <p>This is another (beside the function invocation) statement of the C++ language. Its name is just <code>return</code> and that’s what it does. Used in the function, it causes the end of function execution. If you perform return somewhere inside a function, this function immediately interrupts its execution.</p>
+    <p>The zero after the word return is a result of your function <code>main</code>. It's important - this is how your program tells the operating system the following: <em>I did what I had to do, nothing prevented me from doing this, and everything is okay.</em></p>
+    <p>If you were to write:</p>
+    <p>
+      <code>return 1;</code>
+    </p>
+    <p>this would mean that something had gone wrong, it did not allow your program to be performed successfully and the operating system could use that information to react appropriately.</p>
+    <p>Usually, if a function declares itself as a integer value provider (like our <code>main</code> function) it's obliged to contain the <code>return</code> statement while the <code>return</code> statement is obliged to return an integer value. Expect compilation error if you don't see to it. It seems to be clear, doesn't it? It's not fair to promise a value and to break faith (it's not just about functions).</p>
+    <p>However, the <code>main</code> function is exceptional. It <strong>must</strong> be declared as <code>int</code> but doesn't have to return it. Sounds weird? Absolutely! Moreover, if there is no <code>return</code> statement inside the <code>main</code> function, compiler assumes that <code>return 0</code> has been implicitly used. Sounds weirder? Not at all - thank to that you don't have to make additional efforts if you're going to point that execution of your code terminated successfully.</p>
+    <p>Of course, it's a matter of taste in a measure. We definitely prefer to use <code>return</code> in <code>main</code>. Your preferences may be different.</p>
+    <p>So is that all? Yes, that’s it! Let's look again at our program and see what’s happening step by step:</p>
+    <ul>
+      <li>we introduced the function named main into our program - it will be executed when you start the program;</li>
+      <li>we made use of an entity named cout inside the main function - it will print the text on the screen;</li>
+      <li>the program finishes immediately after printing, indicating that everything you expected to achieve has been achieved.</li>
+    </ul>
+    <p>So hopefully it wasn’t as difficult as it seemed at first glance. Now let’s try to persuade the computer to compute something for us – after all, that’s what they’re for.</p>
+    <h1 id="numbers-and-how-computers-see-them">
+      <strong>Numbers and how computers see them</strong>
+    </h1>
+    <p>Do you know how computers perform calculations on numbers? Maybe you've heard of the <strong>binary system</strong> and know that it’s the system computers use for storing numbers and that they can perform any operation upon them. We’re not going to go the intricacies of positional numeral systems here, but we will say that the numbers handled by modern computers are of two types:</p>
+    <ul>
+      <li>
+        <strong>integers</strong>, that is, those which are devoid of the fractional part;</li>
+      <li>
+        <strong>floating-point</strong> numbers (or simply floats), that contain (or are able to contain) the fractional part.</li>
+    </ul>
+    <p>This definition is quite simplistic, but good enough for our purposes. This distinction is very important and the boundary between these two types of numbers is very strict. Both of these kinds of numbers significantly differ in how they are stored in a computer memory and in the range of acceptable values. Additionally, the characteristic of a number which determines its kind, range and application is called <strong>type</strong>.</p>
+    <p>So now we know two types of the C++ language – an integer type (known as <code>int</code>) and a floating point type (known as <code>float</code>).</p>
+    <p>For now, let's leave the floating-point numbers aside (that’s right: more on them later) and let’s consider a question that’s maybe a bit banal at first glance: how does the C++ language recognize the integers?</p>
+    <p>Well, it’s almost the same as when you write them on a piece of paper – they’re simply a string of digits that make up a number. But there’s a catch – you can’t include any characters that are not digits inside the number. There is only one exception to the rule: if you think that the number contains so many digits that it becomes ambiguous, you can insert as many single quotes (apostrophes) inside the number. These quotes don't change the number's value and compiler ignores them completely.</p>
+    <p>
+      <strong>TIME MACHINE</strong>Using single quotes as separators enhancing integer numbers readability have been introduced in <strong>C++17</strong> - don't be surprised if an older compiler rejects such a notation</p>
+    <p>Take for example the number eleven million one hundred and eleven thousand one hundred and eleven. If you took a pencil in your hand right now, you would probably write the number like this:</p>
+    <p>11,111,111</p>
+    <p>or (if you are a Pole or a German) like this:</p>
+    <p>11.111.111</p>
+    <p>or even like this:</p>
+    <p>11 111 111</p>
+    <p>For sure, this makes it easier to read if the number consists of many digits. However, C++doesn’t like this at all. You have to write this number as follows:</p>
+    <p>
+      <code>11111111</code>
+    </p>
+    <p>or - if you want your number to be extremely legible - you can write it down as:</p>
+    <p>
+      <code>11'111'11</code>
+    </p>
+    <p>If you don’t, the compiler will shout at you. And how do you code negative numbers in C++? As usual, by adding a minus. You can write:</p>
+    <p>-<code>11111111</code></p>
+    <p>Positive numbers don’t need to be preceded by the plus sign, but you can do it if you want. The following lines describe the same number:</p>
+    <p>
+      <code>+123</code>
+    </p>
+    <p>
+      <code>123</code>
+    </p>
+    <p>For now we’ll deal only with integers – we’ll introduce floating-point numbers very soon.</p>
+    <p>There are three additional conventions, unknown to the world of mathematics. The first of them allows us to use the numbers in an <strong>octal representation</strong>. If an integer number is preceded by the 0 digit, it will be treated as an octal value. This means that the number must contain digits taken from the 0 to 7 range only.</p>
+    <p>
+      <code>0123</code>
+    </p>
+    <p>is an octal number with a (decimal) value equal to <strong>83</strong>.</p>
+    <p>The second allows us to use hexadecimal numbers. Such number should be preceded by the prefix written as <code>0x</code> or <code>0X</code>.</p>
+    <p>
+      <code>0x123</code>
+    </p>
+    <p>is a hexadecimal number with the (decimal) value equal to <code>291</code>.</p>
+    <p>The third allows us to introduce binary numbers which are preceded by the prefix written as <code>0b</code> or <code>0B</code>.</p>
+    <p>
+      <code>0B1111</code>
+    </p>
+    <p>is a binary number equal to decimal value <code>15</code>.</p>
+    <p>
+      <img src="https://edube.org/uploads/media/default/0001/01/2ff31fd912c7f6f6c027a7fdde1bd4c67fa4ffe7.png" alt="https://edube.org/uploads/media/default/0001/01/2ff31fd912c7f6f6c027a7fdde1bd4c67fa4ffe7.png" />
+    </p>
+    <h1 id="a-variable-is-variable">
+      <strong>A variable is variable</strong>
+    </h1>
+    <p>So the C++ language allows us to write numbers. It probably won't surprise you that we can do some arithmetic operations with these numbers too: add, subtract, multiply and divide. Contain your excitement – we’ll be doing that soon enough. But it’s quite normal to ask how to store the results of such operations in order to use them in other operations. There are special "containers" for that purpose and these containers are called variables. As the name variables suggests, the content of a container can be varied in (almost) any way.</p>
+    <p>What does every variable have?</p>
+    <ul>
+      <li>a <strong>name</strong>;</li>
+      <li>a <strong>type</strong>;</li>
+      <li>a <strong>value</strong>;</li>
+    </ul>
+    <p>Let's start with the issues connected with a variable’s name. Variables don’t magically appear in our program. We (as developers) decide how many, and which variables, we want to have in our program. We also <strong>give them their names</strong>, almost becoming their godparents. If you want to give a name to the variable, you have to follow some strict rules:</p>
+    <ul>
+      <li>the name of the variable must be composed of <strong>upper-case or lower-case Latin letters, digits and the character</strong> <code>_</code> (<em>underscore</em>);</li>
+      <li>the name of the variable must <strong>begin with a letter</strong>;</li>
+      <li>the <strong>underline character is a letter</strong> (strange but true);</li>
+      <li>upper- and lower-case letters are treated as <strong>different</strong> (a little differently than in the real world – Alice and ALICE are the same given names but they are two different variable names, consequently, two different variables);</li>
+    </ul>
+    <p>These same restrictions apply to all entity names used in C++</p>
+    <p>The standard of the C++ language does not impose restrictions on the length of variable names, but a specific compiler may have a different opinion on this matter. Don't worry; usually the limitation is so high that it’s unlikely you would actually want to use such long variable names (or functions).</p>
+    <p>
+      <img src="https://edube.org/uploads/media/default/0001/01/7836a6449c4fcf177b34451ce7e22c07dd45af62.png" alt="https://edube.org/uploads/media/default/0001/01/7836a6449c4fcf177b34451ce7e22c07dd45af62.png" />
+    </p>
+    <p>Here are some correct, but not always convenient variable names:</p>
+    <p>• variable
+• i
+• t10
+• Exchange_Rate
+• counter
+• DaysToTheEndOfTheWorld
+• TheNameOfAVariableWhichIsSoLongThatYouWillNotBeAbleToWriteItWithoutMistakes
+• _</p>
+    <p>The last name may be ridiculous from your perspective, but your compiler thinks it’s just great.</p>
+    <p>And now some incorrect names:</p>
+    <p>• 10t (does not begin with a letter)
+• Adiós_Señora (contains illegal characters)
+• Exchange Rate (contains a space)</p>
+    <p>You can find more information about C++ naming style and conventions in the <a href="http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#nl8-use-a-consistent-naming-style">C++ Core Guidelines</a>.</p>
+    <p>The <strong>type</strong> is an <strong>attribute</strong> that uniquely defines which values can be stored inside the variable. We’ve already encountered the integer (<code>int</code>) and floating point (<code>float</code>) types. The value of a variable is what we have put into it. Of course, you can only enter a value that is compatible with the variable’s type. Only an integer value can be assigned to an integer variable (or in other words, to a variable of type <code>int</code>). The compiler will not allow us to enter a floating-point number here.</p>
+    <p>
+      <img src="https://edube.org/uploads/media/default/0001/01/98fb47339c22d76166a9f2a045f1e65ce3427bf4.png" alt="https://edube.org/uploads/media/default/0001/01/98fb47339c22d76166a9f2a045f1e65ce3427bf4.png" />
+    </p>
+    <p>Let's talk now about two important things – how the variables are created and how to enter a value inside them (or rather – how to give them a value).</p>
+    <p>The variable exists as a result of a <strong>declaration</strong>. A declaration is a syntactic structure that binds a name provided by the programmer with a specific type offered by the C++ language. The construction of such a declaration (or the declaration syntax) is simple: just use the name of the desired type, then the variable name (or variable names separated by commas if there are more than one). The whole statement ends with a semicolon.</p>
+    <p>Let's try to declare a variable of type <em>int</em> named <em>counter</em>. The relevant portion of the program looks like this:</p>
+    <p>
+      <code>int counter;</code>
+    </p>
+    <p>What is declared by the following fragment of a program?</p>
+    <p>
+      <code>int variable_1, account_balance, invoices;</code>
+    </p>
+    <p>It declares three variables of type <em>int</em> named (respectively) <code>variable_1</code>, <code>account_balance</code> and <code>invoices</code>.</p>
+    <p>Remember that you are allowed to use <strong>as many variable declarations as you need</strong> to achieve your goal.</p>
+    <p>And how do we give a value to the newly declared variable? You need to use the so-called <strong>assignment operator</strong>. Although this sounds rather mysterious, the operator has a simple syntax and unambiguous interpretation. The assignment operator looks very familiar – here it is:</p>
+    <p>
+      <code>=</code>
+    </p>
+    <p>Let's look at some examples:</p>
+    <p>
+      <code>counter = 1;</code>
+    </p>
+    <p>The above statement says: <em>assign a value of 1 to a variable named counter</em> or a bit shorter <em>assign 1 to counter</em>.</p>
+    <p>Some programmers use a different convention and read such a statement as: <em><strong>counter becomes 1</strong></em>.</p>
+    <p>It's worth to mention now that you're are allowed and even encouraged to place the variable declaration and its first assignment in the same place. Look: a piece of code like this:</p>
+    <pre>
+      <code class="language-cpp">int variable;
+variable = 1;
+</code>
+    </pre>
+    <p>can be compacted into the following form:</p>
+    <pre>
+      <code class="language-cpp">int variable = 1;
+</code>
+    </pre>
+    <p>Such a solution shows some important advantages. The most valuable is that declaring variable with immediate assigning it with its initial value is less error-prone than performing these two activities in two different places. The code is more legible, programmer's intentions are better recognizable and if you're used to declare and initialize variable in one step you minimize the risk of use an uninitialized variable. This is why we prefer such declarations in our code.</p>
+    <p>As usual on such occasions, a new word arrives into our vocabulary: the part of the declaration placed on the right side of the <code>=</code> sign is called an <strong>initiator</strong>.</p>
+    <p>The initiator you saw before was a simple value, but you can also use more complex expressions, like the one below.</p>
+    <pre>
+      <code class="language-cpp">int twosquared = 2 * 2;
+</code>
+    </pre>
+    <p>We’ll be using initiators often. They’re extremely convenient, quite useful and can be applied to virtually all C++ data types.</p>
+    <p>Another assiagnment example:</p>
+    <p>
+      <code>result = 100 + 200;</code>
+    </p>
+    <p>In this case, the new value of the variable <code>result</code> will be the result of adding 100 to 200, but you probably already guessed that, right?</p>
+    <p>And now a slightly more difficult example:</p>
+    <p>
+      <code>x = x + 1;</code>
+    </p>
+    <p>Seeing that, a mathematician would probably protest – no value may be equal to itself plus one. This is a contradiction.</p>
+    <p>But in the "C" language the sign "=" does not mean is equal to, but <strong>assign a value</strong>.</p>
+    <p>So how do we read such a record in the program?</p>
+    <p>
+      <em>Take the current value of the variable x, add 1 to it and store the result in the variable x</em>
+    </p>
+    <p>In effect, the value of variable x was <strong>incremented</strong> by one, which has nothing to do with comparing the variable to any value.</p>
+    <h1 id="keywords-why-they-are-the-keys">
+      <strong>Keywords – why they are the keys?</strong>
+    </h1>
+    <p>Take a look at the right side of the screen – you’ll see a list of words that play a very special role in every C++ language program. They are called <strong>keywords</strong> or (more precisely) <strong>reserved keywords</strong>. They are reserved because you <strong>can’t use them as names</strong>: neither for your variables, nor for your functions or any other named entities you want to create. The meaning of the reserved word is predefined and can’t be changed in any way.</p>
+    <p>
+      <strong>TIME MACHINE</strong>
+    </p>
+    <p>Don't be surprised by the fact that each C++ version uses different set of keywords. As you probably suspects, the list grows with each new C++ standard. The list you see comes from C++17 and some of the keywords aren't present in earlier releases.</p>
+    <p>Fortunately, because the C++ compiler is case-sensitive, you can modify any of these words by changing the case of any letter, thus creating a new word, which is not reserved any more.</p>
+    <p>For example - <strong>you can't do this</strong>:</p>
+    <p>
+      <code>int int;</code>
+    </p>
+    <p>You can’t have a variable named <code>int</code> - it’s prohibited. But <strong>you can do this</strong> instead:</p>
+    <p>
+      <code>int Int;</code>
+    </p>
+    <p>The compiler will be happy, very happy although it's worth to emphasize that using names similar to keywords may leads to troublesome misunderstandings. Moreover, names starting with capital letters may have very specific meanings and in general, are not recommended for naming creations as simple as int variables. Think twice and judge for yourself whether such a name won't look better:</p>
+    <p>
+      <code>int int_value;</code>
+    </p>
+    <p>
+      <img src="https://edube.org/uploads/media/default/0001/01/7cc9cc38e2beffa963ece6599148cb07e534e680.png" alt="https://edube.org/uploads/media/default/0001/01/7cc9cc38e2beffa963ece6599148cb07e534e680.png" />
+    </p>
+    <h1 id="comments-on-the-comments">
+      <strong>Comments on the comments</strong>
+    </h1>
+    <p>Now we’re going to make some <strong>comments</strong>. We don't mean comments on either your achievements or our achievements, although we’re sure you have many achievements to be proud of. We’re referring to other comments, namely comments on the program and inside the program at the same time.</p>
+    <p>The developer may want to add a few words addressed not to the compiler but to humans, usually to <strong>explain</strong> to other readers of the code how the tricks used in the code work, or the means of variables and functions, and possibly, to store information on who the author is and when the program was written.</p>
+    <p>Good and responsible developers describe each newly created important entity; in particular, explaining the role of the parameters and the values modified or returned as results, as well as explaining what the code actually does.</p>
+    <p>How do we leave something like this in the source code? We have to do it in a way that won't force the compiler to interpret it as part of the code. The remark inserted into the program, which is omitted at the time of compiling, is called a <em>comment</em>.</p>
+    <p>If we want to be precise, we should say that <strong>each comment is lexically equivalent to one space</strong>. Whenever the compiler encounters a comment in your program, the comment is completely transparent to it - from its point of view this is only one space (regardless of how long the real comment is).</p>
+    <p>The C++ language supports two ways of inserting comments:</p>
+    <p>
+      <code>// comment</code> - <strong>single-line</strong> comments</p>
+    <p>and</p>
+    <p>
+      <code>/* comment */</code> - <strong>block</strong> comments (also knows as <strong>C-style</strong> comments due to fact that they are in use since the very beginning of the C programming language, the C++ progenitor).</p>
+    <p>A <strong>single-line comment</strong> discards everything from where the pair of slash signs (<code>//</code>) is found up to the end of that same line.</p>
+    <p>In the C++ language a <strong>block comment</strong> is a text that begins with a pair of the following characters:</p>
+    <p>
+      <code>/*</code>
+    </p>
+    <p>and ends with a pair of the following characters:</p>
+    <p>
+      <code>*/</code>
+    </p>
+    <p>The comment can span several lines or can occupy only one line or part of a line.</p>
+    <p>Here you can see an example in which everything from the pair of slash signs on is ignored by the compiler. The single-line comment can start anywhere on the line. This could be a blank line too, with no content at all.</p>
+    <p>
+      <code>int counter; // counts the number of sheep in the meadow</code>
+    </p>
+    <p>Look at the snippet below. Here you can see an example of a similar comment, but introduced into the code using the second method.</p>
+    <p>Any new developer reading the program will be aware of the true meaning of the variable. The developer will read the code faster and it’ll take less time to understand it.</p>
+    <p>
+      <code>/* the counter variable counts the number of sheep in the meadow */</code>
+    </p>
+    <p>
+      <code>int counter;</code>
+    </p>
+    <p>Developers often place a note at the beginning of the source informing when they write the program stating who amended it and why. The note may appear like this:</p>
+    <pre>
+      <code class="language-cpp">/* ************************************************************
+Counting sheep version 1.0
+Author: Ronald Sleepyhead, 2012
+email: rs@insomnia.org
+Changes:
+2012-09-13: Ginny Drowsy: counting black sheep improved
+************************************************************ */
+</code>
+    </pre>
+    <p>Note that, despite the complicated structure and the multitude of stars, the condition stating how the comment should be started and finished is fully met.</p>
+    <p>Comments may be <strong>useful</strong> in another respect - you can use them <strong>to mark a piece of code that you currently don’t need</strong> for whatever reason. We often do this during the testing of the program in order to isolate the place where an error could be hidden.</p>
+    <p>We’ve just got one more thing to say about comments. Compilers differ in assessing whether another comment may be placed within a single comment. Consider the following program:</p>
+    <p>
+      <code>/* int i; /* int j; */ int k; */</code>
+    </p>
+    <p>The question is: are you allowed to nest one block comment (like <code>/* int j; */</code>) inside another block comment?</p>
+    <p>The answer is no. Such a notation may not be accepted by a particular compiler and in effect makes our code prone to compiler's whims - we don't want to rely on uncertain assumptions.</p>
+    <p>We strongly discourage you from use such a construction in your code even if your compiler seems to be indifferent to it.</p>
+    <h1 id="floating-point-numbers">
+      <strong>Floating-point numbers</strong>
+    </h1>
+    <p>A word (or 2.0 words) about floating-point numbers in real life and in the C++ language.</p>
+    <p>Previously, we became acquainted with the concept of <strong>data type</strong>, and learned that one of the basic types known in the C++ language is the integer type named int. Now it's the time to talk about another type, designed to represent and store the numbers that (as a mathematician would say) have a <strong>non-empty decimal fraction</strong>.</p>
+    <p>These are the numbers that have (or may have) a fractional part after the decimal point, and although this is a very simplistic definition, it is sufficient for our purposes. Whenever we use a term like "two and a half" or "zero point four" we think of numbers which the computer considers to be <strong>floating numbers</strong>.</p>
+    <p>
+      <img src="https://edube.org/uploads/media/default/0001/01/79481498ef6e4edfbaba7a030dc5a7545a9c1ef0.png" alt="https://edube.org/uploads/media/default/0001/01/79481498ef6e4edfbaba7a030dc5a7545a9c1ef0.png" />
+    </p>
+    <p>Let's go back to the values we quoted a moment ago. "Two and a half" looks normal when you write it in a program, although if your native language uses a comma instead of a point in the number, you should <strong>make sure that your number contains points and not commas</strong>. The compiler will either not accept it or (in very rare circumstances) will misunderstand your intentions, as the comma itself has its own reserved meaning in the C++ language.</p>
+    <p>If you want to use a value of just "two and a half", you should write it as shown here:</p>
+    <p>
+      <code>2.5</code>
+    </p>
+    <p>Note once again – there is a point between "2" and "5" - not a comma.</p>
+    <p>As you can probably imagine, you can write the value of "zero point four" in C++ as:</p>
+    <p>
+      <code>.4</code>
+    </p>
+    <p>Don’t forget this simple rule – you can <strong>omit zero</strong> when it’s the only digit in front of or after the decimal point. In essence you can write the value <code>0.4</code> like on the right.</p>
+    <p>For example: the value of <code>4.0</code> could be written as 4. without changing its type or value.</p>
+    <p>Note: the decimal point is essential to recognize floating-point numbers in C++. Look at these two numbers:</p>
+    <p>
+      <code>4</code>
+    </p>
+    <p>
+      <code>4.0</code>
+    </p>
+    <p>You might think that they’re exactly the same, but the C++ compiler sees them completely differently:</p>
+    <p>
+      <code>4</code> is an <em>int</em>.</p>
+    <p>
+      <code>4.0</code> is a <em>float</em>.</p>
+    <p>We can say that <strong>the point makes a float</strong>. Don't forget that.</p>
+    <p>
+      <img src="https://edube.org/uploads/media/default/0001/01/82844052d4ba0de98785dc8d3b51e58c164065ed.png" alt="https://edube.org/uploads/media/default/0001/01/82844052d4ba0de98785dc8d3b51e58c164065ed.png" />
+    </p>
+    <p>When you want to use any numbers that are very large or very small, you can use so-called <strong>scientific notation</strong>. Take, for example, the speed of light expressed in meters per second. Written directly it would look like:</p>
+    <p>
+      <code>300000000.</code>
+    </p>
+    <p>As you probably suspect, you're also allowed to write the value in a more legible form:</p>
+    <p>
+      <code>300'000'000.</code>
+    </p>
+    <p>as the single quotes can be used inside floats either.</p>
+    <p>
+      <img src="https://edube.org/uploads/media/default/0001/01/0b75053dfe66b376fa599e3e7d122e02d4cf9eeb.png" alt="https://edube.org/uploads/media/default/0001/01/0b75053dfe66b376fa599e3e7d122e02d4cf9eeb.png" />
+    </p>
+    <p>To avoid the tedious job of writing of so many zeros, physics textbooks use an abbreviated form, which you’ve probably seen already:</p>
+    <p>$3 • 10^8$</p>
+    <p>It reads: "<em>three times ten to the power of eight</em>"</p>
+    <p>In the C++ language, the same effect is achieved in a slightly different form – take a look:</p>
+    <p>
+      <code>3E8</code>
+    </p>
+    <p>The letter <em>E</em> (you can also use the lower case letter <em>e</em> – it comes from the word exponent) is a concise version of the phrase "<em>times ten to the power of</em>".</p>
+    <p>Note:</p>
+    <ul>
+      <li>the exponent (the value after the "<em>E</em>") <strong>has to be</strong> an integer.</li>
+      <li>the base (the value in front of the "<em>E</em>") <strong>may or may not be</strong> an integer; in other words, not only dot makes float - <em>E</em> (even alone) can do it too.</li>
+    </ul>
+    <p>Let's see how we use this convention to record numbers that are very small (in the sense of their absolute value, which is close to zero). A physical constant called <em>Planck's constant</em> (and denoted as <em>h</em>) has, according to the textbooks, the value of:</p>
+    <div class="math">{\displaystyle {{6.62607} {*} {10}^{-34}}}
+</div>
+    <p>If you would like to use it in a program, you would write it this way:</p>
+    <p>
+      <code>6.62607E-34</code>
+    </p>
+    <p>And that’s it. Not so hard, right?</p>
+    <p>
+      <img src="https://edube.org/uploads/media/default/0001/01/8b8012b9cbed9f03de07d5da90d4ff9f82c94cf8.png" alt="https://edube.org/uploads/media/default/0001/01/8b8012b9cbed9f03de07d5da90d4ff9f82c94cf8.png" />
+    </p>
+    <p>Let's go back to the floating-point values. We already know what a variable is, and we also know how to declare an integer variable, so now it’s time to declare variables of a floating-point type.</p>
+    <p>We do this using the keyword <code>float</code>. Knowing that we can declare two floating-point variables, named <code>PI</code> (we can't name it <code>Π</code> because - as you already know - the C++ language freaks out when variable names are written with Greek letters) and <code>Field</code>:</p>
+    <p>
+      <code>float PI, Field;</code>
+    </p>
+    <p>As you can see, the difference in declaring the integer and float variables is quite small from the syntax's point of view.</p>
+    <p>This difference in terms of semantics is significant, as you can see in the example below. With a little thought, we can figure out that the symbol (more precisely - the <strong>operator</strong>) that performs the mathematical <strong>division</strong> is a single character <strong>/</strong> (slash). Take a look at the code:</p>
+    <pre>
+      <code class="language-cpp">int i = 10 / 4;
+float x = 10.0 / 4.0;
+</code>
+    </pre>
+    <p>It might be a bit surprising for you to know that the value that will be entered in the variable <code>i</code> is <code>2</code> (yes - just <code>2</code>!) while the variable <code>x</code> will be equal to <code>2.5</code>. Look at the example carefully, because it illustrates a very important difference between these two data types.</p>
+    <p>What happens when we have to convert integer values into float values or vice versa? We can always transform from <code>int</code> into <code>float</code>, but it can lead to a <strong>loss of accuracy</strong>. Consider the example below:</p>
+    <pre>
+      <code class="language-cpp">int i = 100;
+float f = i;
+</code>
+    </pre>
+    <p>After changing from <code>int</code> to <code>float</code>, the value of the variable <code>f</code> is <code>100.0</code>, because the value of type <code>int</code> (<code>100</code>) is automatically converted into a <code>float</code> (<code>100.0</code>).</p>
+    <p>The transformation affects the internal (machine) representation of those values as <strong>computers use different methods for storing floats and ints in their memory</strong>.</p>
+    <p>Let's consider the opposite situation now.</p>
+    <p>As you’ve probably guessed, these substitutions will result in a loss of accuracy - the value of the variable <code>i</code> will be <code>100</code>. Twenty-five hundredths has no meaning in the ints world. Furthermore, <strong>converting a <code>float</code> into an <code>int</code> is not always feasible</strong>.</p>
+    <p>
+      <code>float f = 100.25;</code>
+    </p>
+    <p>
+      <code>int i = f;</code>
+    </p>
+    <p>Integer variables (like <em>floats</em>) have a limited capacity. They cannot contain arbitrarily large (or arbitrarily small) numbers.</p>
+    <p>For example, if a certain type of computer uses four bytes (i.e. 32 bits) to store integer values, you can only use the numbers from the range of <em>-2147483648</em> to <em>2147483647</em>.</p>
+    <p>Let's consider the following snippet:</p>
+    <p>
+      <code>float f = 1E10;</code>
+    </p>
+    <p>
+      <code>int i = f;</code>
+    </p>
+    <p>The <code>i</code> variable is unable to store such a large value, but it isn’t clear what will happen during the assignment. Certainly a <strong>loss of accuracy</strong> will occur, but the value assigned to the variable <code>i</code> is not known in advance.</p>
+    <p>In some systems it may be the maximum permissible <code>int</code> value, while in others an error occurs, and in others still the value assigned can be completely random.</p>
+    <p>This is what we call an <strong>implementation dependent issue</strong>. It's the second (and uglier) face of software portability.</p>
+    <h1 id="operators">
+      <strong>Operators</strong>
+    </h1>
+    <p>An <strong>operator</strong> is a symbol of the programming language, which is able to operate on the values. For example, <strong>an assignment operator</strong> is the <code>=</code> sign. We already know that it can assign values to variables.</p>
+    <p>Now let’s look at some other operators available in the C++ language and find out which rules govern their use and how to interpret the operations they perform. Let’s begin with the operators associated with widely recognizable arithmetic operations. The order of their appearance is not accidental. We’ll talk more about this afterward.</p>
+    <p>
+      <img src="https://edube.org/uploads/media/default/0001/01/f195e1808a0995193105e9faf466d6278733ef39.png" alt="https://edube.org/uploads/media/default/0001/01/f195e1808a0995193105e9faf466d6278733ef39.png" />
+    </p>
+    <h1 id="multiplication">
+      <strong>Multiplication</strong>
+    </h1>
+    <p>An asterisk <code>*</code> is <strong>a multiplication operator</strong>. If you take a look at the code here, you’ll see that the variable <code>k</code> will be set to the value of <code>120</code>, while the <code>z</code> variable will be set to <code>0.625</code>.</p>
+    <pre>
+      <code class="language-cpp">int i = 10, j = 12;
+float x = 1.25, y = 0.5;
+
+int k = i * j;
+float z = x * y;
+</code>
+    </pre>
+    <h1 id="division">
+      <strong>Division</strong>
+    </h1>
+    <p>A slash ("<code>/</code>") is a <strong>divisional</strong> operator. The value in front of the slash is a <strong>dividend</strong>, the value behind the slash, a <strong>divisor</strong>. Look at the snippet of the program below: of course, <code>k</code> will be set to <code>2</code>, <code>z</code> to <code>0.5</code>.</p>
+    <pre>
+      <code class="language-cpp">int i = 10, j = 5;
+float x = 1.0, y = 2.0;
+int k = i / j;
+float z = x / y;
+</code>
+    </pre>
+    <p>
+      <img src="https://edube.org/uploads/media/default/0001/01/5039ce826db71ec5ec0b07a8fa70cfd512ef84bf.png" alt="https://edube.org/uploads/media/default/0001/01/5039ce826db71ec5ec0b07a8fa70cfd512ef84bf.png" />
+    </p>
+    <h1 id="division-by-zero">
+      <strong>Division by zero</strong>
+    </h1>
+    <p>As you’ve probably guessed, dividing by zero is strictly <strong>forbidden</strong>, but the penalty for violating that rule will come to you at different times.</p>
+    <pre>
+      <code class="language-cpp">float x = 1.0 / 0.0;
+</code>
+    </pre>
+    <p>If you dare to write something like that, the compiler will go nuts – you’ll get a compilation error, runtime error or some message at runtime, possibly also a few choice words about your programming capabilities. OK, the last one was a joke. Still, in some cases you won't be able to run your program. As a general rule, you shouldn't divide by zero.</p>
+    <p>In the following example the compiler won't tell you a thing, but when you try to execute that code, the result of the operation may be surprising. It’s not a number. It’s a special featured value named <code>inf</code> (as in <strong>infinitive</strong>). Generally, this kind of illegal operation is a so-called <strong>exception</strong>.</p>
+    <pre>
+      <code class="language-cpp">float x = 0.0;
+float y = 1.0 / x;
+</code>
+    </pre>
+    <p>When you find exceptions in your program, you should react accordingly. We’ll discuss this later.</p>
+    <h1 id="addition">
+      <strong>Addition</strong>
+    </h1>
+    <p>The <strong>addition</strong> operator is the "<code>+</code>" (plus) sign, which most of us already know from maths class. Again, take a look at the snippet of the program – as you can surmise, <code>k</code> is equal to <code>102</code> and <code>z</code> to <code>1.02</code>.</p>
+    <pre>
+      <code class="language-cpp">int i = 100, j = 2;
+float x = 1.0, y = 0.02;
+int k = i + j;
+float z = x + y;
+</code>
+    </pre>
+    <h1 id="substraction">
+      <strong>Substraction</strong>
+    </h1>
+    <p>The <strong>subtraction</strong> operator is obviously the "<code>-</code>" (minus) sign, although you should note that this operator also has another meaning – it can change the sign of a number. This is a good time to show you a very important distinction between <strong>unary</strong> and <strong>binary</strong> operators (in the C++ language there is also <strong>a ternary operator</strong> – more on that a bit later).</p>
+    <p>As usual, let’s get acquainted with a snippet of the program – you can guess that <code>k</code> will be equal to <code>-100</code>, while <code>z</code> will be equal to <code>0.0</code>.</p>
+    <pre>
+      <code class="language-cpp">int i = 100, j = 200;
+float x = 1.0, y = 1.0;
+int k = i - j;
+float z = x - y;
+</code>
+    </pre>
+    <h1 id="unary-minus">
+      <strong>Unary minus</strong>
+    </h1>
+    <p>In "subtracting" applications, the minus operator expects two arguments: the left (a <strong>minuend</strong> in arithmetic terms) and the right (a <strong>subtrahend</strong>). For this reason, the subtraction operator is considered one of the binary operators, just like the addition, multiplication and division operators. But the minus operator may be used in a different way – take a look at the snippet.</p>
+    <pre>
+      <code class="language-cpp">int i = -100;
+int j = -i;
+</code>
+    </pre>
+    <p>As you’ve probably guessed, the variable <code>j</code> will be assigned the value of <code>100</code>. We used the minus operator as a <strong>unary</strong> operator, as it expects only one argument – the right one.</p>
+    <h1 id="unary-plus">
+      <strong>Unary plus</strong>
+    </h1>
+    <p>The same dual nature is expressed by the "<code>+</code>" operator, which can be also used as a unary operator – its role is to <strong>preserve</strong> the sign. Take a look at the snippet.</p>
+    <pre>
+      <code class="language-cpp">int i = 100;
+int j = +i;
+</code>
+    </pre>
+    <p>Although such a construction is <strong>syntactically correct</strong>, using it doesn’t make much sense and it would be hard to find a good rationale for doing so.</p>
+    <h1 id="remainder">
+      <strong>Remainder</strong>
+    </h1>
+    <p>The <strong>remainder</strong> operator is quite peculiar, because it has no equivalent among traditional arithmetic operators.</p>
+    <p>Its graphical representation in the C++ language is the <code>%</code> (percent) character, which may look a bit confusing, although you have to admit that its appearance resembles the <code>/</code> operator which is responsible for the division while finding the remainder forces the computer to perform a division.</p>
+    <p>
+      <code>%</code> a binary operator (it performs the <strong>modulo operation</strong>) and both arguments cannot be floats (don't forget that!). Look at the example:</p>
+    <p>
+      <code>int i = 13;</code>
+    </p>
+    <p>
+      <code>int j = 5;</code>
+    </p>
+    <p>
+      <code>int k = i % j;</code>
+    </p>
+    <p>The <code>k</code> variable is set to the value of <code>3</code> (because <em>2 * 5 + 3 = 13</em>).</p>
+    <p>Oh, and one more thing you need to remember: <strong>you cannot compute the remainder with the right argument equal to zero</strong>. Can you guess why? Click <em>Check</em> below to see if you were right:</p>
+    <p>
+      <code>**Check**</code>
+    </p>
+    <p>You probably remember what we said earlier about dividing by zero. And because division by <code>0</code> invokes undefined behaviour, the modulo operation, which relies on division, is undefined, too.Well, that’s what the C++ Standard says. We have to accept that.</p>
+    <p>
+      <img src="https://edube.org/uploads/media/default/0001/01/01868e454b2f25a38ec783d0474d787c231ae5c1.png" alt="https://edube.org/uploads/media/default/0001/01/01868e454b2f25a38ec783d0474d787c231ae5c1.png" />
+    </p>
+    <h1 id="priorities">
+      <strong>Priorities</strong>
+    </h1>
+    <p>So far, we’ve treated each operator as if it had no connection with the others. Of course, in real programming, nothing is ever as simple as that. Also, we very often find more than one operator in an <strong>expression</strong> and then things can get complicated very quickly. Consider the following expression:</p>
+    <p>
+      <code>2 + 3 * 5</code>
+    </p>
+    <p>If your memory hasn't failed you, you should remember from school that multiplications precede additions. You probably remember that you have to multiply <code>3</code> by <code>5</code>, keep the <code>15</code> in your memory, add it to <code>2</code>, thus getting the result of <code>17</code>.</p>
+    <p>The phenomenon that causes some operators to act before others is known as the <strong>hierarchy of priorities</strong>. The C++ language precisely defines the priorities of all operators and assumes that <strong>operators of larger (higher) priority perform their operations before the operators with lower priority</strong>.</p>
+    <p>So if we know that <code>*</code> has a higher priority than <code>+</code>, we can figure out how the final result will be computed.</p>
+    <h1 id="bindings">
+      <strong>Bindings</strong>
+    </h1>
+    <p>The <strong>binding</strong> of the operator determines the order of computations performed by some operators with equal priority, put side by side in one expression. Most operators in the C++ language have the <strong>left-sided binding</strong>, which means that the calculation of this sample expression is conducted from left to right, i.e. <code>3</code> will be added to <code>2</code>, and <code>5</code> will be added to the result.</p>
+    <p>
+      <code>2 + 3 + 5</code>
+    </p>
+    <p>Now at this point you might be snorting and saying that all children know perfectly well that addition is commutative and it doesn’t matter in which order the additions are performed. And yes, you're right, but not quite. Additions performed by the computer are not always commutative. Really. We’ll show you this in more detail later. But for now, be patient and trust us.</p>
+    <h1 id="priorities-1">
+      <strong>Priorities</strong>
+    </h1>
+    <p>Since you're new to C++ language operators, presenting a complete list of operators' priorities may not be a good idea. Instead, we’ll show you its truncated form, and we’ll expand on it consistently during the introduction of new operators.</p>
+    <p>This table now looks as follows:</p>
+    <p>
+      <a href="Module%201%20-%20Introduction%20to%20computer%20programming,%20v%207c8c4db1e07640babaab85542bbe9160/Untitled%20Database%20e4452a5fced445e1a3e5d33651aaba02.csv">Untitled</a>
+    </p>
+    <p>Note: we’ve gone through the operators in order <strong>from the highest to the lowest priority</strong>.</p>
+    <p>We want to check if you understand the concept of binding. Try to work through the following expression:</p>
+    <p>
+      <code>2 * 3 % 5</code>
+    </p>
+    <p>Both operators (<code>*</code> and <code>%</code>) have the same priority, so the result could be guessed only when you know the binding direction.</p>
+    <p>Do you know the result? Click <em>Check</em> below to see if you were right:</p>
+    <p>
+      <code>**Check**</code>
+    </p>
+    <p>
+      <code>1</code>
+    </p>
+    <p>
+      <strong>Yes, the result is 1. Congratulations!</strong>
+    </p>
+    <h1 id="parentheses">
+      <strong>Parentheses</strong>
+    </h1>
+    <p>Of course, we’re always allowed to use <strong>parentheses</strong>, which can change the natural order of calculation. Just like with arithmetic rules, <strong>subexpressions in parentheses are always calculated first</strong>. You can use as many parentheses as you need and we often use them to improve the readability of an expression, even if they don't change the order of operations.</p>
+    <p>An example expression involving multiple parentheses is given below. Try to compute the value given to the <code>l</code> variable.</p>
+    <pre>
+      <code class="language-cpp">int i = 100;
+int j = 25;
+int k = 13;
+int l = (5 * ((j % k) + i) / (2 * k)) / 2;
+</code>
+    </pre>
+    <p>Click <em>Check</em> below to see if you were right:</p>
+    <p>
+      <code>**Check**</code>
+    </p>
+    <p>
+      <code>10</code>
+    </p>
+    <p>
+      <strong>Yes, it's 10.</strong>
+    </p>
+    <h1 id="operators-continued">
+      <strong>Operators continued</strong>
+    </h1>
+    <p>
+      <img src="https://edube.org/uploads/media/default/0001/01/0c2fc9d32ded951d260bd05e81699656fd81ea4a.png" alt="https://edube.org/uploads/media/default/0001/01/0c2fc9d32ded951d260bd05e81699656fd81ea4a.png" />
+    </p>
+    <p>Here are some operators in the C++ language which you won’t find in maths textbooks. Some of them are frequently used <strong>to increment a variable by one</strong>. This is often done when we’re counting something (e.g. sheep). Let's consider the following snippet:</p>
+    <p>
+      <code>int sheep_counter = 0;</code>
+    </p>
+    <p>Every time a sheep runs through our thoughts we want the variable to be incremented, like this:</p>
+    <p>
+      <code>sheep_counter = sheep_counter + 1;</code>
+    </p>
+    <p>Similar operations appear very frequently in typical programs, so the creators of the C++ language introduced a set of special operators for these actions. One of them is the <code>++</code> (plus plus) operator. You can achieve the same effect in a shorter way:</p>
+    <p>
+      <code>sheep_counter++;</code>
+    </p>
+    <p>It looks much more elegant now, doesn't it?</p>
+    <p>Similarly, you can also decrease the value of a chosen variable. For example, if we can hardly wait for our holiday, our mind does the following operation every morning:</p>
+    <p>
+      <code>days_until_holiday = days_until_holiday - 1;</code>
+    </p>
+    <p>We can write it in a more compact way:</p>
+    <p>
+      <code>days_until_holiday--;</code>
+    </p>
+    <p>
+      <img src="https://edube.org/uploads/media/default/0001/01/e9f989a475364d7bf83c467e5abb23333e734e79.png" alt="https://edube.org/uploads/media/default/0001/01/e9f989a475364d7bf83c467e5abb23333e734e79.png" />
+    </p>
+    <p>Sorry, but now we have to introduce a few new words.</p>
+    <p>The "<code>++</code>" is called the <strong>increment operator</strong>.</p>
+    <p>The "<code>--</code>" is called the <strong>decrement operator</strong>.</p>
+    <p>We’ve shown you the <code>++</code> and <code>--</code> operators after a variable (a specialist in the syntax of programming languages would say that they’re used as postfix operators). However, both operators can be placed in front of a variable as well (as prefix operators), like this:</p>
+    <p>
+      <code>++sheep_counter;</code>
+    </p>
+    <p>
+      <code>--days_until_holiday;</code>
+    </p>
+    <p>The effect will be exactly the same: <code>sheep_counter</code> will be increased by 1, <code>days_until_holiday</code> decremented by 1. There’s a fairly significant difference, however, which is described by the precise names of these operators.</p>
+    <p>Here they are.</p>
+    <p>That may seem a little weird to you, but it’ll only take a short time to understand. Let's discuss the effects of these operators.</p>
+    <p>
+      <strong>Operation:</strong>
+    </p>
+    <p>
+      <code>++variable</code>
+    </p>
+    <p>
+      <code>--variable</code>
+    </p>
+    <p>
+      <strong>Effect:</strong>
+    </p>
+    <p>Increment/decrement the variable by 1 and return its value <strong>already</strong> increased/reduced.</p>
+    <p>
+      <strong>Operation:</strong>
+    </p>
+    <p>
+      <code>variable++</code>
+    </p>
+    <p>
+      <code>variable--</code>
+    </p>
+    <p>
+      <strong>Effect:</strong>
+    </p>
+    <p>Return the original (unchanged) variable's value and then increment/decrement the variable by 1.</p>
+    <p>This behavior justifies the presence of the prefix <em>pre-</em> (before) and <em>post-</em> (after) in the operators’ names: <em>pre-</em> because the variable is modified <strong>first</strong> and then its value is <strong>used</strong>; <em>post-</em> because the variable's value is <strong>used</strong> and then <strong>modified</strong>.</p>
+    <h1 id="pre-and-post-operators-and-their-priorities">
+      <strong>Pre-and post-operators and their priorities</strong>
+    </h1>
+    <p>Take a look at two simple examples.</p>
+    <p>
+      <code>int i = 1;</code>
+    </p>
+    <p>
+      <code>int j = i++;</code>
+    </p>
+    <p>First, the variable <code>i</code> is set to <code>1</code>. In the second statement, we’ll see the following steps:</p>
+    <ul>
+      <li>the value of <code>i</code> will be taken (as we use the <em>post-incrementation</em>);</li>
+      <li>the variable <code>i</code> will be increased by <code>1</code>.</li>
+    </ul>
+    <p>In effect, <code>j</code> will receive the value of <code>1</code> and <code>i</code> the value of <code>2</code>.</p>
+    <p>Things go a bit differently here.</p>
+    <p>
+      <code>int i = 1;</code>
+    </p>
+    <p>
+      <code>int j = ++i;</code>
+    </p>
+    <p>The variable <code>i</code> is assigned with the value of <code>1</code>; next, the <code>i</code> variable is incremented and is equal to <code>2</code>; next, the increased value is assigned to the <code>j</code> variable.</p>
+    <p>In effect, both <code>i</code> and <code>j</code> will be equal to <code>2</code>.</p>
+    <p>Look carefully at this program. Let’s trace its execution step by step.</p>
+    <pre>
+      <code class="language-cpp">int i = 4;
+int j = 2 * i++;
+i = 2 * --j;
+</code>
+    </pre>
+    <ol>
+      <li>The <code>i</code> variable is assigned the value of <code>4</code>;</li>
+      <li>We take the original value of <code>i</code> (<code>4</code>), multiply it by <code>2</code>, assign the result (<code>8</code>) to <code>j</code> and eventually (post-)increment the <code>i</code> variable (it equals <code>5</code> now);</li>
+      <li>We (pre-)decrement the value of <code>j</code> (it equals <code>7</code> now); this reduced value is taken and multiplied by <code>2</code> and the result (<code>14</code>) is assigned to the variable <code>i</code>.</li>
+    </ol>
+    <p>What else do you need to know about the new operators? Firstly, their priority is quite high – higher than the <code>*</code>, <code>/</code> and <code>%</code> operators. Secondly, their binding depends on whether you use the prefix or postfix version. The prefix version operators have a right-to-left binding, while the postfix operators bind from left to right.</p>
+    <p>Our priority table now reads as follows:</p>
+    <p>
+      <a href="Module%201%20-%20Introduction%20to%20computer%20programming,%20v%207c8c4db1e07640babaab85542bbe9160/Untitled%20Database%20e7a9d0b9e1474118abda58acb618aa84.csv">Untitled</a>
+    </p>
+    <h1 id="shortcut-operators">
+      <strong>Shortcut operators</strong>
+    </h1>
+    <p>Now it's time for the next set of operators, ones that make a developer's life easier. The one’s we’ve already described deal with addition and subtraction of one.</p>
+    <p>
+      <code>i = i * 2;</code>
+    </p>
+    <p>However, we often need something other than addition or subtraction, or we want to use a different value; we can use this operator when we want to calculate a series of successive values of powers of 2.</p>
+    <p>Here’s another example. We use this expression when our herd is extremely numerous:</p>
+    <p>
+      <code>sheep_counter = sheep_counter + 10;</code>
+    </p>
+    <p>In the C++ language there is a short way to write these operations. You can write them as follows:</p>
+    <p>
+      <code>i *= 2;</code>
+    </p>
+    <p>
+      <code>sheep_counter += 10;</code>
+    </p>
+    <p>Let's try to present a general description for such operations. If <code>op</code> is a <strong>two-argument operator</strong> (this is a very important condition!) and the operator is used in the following context:</p>
+    <p>
+      <code>variable = variable op expression;</code>
+    </p>
+    <p>then this expression can be <strong>simplified</strong> as follows:</p>
+    <p>
+      <code>variable op= expression;</code>
+    </p>
+    <p>Take a look at the examples here:</p>
+    <p>
+      <img src="https://edube.org/uploads/media/default/0001/01/7109fef0443a377df09803a5475917c00f5ef06c.png" alt="https://edube.org/uploads/media/default/0001/01/7109fef0443a377df09803a5475917c00f5ef06c.png" />
+    </p>
+    <p>Make sure you understand them all. And relax, because we still have a lot of work ahead.</p>
+    <h1 id="character-type">
+      <strong>Character type</strong>
+    </h1>
+    <p>So far we have treated the C++ language (and the computer itself) as a tool for performing calculations on numbers. This is consistent with a common belief that a computer is just a calculator, albeit a very smart one. You know it’s not true, as the computer can be easily used for word processing, too.</p>
+    <p>
+      <img src="https://edube.org/uploads/media/default/0001/01/06233f7f9d116332ba067d8807098d871f73b3f3.png" alt="https://edube.org/uploads/media/default/0001/01/06233f7f9d116332ba067d8807098d871f73b3f3.png" />
+    </p>
+    <p>We can define a <em>word</em> as a string of characters (letters, numbers, punctuation marks, etc.). We dealt with such strings in the first lesson when we used <code>cout</code> to write some text on the computer screen.</p>
+    <p>Now, however, we’ll ignore the string consisting of multiple characters and we’ll focus our attention on single characters. We’ll come back to the problem of processing strings when we start working on arrays, because in the C++ language strings behave in a very similar way.</p>
+    <p>To store and manipulate characters, the C++ language provides a special type of data. This type is called <code>char</code>, which is an abbreviation of the word <em>character</em> and according to <a href="http://www.stroustrup.com/bs_faq2.html#char">Bjarne Stroustrup's hint</a> should be pronounced as <em>"tchar"</em>, not <em>"kar"</em>.</p>
+    <p>Let's try to declare a variable for storing a single character.</p>
+    <p>
+      <code>char character;</code>
+    </p>
+    <p>Looks familiar, doesn't it? Now let's talk a bit about how computers store characters.</p>
+    <h1 id="ascii-code">
+      <strong>ASCII code</strong>
+    </h1>
+    <p>
+      <img src="https://edube.org/uploads/media/default/0001/01/9d33281420838c9978dd47e3e875efe906ad2fe5.png" alt="https://edube.org/uploads/media/default/0001/01/9d33281420838c9978dd47e3e875efe906ad2fe5.png" />
+    </p>
+    <p>
+      <strong>Computers store characters as numbers</strong>. Every character used by a computer corresponds to a unique number, and vice versa. This system of assignments includes more characters than you would probably expect. Many of them are invisible to humans but essential for computers. Some of these characters are called <strong>white spaces</strong>, while others are named <strong>control characters</strong>, because their purpose is to <strong>control</strong> the input/output devices. An example of a white space that is completely invisible to the naked eye is a special code, or a pair of codes (different operating systems may treat this issue differently), which are used to mark the ends of lines inside text files. People don’t see this sign (or these signs), but they can see their effect where the lines are broken.</p>
+    <p>We can create virtually any number of assignments, but a world in which each computer type uses different character encoding would be extremely inconvenient. This has created a need to introduce a universal and widely accepted standard implemented by (almost) all computers and operating systems all over the world. <strong>ASCII</strong> (which is a short for <em>American Standard Code for Information Interchange</em> and is usually probounced as <em>"ASS-kee"</em>) is the most widely used system in the world, and it’s safe to assume that nearly all modern devices (like computers, printers, mobile phones, tablets, etc.) use this code. The code provides space for 256 different characters, but we’re only interested in the first 128. If you want to see how the code is constructed, go to the table on the right.</p>
+    <p>Look at it carefully – there are some interesting facts about it that you might notice. We'll show you one. Do you see what the code of the most common character is – the space? Yes – it’s 32. Now look at what the code of the lower-case letter “a” is. It’s 97, right? And now let's find the upper-case “A”. Its code is 65. What’s the difference between the code of “a” and “A”? It’s 32. Yes, that's the code of a space. We’ll use that interesting feature of the ASCII code soon.</p>
+    <p>Also, note that the letters are arranged in <strong>the same order</strong> as in the <strong>Latin alphabet</strong>.</p>
+    <p>By the way, ASCII code is being superseded (or rather extended) by a new international standard named UNICODE.</p>
+    <p>Fortunately, the ASCII set is a <a href="https://en.wikipedia.org/wiki/Unicode">UNICODE</a> subset. UNICODE is able to represent virtually all characters used throughout the world. We’ll spend a little more time on this later.</p>
+    <p>
+      <img src="Module%201%20-%20Introduction%20to%20computer%20programming,%20v%207c8c4db1e07640babaab85542bbe9160/Untitled.png" alt="Untitled" />
+    </p>
+    <p>
+      <img src="Module%201%20-%20Introduction%20to%20computer%20programming,%20v%207c8c4db1e07640babaab85542bbe9160/Untitled%201.png" alt="Untitled" />
+    </p>
+    <p>
+      <img src="Module%201%20-%20Introduction%20to%20computer%20programming,%20v%207c8c4db1e07640babaab85542bbe9160/Untitled%202.png" alt="Untitled" />
+    </p>
+    <h1 id="character-type-values">
+      <strong>Character type values</strong>
+    </h1>
+    <p>How do we use the values of the <code>char</code> type in the C++ language? We can do it in two ways, which are not entirely equivalent.</p>
+    <p>The first way allows us to specify the character itself, but <strong>enclosed in single quotes</strong> (apostrophes). Let’s assume that we want the variable we declared a few slides earlier to be assigned the value of the upper-case letter <code>A</code>.</p>
+    <p>We do this as follows:</p>
+    <p>
+      <code>character = 'A';</code>
+    </p>
+    <p>You’re not allowed to omit apostrophes under any circumstances.</p>
+    <p>Now let’s assign an asterisk to our variable. We do this as follows:</p>
+    <p>
+      <code>character = '*';</code>
+    </p>
+    <p>The second method consists of assigning a <strong>non-negative integer value</strong> that is the code of the desired character. This means that the assignment below will put an “<code>A</code>” into the character variable.</p>
+    <p>
+      <code>character = 65;</code>
+    </p>
+    <p>The second solution, however, is less recommended and if you can avoid it, you should. Why?</p>
+    <p>First, because it is illegible. Without knowing the ASCII code, it is impossible to guess what that “65” really means. Perhaps this is the code for a character, but it can also happen that a sociopathic programmer used this devious way to save the number of already counted sheep.</p>
+    <p>The second reason is more exotic, but still true. There’s a significant number of computers in the world which use codes <strong>other than ASCII</strong>. For example, many of the IBM mainframes use a code commonly called <a href="https://en.wikipedia.org/wiki/EBCDIC">EBCDIC</a> (<em>Extended Binary Coded Decimal Interchange Code</em> - we won't dare to instruct you how to pronounce this abbreviation, sorry) which is very different from ASCII and is based on radically different concepts.</p>
+    <p>
+      <img src="https://edube.org/uploads/media/default/0001/01/eac3daa523af9441a81b6de96ef2146f9db4958f.png" alt="https://edube.org/uploads/media/default/0001/01/eac3daa523af9441a81b6de96ef2146f9db4958f.png" />
+    </p>
+    <h1 id="ascii-vs-ebcdic">
+      <strong>ASCII vs EBCDIC</strong>
+    </h1>
+    <p>Now imagine that you’ve written a wonderful program and decided to compile and run it on a computer utilizing the EBCDIC code. If you wrote something like this, the compiler running on that computer would notice the question mark and use the appropriate EBCDIC code for that character.</p>
+    <p>
+      <code>character = '?';</code>
+    </p>
+    <p>But if you wrote it like this:</p>
+    <p>
+      <code>character = 63;</code>
+    </p>
+    <h1 id="literal">
+      <strong>Literal</strong>
+    </h1>
+    <p>Now’s probably a good time to bring a new term into the mix: a <strong>literal</strong>. The literal is a symbol which <strong>uniquely identifies its value</strong>. Some prefer to use a different definition: the <strong>literal means itself</strong>. Choose the definition that you consider to be clearer and look at the following simple examples:</p>
+    <ul>
+      <li>
+        <code>character</code>: this is not a literal; it’s probably a variable name; when you look at it, you cannot guess what value is currently assigned to that variable;</li>
+      <li>
+        <code>'A'</code>: this is a literal; when you look at it you can immediately guess its value; you even know that it’s a literal of the <code>char</code> type;</li>
+      <li>
+        <code>100</code>: this is a literal, too (of the <code>int</code> type);</li>
+      <li>
+        <code>100.0</code>: this is another literal, this time of a floating point type;</li>
+      <li>
+        <code>i + 100</code>: this is a combination of a variable and a literal joined together with the <code>+</code> operator; this structure is called an <strong>expression.</strong></li>
+    </ul>
+    <p>If you’re an inquisitive person, you probably want to ask a question: if a literal of type <code>char</code> is given as the character enclosed in apostrophes, how do we code the apostrophe itself?</p>
+    <p>The C++ language uses a special convention that also extends to other characters, not only to apostrophes. Let's start with an apostrophe anyway. An apostrophe looks like this:</p>
+    <p>
+      <code>character = '\'';</code>
+    </p>
+    <p>The <code>\</code> character (called <em>backslash</em>) acts as an <strong>escape character</strong>, because by using the <code>\</code> we can escape from the normal meaning of the character that follows the slash. In this example, we <strong>escape</strong> from the usual role of the apostrophe (i.e. delimiting the literals of type <code>char</code>).</p>
+    <p>You can also use the escape character to <strong>escape from the escape character</strong>. Yes, it does sound weird, but the example below should make it clear. This is how we put a backslash into a variable of type <code>char</code>.</p>
+    <p>
+      <code>character = '\\';</code>
+    </p>
+    <h1 id="escape-characters">
+      <strong>Escape characters</strong>
+    </h1>
+    <p>The C++ language allows us to escape in other circumstances too. Let's start with those that denote literals representing white spaces.</p>
+    <p>
+      <code>\n</code> – denotes a <strong>transition to a new line</strong> and is sometimes called an <strong>LF</strong> (<strong>Line Feed</strong>), as printers react to this character by pulling out the paper by one line of text.</p>
+    <p>
+      <code>\r</code> – denotes the <strong>return to the beginning of the line</strong> and is sometimes called a <strong>CR</strong> (<strong>Carriage Return</strong> – “carriage” was the synonym of a “print head” in the typewriter era); printers respond to this character as if they are told to re-start printing from the left margin of the already printed line.</p>
+    <p>
+      <code>\a</code> – (as in <strong>alarm</strong>) - is a relic of the past when teletypes were often used to communicate with computers (do you know what a <a href="https://en.wikipedia.org/wiki/Teleprinter">teletype</a> is, are you old enough to remember them?); sending this character to a teletype turns on its ringer; hence, the character is officially called <strong>BEL</strong> (as in <strong>bell</strong>); interestingly, if you try to send the character to the screen, you’ll hear a sound – it won't be a real ringing but rather a short beep. The power of tradition works even in the IT world.</p>
+    <p>
+      <code>\0</code> (<em>note: the character after the backslash is a zero, not the letter O</em>): called <strong>nul</strong> (from the Latin word <strong>nullus</strong> – none) is a character that <strong>does not represent any character</strong>; despite first impressions, it could be very useful, as we’ll show you in the lessons to come.</p>
+    <p>Now we’ll try to escape in a slightly different direction. The first example explains the variant when a backslash is followed by two or three <strong>octal digits</strong> (the digits from the range of 0 to 7). A number coded in this manner will be treated as an <strong>ASCII value</strong>. It may look like this:</p>
+    <p>
+      <code>character = '\47';</code>
+    </p>
+    <p>
+      <code>047</code> octal is <code>39</code> decimal. Look at the ASCII code table and you'll find that this is the ASCII code of an apostrophe, so this is equivalent to the notation</p>
+    <p>
+      <code>'\''</code>
+    </p>
+    <p>(but only for computers implementing the ASCII code).</p>
+    <p>The second escape refers to the situation when a <code>\</code> is followed by the letter <code>X</code> (lower case or upper case – it doesn't matter). In this case there must be either one or two <strong>hexadecimal digits</strong>, which will be treated as ASCII code. Here's an example:</p>
+    <p>
+      <code>character = '\x27';</code>
+    </p>
+    <p>As you’ve probably guessed, <code>27</code> hexadecimal is <code>39</code> decimal.</p>
+    <p>
+      <img src="https://edube.org/uploads/media/default/0001/01/43f13e6c72898518ca337e623edadd16c1e9dcb6.png" alt="https://edube.org/uploads/media/default/0001/01/43f13e6c72898518ca337e623edadd16c1e9dcb6.png" />
+    </p>
+    <h1 id="charvalues-areintvalues">
+      <strong>char values are int values</strong>
+    </h1>
+    <p>There’s an assumption in the C++ language that may seem surprising at first glance: the <code>char</code> type is treated as a special kind of <code>int</code> type. This means that:</p>
+    <ul>
+      <li>You can always <strong>assign a <code>char</code> value</strong> to an <code>int</code> variable;</li>
+      <li>You can always assign an <code>int</code> value to a <code>char</code> variable, but if the value exceeds 255 (the top-most character code in ASCII), you must expect a loss of value;</li>
+      <li>The value of the <code>char</code> type can be subject to the <strong>same operators</strong> as the data of type <code>int</code>.</li>
+    </ul>
+    <p>We can check this using a simple example. We said earlier that in ASCII, the "distance" between upper and lower case letters is 32, and that 32 is the code of the space character. Look at this snippet:</p>
+    <pre>
+      <code class="language-cpp">char character = 'A';
+character += 32;
+character -= ' ';
+</code>
+    </pre>
+    <p>This sequence of subsequent addition and subtraction will bring the <code>character</code> value to its original value ("<code>A</code>"). You should be able to explain why, right?</p>
+    <p>All of these assignments are correct. Try to interpret their meanings – this should be a good exercise for you.</p>
+    <pre>
+      <code class="language-cpp">char character = 'A' + 32;
+character = 'A' + ' ' ;
+character = 65 + ' ';
+character = 97 - ' ';
+character = 'a' - 32;
+character = 'a' - ' ';
+</code>
+    </pre>
+    <p>Check the answer</p>
+    <p>
+      <code>97, 97, 97, 65, 65, 65</code>
+    </p>
+    <p>
+      <strong>Well done! Here are the answers: 97, 97, 97, 65, 65, 65.</strong>
+    </p>
+    <p>
+      <img src="https://edube.org/uploads/media/default/0001/01/b3e12d56578c42f17fff54b89c9c67d19be8fb46.png" alt="https://edube.org/uploads/media/default/0001/01/b3e12d56578c42f17fff54b89c9c67d19be8fb46.png" />
+    </p>
+    <h1 id="one-who-asks-does-not-err">
+      <strong>One who asks does not err</strong>
+    </h1>
+    <p>A programmer writes a program and the program <strong>asks questions</strong>. A computer executes the program and provides the answers. The program must be able to react according to the answers it receives. Fortunately, computers know only two kinds of answer: <em><strong>yes, this is true</strong></em> or <em><strong>no, this is false.</strong></em> You will never get a response like “I don’t know” or “Probably yes, but I don’t know for sure”.</p>
+    <p>To ask questions, the C++ language uses a set of very special operators. Let’s go through them one by one, illustrating their effects using some simple examples.</p>
+    <p>
+      <img src="https://edube.org/uploads/media/default/0001/01/190efb27cab87423779d415ae7f884c1c09abe54.png" alt="https://edube.org/uploads/media/default/0001/01/190efb27cab87423779d415ae7f884c1c09abe54.png" />
+    </p>
+    <h1 id="question-is-x-equal-to-y">
+      <strong>Question: is x equal to y?</strong>
+    </h1>
+    <p>Question: are two values equal?</p>
+    <p>To ask this question you use the <code>==</code> (<em><strong>equal equal</strong></em>) operator.</p>
+    <p>Don't forget this important distinction:</p>
+    <ul>
+      <li>
+        <code>=</code> is an <strong>assignment operator</strong></li>
+      <li>
+        <code>==</code> is the <strong>question “<em>are these values equal?”</em></strong></li>
+    </ul>
+    <p>It’s <strong>a binary operator with a left-side binding</strong>. It needs two arguments and <strong>checks if they’re equal</strong>. Now let’s ask a few questions. Try to guess the answers.</p>
+    <h1 id="is-x-equal-to-y">
+      <strong>Is x equal to y?</strong>
+    </h1>
+    <p>1. <code>2 == 2</code></p>
+    <p>Check</p>
+    <p>This question is simple. Of course <code>2</code> is equal to <code>2</code>. The computer will answer <code>true</code>.</p>
+    <p>2. <code>1 == 2</code></p>
+    <p>Check</p>
+    <p>This one’s simple, too. The answer will be <code>false</code>.</p>
+    <p>3. <code>i == 0</code></p>
+    <p>
+      <code>**Check**</code>
+    </p>
+    <p>Here we’re not able to find the answer if we do not know what value is currently stored in variable <code>i</code>. <strong>If the variable has been changed many times during the execution of your program, the answer to this question can be given only by the computer and only at run time.</strong></p>
+    <h1 id="question-is-x-equal-to-y-1">
+      <strong>Question: is x equal to y?</strong>
+    </h1>
+    <p>There’s another developer who counts white and black sheep separately and falls asleep only when there are exactly twice as many black sheep as white ones. The question will be as follows:</p>
+    <p>
+      <code>black_sheep_counter == 2 * white_sheep_counter</code>
+    </p>
+    <p>Due to the low priority of the <code>==</code> operator, this question shall be treated as equivalent to this one:</p>
+    <p>
+      <code>black_sheep_counter == (2 * white_sheep_counter)</code>
+    </p>
+    <h1 id="question-is-x-not-equal-to-y">
+      <strong>Question: is x not equal to y?</strong>
+    </h1>
+    <p>To ask this question, we use the <code>!=</code> (<strong>exclamation equal</strong>). It’s a very close relative of the <code>==</code> operator. It’s also a binary operator and has the same low priority. Imagine that we want to ask whether the number of days left to the end of the world is currently not equal to zero:</p>
+    <p>
+      <code>days_until_the_end_of_the_world != 0</code>
+    </p>
+    <p>The answer <code>true</code> gives us the chance to go to the theater or to visit our friends.</p>
+    <h1 id="question-is-x-greater-than-y">
+      <strong>Question: is x greater than y?</strong>
+    </h1>
+    <p>You can ask this question by using the <code>&gt;</code> (<strong>greater than</strong>) operator. If you want to know if there are more black sheep than white ones, you can write it as follows. The answer <code>true</code> confirms the statement; the answer <code>false</code> denies it.</p>
+    <p>
+      <code>black_sheep &gt; white_sheep</code>
+    </p>
+    <h1 id="question-is-x-greater-than-or-equal-y">
+      <strong>Question: is x greater than or equal y?</strong>
+    </h1>
+    <p>The “<strong>greater than</strong>” operator has another special, non-strict variant, but it’s denoted differently in classical arithmetic notation: <code>&gt;=</code> (<strong>greater than or equal</strong>). There are two subsequent signs, not one. Both of these operators (strict and non-strict), as well as the other two that we discuss in the next section, are binary operators with left-side binding, and their priority is greater than the ones indicated by <code>==</code> and <code>!=</code>.</p>
+    <p>If we want to find out whether or not we have to wear a warm hat, we ask the following question:</p>
+    <p>
+      <code>centigrade_outside &gt;= 0.0</code>
+    </p>
+    <h1 id="question-is-x-less-than-or-equal-to-y">
+      <strong>Question: is x less than (or equal to) y?</strong>
+    </h1>
+    <p>As you’ve probably already guessed, the operators we use in this case are: the <code>&lt;</code> (<strong>less than</strong>) operator and its non-strict sibling <code>&lt;=</code> (<strong>less than or equal</strong>). Look at this simple example: we’re going to check if there’s a risk that we’ll be fined by the highway police (the first question is strict, the second isn't).</p>
+    <pre>
+      <code class="language-cpp">current_velocity &lt; 110
+current_velocity &lt;= 110
+</code>
+    </pre>
+    <h1 id="how-to-use-the-answer-we-got">
+      <strong>How to use the answer we got?</strong>
+    </h1>
+    <p>The C++ language defines a very special data type designed to store values resulting from any of the previously presented comparisons. The type is called:</p>
+    <pre>
+      <code>bool
+</code>
+    </pre>
+    <p>It's name come from the famous English mathematician, <a href="https://en.wikipedia.org/wiki/George_Boole">George Bool</a> (1815 –1864), the creator of <em>Boolean algebra</em>, a branch of mathematics devoted to operations on <em>truth values</em></p>
+    <p>The type itself shows many similarities to the previously presented <code>char</code> type. Here are some of them:</p>
+    <ul>
+      <li>it's actually an integer type using the minimal storage offered by a computer (it's one byte usually, just like in the <code>char</code> type);</li>
+      <li>it can be assigned with integer values;</li>
+      <li>it can participate in any integer evaluations and used in this way behaves like an ordinary <code>int</code>;</li>
+    </ul>
+    <p>Along with the <code>bool</code> type there are two literals representing two possible <strong>boolean</strong> values - these are:</p>
+    <ul>
+      <li>
+        <code>false</code> (a boolean equivalent of integer <code>0</code>);</li>
+      <li>
+        <code>true</code> (a boolean equivalent of integer <code>1</code> although is should be mentioned here that any non-zero integer value is interpreted as <code>true</code> by the C++ language).</li>
+    </ul>
+    <p>Note that all the three presented words are <strong>keywords</strong> - don't forget about that and don't blame the compiler when it refuses a declaration of a variable named e.g. <code>true</code>.</p>
+    <p>How can we use the newly met type? The most obvious answers says that it's an ideal tool to <strong>memorize</strong> (store it in a variable) results of comparisons and make use of them later. How do we do that? Well, we would use an arbitrary variable of type <code>bool</code>, like this:</p>
+    <pre>
+      <code class="language-cpp">int value1 = 0, value2 = 0;
+bool answer = value1 &gt;= value2;
+</code>
+    </pre>
+    <p>If the answer is <code>true</code> because <code>value1</code> is greater than or equal to <code>value2</code>, the computer will assign <code>true</code> to <code>answer</code> (although if you take a look inside the variable, you'll find an integer <code>1</code>). If <code>value1</code> is less than <code>value2</code>, the variable <code>answer</code> will be assigned with <code>false</code> (actually <code>0</code>).</p>
+    <p>If you are unsatisfied with information about the logic of computers, we want to reassure you. We're going to discuss the issue soon. Stay tuned.</p>
+    <p>
+      <strong>TIME MACHINE</strong>The <code>bool</code> type and its two literals are relatively new C++'s components. It's a common thing to find a code which uses an ordinary integers to achieve the same effects. Anyway, we prefer to uses <code>bool</code> out of respects for Mr. Bool's achievements and to increase readability of your code. Follow us, please!</p>
+    <h1 id="the-priority-table-an-update">
+      <strong>The priority table – an update.</strong>
+    </h1>
+    <p>The second possibility is more convenient and far more common: we can use the answer to make a decision about the future of our program. We use a special instruction for this purpose and we’ll tell you what that is very soon.</p>
+    <p>Now we need to update our priority table. It now looks as follows:</p>
+    <table>
+      <thead>
+        <tr>
+          <th>operator</th>
+          <th>unary / binary</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>+ -</td>
+          <td>unary</td>
+        </tr>
+        <tr>
+          <td>* / %</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>+ -</td>
+          <td>binary</td>
+        </tr>
+        <tr>
+          <td>&lt; &lt;= &gt; &gt;=</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>== !=</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>= += -= *= /= %=</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <h1 id="conditions-and-conditional-executions">
+      <strong>Conditions and conditional executions</strong>
+    </h1>
+    <p>You already know how to ask, but you still don’t know how to make reasonable use of the answers. We must have a mechanism which allows us to do something if a condition is met (it evaluates to <strong>true</strong>) and not to do it if it isn’t (when its result is <strong>false</strong>. It's just like in life: we do certain things or we don’t when a specific condition is met or not, e.g. we go for a walk if the weather is good, or stay home if it’s wet and cold.</p>
+    <p>To make these decisions, the C++ language has a special instruction. Due to its nature and its application, it’s called a <strong>conditional instruction</strong> (or <strong>conditional statement</strong>).</p>
+    <p>There are several variants of the conditional instruction. We’ll start with the simplest, and slowly move on to the more difficult ones. The first form of a conditional statement, which you can see below, is written very informally but figuratively:</p>
+    <p>
+      <code>if(true_or_not) do_this_if_true;</code>
+    </p>
+    <p>This conditional statement consists of the following, strictly necessary, elements in this and this order only:</p>
+    <ul>
+      <li>
+        <strong>if</strong> keyword;</li>
+      <li>left (opening) parenthesis;</li>
+      <li>an <strong>expression</strong> (a <strong>question</strong> or an <strong>answer</strong>) whose value will be interpreted solely in terms of <code>true</code> (when its value is non-zero) and <code>false</code> (when it is equal to zero);</li>
+      <li>right (closing) parenthesis;</li>
+      <li>an <strong>instruction</strong> (only <strong>one</strong>, but we’ll learn how to deal with that limitation).</li>
+    </ul>
+    <p>How does this statement <em>work</em>?</p>
+    <ul>
+      <li>if the <code>true_or_not</code> expression enclosed inside the parentheses represents the truth (i.e. its <em>value is not equal to zero</em>), the statement behind this condition (<code>do_this_if_true</code>) will be executed;</li>
+      <li>if the <code>true_or_not</code> expression represents a <strong>falsehood</strong> (its <em>value is equal to zero</em>), the statement behind this condition is <strong>omitted</strong> and the next executed instruction will be the one that lies after the conditional statement.</li>
+    </ul>
+    <p>
+      <strong>Note:</strong> the <strong>true_or_not</strong> expression is not required to be necessarily of type <code>int</code> or any of integer type's derivates. It may be of type <code>float</code> too and the general rule of the <code>if</code> statement's execution remains in force</p>
+    <p>In real life we often express a will:</p>
+    <p>
+      <em>if the weather is good we will go for a walk next, we will have lunch</em>
+    </p>
+    <p>As you can see, having lunch is not a conditional activity and doesn’t depend on the weather (what luck). Knowing what conditions influence our behavior and assuming that we have the parameterless functions <code>go_for_a_walk()</code> and <code>have_lunch()</code> we can write the following snippet:</p>
+    <p>
+      <code>if(the_weather_is_good) go_for_a_walk();</code>
+    </p>
+    <p>
+      <code>have_lunch();</code>
+    </p>
+    <p>As we already know, our friend the developer falls asleep when he counts 120 sheep. His sleep is implemented as a special function named <code>sleep_and_dream()</code>. This function does not require any arguments.</p>
+    <p>We can read it as: “<em><strong>if</strong> sheep_counter is greater <strong>than</strong> or equal <strong>to</strong> 120, then fall asleep and dream!</em>”</p>
+    <p>We’ve said that there may be only one statement after the <code>if</code> statement. When we have to <strong>conditionally</strong> execute more than one instruction, we need to use braces <code>{</code> and <code>}</code> which create a structure known as a <strong>compound statement</strong> or (much simpler) a <strong>block</strong>. The block is treated as a single instruction by the compiler.</p>
+    <p>This is how we can circumvent the <code>if</code> statement limitation.</p>
+    <p>Let’s treat our programmer a little nicer:</p>
+    <p>
+      <code>if(sheep_counter &gt;= 120){make_a_bed(); take_a_shower(); sleep_and_dream(); }</code>
+    </p>
+    <p>
+      <code>feed_the_sheepdogs();</code>
+    </p>
+    <p>
+      <img src="https://edube.org/uploads/media/default/0001/01/8198e6bff17a60bf165d03e88496197e3c098619.png" alt="https://edube.org/uploads/media/default/0001/01/8198e6bff17a60bf165d03e88496197e3c098619.png" />
+    </p>
+    <p>Now it’s time for some stylistic remarks. Writing blocks one after the other is, of course, syntactically correct, but very <strong>inelegant</strong>. It may cause the text of our program to run outside the right margin of the editor. There are a few styles of coding the blocks. We won't try to argue that some of them are better than others, but we will be follow the style being used by Bjarne Stroustrup in his book <a href="https://www.stroustrup.com/Tour.html">"A Tour of C++"</a>. It's likely that you may encounter code written according to different guidelines (as there are quite few of them in use worldwide) and it's also likely that after some time you'll elaborate your own coding style. Anyway, we prefer to follow in the footsteps of C++ creator.</p>
+    <p>The same snippet, written in accordance with the Bjarne's style, will look as follows:</p>
+    <p>
+      <code>if (sheep_counter &gt;= 120) {</code>
+    </p>
+    <p>
+      <code>make_a_bed();</code>
+    </p>
+    <p>
+      <code>take_a_shower();</code>
+    </p>
+    <p>
+      <code>sleep_and_dream();</code>
+    </p>
+    <p>
+      <code>}</code>
+    </p>
+    <p>
+      <code>feed_the_sheepdogs();</code>
+    </p>
+    <p>
+      <strong>Note</strong>:</p>
+    <ul>
+      <li>a conditionally executed block is <strong>indented</strong> – it improves the readability of the program and manifests its conditional nature;</li>
+      <li>the opening brace is located in the <strong>same line</strong> as <code>if</code>;</li>
+      <li>the closing brace occupies <strong>separate line</strong>.</li>
+    </ul>
+    <p>In the next section, we’re going to discuss another variant of the conditional statement, which also allows you to perform an action only when the condition is not met.</p>
+    <p>Now feed your sheep dogs, please. They’ve been waiting ages for your attention.</p>
+    <h1 id="input-and-output">
+      <strong>Input and output</strong>
+    </h1>
+    <p>Now we’re going to set aside conditional statements for a while and spend some time on two important and extremely useful features we use to provide connectivity between the computer and the <strong>outside world</strong>.</p>
+    <p>Sending data in the direction from human (user) to the computer program is called <strong>input</strong>. The stream of data transferred in the opposite direction, i.e. from the computer to the human, is called <strong>output</strong>.</p>
+    <p>We've already learned about one useful entity that serves to output data – can you remember its name? Yup, it’s the <code>cout</code> stream, and we used it along with the <code>&lt;&lt;</code> operator in the very first program we wrote in the C++ language, right at the beginning of this course.</p>
+    <p>The <code>&lt;&lt;</code> operator itself is sometimes referred to as an <em>insertion operator</em> as it inserts a string of characters into the character device (e.g. a console).</p>
+    <p>The actual <code>cout</code> capabilities are much more impressive: it’s capable of writing the data of virtually any type on a computer screen.</p>
+    <p>So what do we do if we want to output the value of type <code>int</code> or <code>float</code>, or <code>char</code>, not only a simple string?</p>
+    <h1 id="output">
+      <strong>Output</strong>
+    </h1>
+    <p>To do this and other more complex tasks, we need to use any of the output streams associated with the screen (more formally: with the <strong>console</strong>) and send a value of a variable there.</p>
+    <p>
+      <code>cout</code> is one of these streams and is ready to work without any special preparations – it only needs the header file name.</p>
+    <p>If you want to print the value of an integer variable to the screen, the only thing you have to do is send it to the cout stream through the <code>&lt;&lt;</code> operator, which indicates the desired direction of data transfer.</p>
+    <p>Both the <code>&lt;&lt;</code> operator and the <code>cout</code> stream are responsible for two important actions:</p>
+    <ul>
+      <li>
+        <strong>converting</strong> the internal (machine) representation of the integer value into a form acceptable for humans</li>
+      <li>
+        <strong>transferring</strong> the converted form to the output device e.g. console</li>
+    </ul>
+    <p>Streams are very powerful and convenient tools for both input and output. They can easily output several values of different types and mix them with the text. They can also easily input many values at once.</p>
+    <p>Let's look at streams in a few applications. The first one is trivial - we use <code>cout</code> to print a value of an <code>int</code> variable. We do it like this:</p>
+    <p>
+      <code>int herd_size = 110;</code>
+    </p>
+    <p>
+      <code>cout &lt;&lt; herd_size;</code>
+    </p>
+    <p>We can expect that a string consisting of characters <code>1</code>, <code>1</code> and <code>0</code> will appear on the screen immediately.</p>
+    <p>You can also connect more than one <code>&lt;&lt;</code> operator in one <code>cout</code> statement and each of the printed elements may be of a different type and a different nature.</p>
+    <p>Take a look at the example on the right. We’re using <strong>a string literal</strong> (as the former element) and <strong>an integer variable</strong> (as the latter element) in one <code>cout</code> operation.</p>
+    <p>In this example:</p>
+    <p>
+      <code>int herd_size = 123;</code>
+    </p>
+    <p>
+      <code>cout &lt;&lt; "Sheep counted so far: " &lt;&lt; herd_size;</code>
+    </p>
+    <p>This snippet of code results in the string <code>Sheep counted so far: 123</code> printed on the screen.</p>
+    <p>An expression is a legal <code>cout</code> element too. The example below demonstrates one such case:</p>
+    <p>
+      <code>int square_side = 12;</code>
+    </p>
+    <p>
+      <code>cout &lt;&lt; "The square perimeter is: " &lt;&lt; 4 * square_side;</code>
+    </p>
+    <p>If you want a value of type <code>int</code> to be presented as a fixed-point hexadecimal number, you need to use the so-called <strong>manipulator</strong>. A manipulator is a special kind of entity that tells the stream that the data form has to be changed immediately. All elements outputted after the manipulator activation will be presented in the desired form.</p>
+    <p>A manipulator that is designed to switch the stream into a hexadecimal mode is called a <code>hex</code>. The snippet on the right will output a string consisting of characters 'F' and 'F'.</p>
+    <p>Technically, a manipulator is a function that changes one of the output stream’s properties, called <code>basefield</code>. The property is used to determine what number should be used as a base (as an mathematician would say: a <strong>radix</strong>) during the conversion of any <code>int</code> value into human readable text.</p>
+    <p>
+      <code>int byte = 255;</code>
+    </p>
+    <p>
+      <code>cout &lt;&lt; "Byte in hex: " &lt;&lt; hex &lt;&lt; byte;</code>
+    </p>
+    <p>There are two important facts you need to understand here:</p>
+    <ol>
+      <li>any manipulator starts its work from the point it was placed at and continues its work even after the end of the <code>cout</code> statement; it finishes working only when another manipulator cancels its action;</li>
+      <li>the name of the manipulator may be in conflict with any other name declared by the programmer; e.g. you can have your own variable named <code>hex</code> which could hide the manipulator’s name; such conflicts are resolved by a specialized mechanism called namespace; more on this later.</li>
+    </ol>
+    <p>The example below demonstrates how manipulators begin and finish their work:</p>
+    <p>
+      <code>int byte = 255;</code>
+    </p>
+    <p>
+      <code>cout &lt;&lt; hex &lt;&lt; byte;</code>
+    </p>
+    <p>
+      <code>cout &lt;&lt; byte &lt;&lt; dec &lt;&lt; byte;</code>
+    </p>
+    <p>Note: the <code>dec</code> manipulator switches the stream into a decimal form. We don’t have it explicitly in most cases, since <strong>the decimal is the default</strong> working mode for output streams.</p>
+    <p>The snippet will output the three specimens of the same value:</p>
+    <ol>
+      <li>
+        <code>FF</code> as a hexadecimal representation of 255 (as an effect of the <code>hex</code> manipulator)</li>
+      <li>
+        <code>FF</code> again (the previous hex activation is still working here)</li>
+      <li>
+        <code>255</code> (as a result of the <code>dec</code> manipulator activation)</li>
+    </ol>
+    <p>The <code>oct</code> manipulator switches the stream into the <strong>octal mode</strong>.</p>
+    <p>The snippet below will output <code>377</code> to the screen. Can you guess why?</p>
+    <p>
+      <code>int byte = 255;</code>
+    </p>
+    <p>
+      <code>cout &lt;&lt; oct &lt;&lt; byte;</code>
+    </p>
+    <p>Yes, <code>255</code> in decimal is <code>377</code> in octal. Well done.</p>
+    <p>
+      <strong>Note</strong>: unfortunately, there is no predefined <strong><del>bin</del></strong> manipulator so consequently there is no simple way to output binary image of an integer value although there are no obstacles to do the same thing in a different, user-defined way. However, we must admit it needs some more knowledge than you have in the moment.</p>
+    <pre>
+      <code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+
+using namespace std;
+
+int main()
+{
+	int byte = 255;
+	cout &lt;&lt; setbase(16) &lt;&lt; byte &lt;&lt; endl;
+	cout &lt;&lt; setbase(10) &lt;&lt; byte &lt;&lt; endl;
+	cout &lt;&lt; setbase(8) &lt;&lt; byte;
+}
+</code>
+    </pre>
+    <p>
+      <strong>Console</strong>
+    </p>
+    <blockquote>
+      <p>
+        <code>ff 255 377</code>
+      </p>
+    </blockquote>
+    <p>The three manipulators we showed you previously are only one of the methods (probably the simplest one) of accessing the basefield property. You can achieve the same effect by using the <code>setbase</code> manipulator, which directly instructs the stream on what base value it should use during conversion.</p>
+    <p>The <strong>only acceptable</strong> values for the <code>setbase</code> parameter are 8, 10 and 16 (note: 2 is not in this set so you still are not able to output integer values in the binary form). As you probably suspect, there is direct connection between these values and the previously discussed manipulators:</p>
+    <ul>
+      <li>
+        <code>10</code> → <code>dec</code></li>
+      <li>
+        <code>16</code> → <code>hex</code></li>
+      <li>
+        <code>8</code> → <code>oct</code></li>
+    </ul>
+    <p>The program in the editor demonstrates the usage of the <code>setbase</code> manipulator.</p>
+    <p>Note: it requires a header file called <code>iomanip</code> (the three previous manipulators don’t).</p>
+    <pre>
+      <code class="language-cpp">#include &lt;iostream&gt;
+
+using namespace std;
+
+int main()
+{
+	char character = 'X', minus = '-';
+	float floating = 2.5;
+	cout &lt;&lt; character &lt;&lt; minus &lt;&lt; floating;
+}
+</code>
+    </pre>
+    <p>In general, output streams (including <code>cout</code>) are able <strong>to recognize the type of the printed value</strong> and act accordingly i.e. they’ll use a proper form of data presentation for char and float values.</p>
+    <p>The snippet in the editor will cause the stream to print the following text on the screen:</p>
+    <pre>
+      <code>X-2.5
+</code>
+    </pre>
+    <p>
+      <strong>output</strong>
+    </p>
+    <p>
+      <strong>Note:</strong> there is one exception that should mentioned here - although <code>cout</code> stream is smart enough to recognize values of different types, it takes booleans as ordinary integers. In effect, the following snippet outputs <code>1</code>, not <strong>true</strong> (as you may expect):</p>
+    <pre>
+      <code class="language-cpp">#include &lt;iostream&gt;
+
+using namespace std;
+
+int main()
+{
+    bool verdict = 1 &gt; 0;
+    cout &lt;&lt; verdict;
+}
+</code>
+    </pre>
+    <pre>
+      <code class="language-cpp">#include &lt;iostream&gt;
+
+using namespace std;
+
+int main()
+{
+	char character = 'X';
+	int integer = character;
+	cout &lt;&lt; character &lt;&lt; " " &lt;&lt; static_cast&lt;int&gt;(character);
+	cout &lt;&lt; " " &lt;&lt; integer &lt;&lt; " " &lt;&lt; static_cast&lt;char&gt;(integer);
+}
+</code>
+    </pre>
+    <p>
+      <code>cout</code> is able to recognize the actual type of its element even when it is an effect of a <strong>conversion</strong> (an phenomenon which occurs when data is subject to type change).</p>
+    <p>We’ll discuss the conversions later, but for now we only want to mention that a phrase written as:</p>
+    <p>
+      <code>static_cast&lt;newtype&gt;(expr)</code>
+    </p>
+    <p>changes the type of the <code>expr</code> expression into the <code>newtype</code> type.</p>
+    <p>What it means is that we can see the ASCII code of any character stored within a <code>char</code> variable and vice versa, or see a character whose ASCII code is placed inside an <code>int</code> variable.</p>
+    <p>The snippet in the editor outputs the following text to the screen:</p>
+    <p>
+      <code>X 88 88 X</code>
+    </p>
+    <p>Sometimes we may want to (and sometimes we may have to) <strong>break the line</strong> being sent to the screen.</p>
+    <p>When we present many different results one by one in the same line of text, it doesn’t look nice and you won’t want to look at it. One line is okay, but a thousand lines written like that will make you go blind.</p>
+    <p>We can break the line in two ways. First, we can use one of the control characters called “newline” and coded as <code>\n</code> (note: we use two characters to write it down but the compiler sees it as one character - don’t let it fool you).</p>
+    <p>We can achieve exactly the same effect by using a manipulator called <code>endl</code> (as “end line”).</p>
+    <p>The snippet below:</p>
+    <p>
+      <code>cout &lt;&lt; "1\n2" &lt;&lt; endl &lt;&lt; "3\n";</code>
+    </p>
+    <p>illustrates both methods and causes the console to display the following three lines of text:</p>
+    <pre>
+      <code>1
+2
+3
+</code>
+    </pre>
+    <h1 id="input">
+      <strong>Input</strong>
+    </h1>
+    <p>Of course, equally important as data output is <strong>data input</strong>. Actually, it’s difficult to imagine any non-trivial program that doesn’t require any data from the user, although you can do the following:</p>
+    <ul>
+      <li>encode all the data needed inside the source code (which is sometimes called <strong>hard coding</strong>)</li>
+      <li>when you need to repeat the execution of the program with other data, you just modify the program, compile it and run it again.</li>
+    </ul>
+    <p>
+      <strong>This isn’t a particularly convenient solution</strong>. It’s far better to get the information from the user, transfer it to the program, and then use it for calculations. So how does a C++ language program get data from a human and store it in variables?</p>
+    <p>The simplest way is to mentally reverse the direction of the transfer and to acknowledge that for the data input:</p>
+    <ul>
+      <li>we use <code>cin</code> stream instead of <code>cout</code></li>
+      <li>we use <code>&gt;&gt;</code> operator instead of <code>&lt;&lt;</code>.</li>
+    </ul>
+    <p>By the way, the <code>&gt;&gt;</code> operator is often referred to as <strong>an extraction operator</strong>.</p>
+    <p>The <code>cin</code> stream, along with the extraction operator, is responsible for:</p>
+    <ul>
+      <li>transferring the human-readable form of the data from the input device e.g. a console;</li>
+      <li>converting the data into the internal (machine) representation of the value being input.</li>
+    </ul>
+    <p>Imagine that we need to ask the user about the maximum number of sheep we want to count before the programmer falls asleep.</p>
+    <p>The user enters the value from the keyboard and the program stores it in a specified variable (<code>max_sheep</code>). That statement looks like this:</p>
+    <p>
+      <code>cin &gt;&gt; max_sheep;</code>
+    </p>
+    <p>You probably see the similarity to emitting data using <code>cout</code>: we have a stream, we have an operator and we have a variable.</p>
+    <p>At this point the similarities end and the differences begin. First, the argument for cout may not be a variable. It can also be an expression.</p>
+    <p>Take a look:</p>
+    <p>
+      <code>cout &lt;&lt; 2 * i;</code>
+    </p>
+    <p>Here we want the doubled value of <code>i</code> to be printed – and that’s feasible. Using an input stream, we need to <strong>explicitly specify the variable</strong> that can store the data entered by the user.</p>
+    <p>Now we’ll show you a simple but complete program that does the following:</p>
+    <ul>
+      <li>prompts the user to enter a single integer value,</li>
+      <li>squares it,</li>
+      <li>prints the result with an appropriate comment.</li>
+    </ul>
+    <p>Analysing this program shouldn’t be a problem for you, should it?</p>
+    <pre>
+      <code class="language-cpp">#include &lt;iostream&gt;
+
+using namespace std;
+
+int main() 
+{
+        int value;
+
+        cout &lt;&lt; "Give me a number and I will square it!\n";
+        cin &gt;&gt; value;
+        
+        int square = value * value;
+        cout &lt;&lt; "You've given " &lt;&lt; value &lt;&lt; endl;
+        cout &lt;&lt; "The squared value is " &lt;&lt; square &lt;&lt; endl;
+}
+</code>
+    </pre>
+    <p>
+      <strong>console &gt;_</strong>
+    </p>
+    <blockquote>
+      <p>Give me a number and I will square it!
+16
+You've given 16
+The squared value is 256</p>
+    </blockquote>
+    <p>So you prefer square roots to squares? No problem, but we need to remember two things: first, there’s <strong>no such thing as a square root operator</strong>; and second, that <strong>square roots of negative numbers do not exist</strong>.</p>
+    <p>We can solve the first issue by finding a function that knows how to compute the root. This type of function does exist and takes the argument of the <code>float</code> type.</p>
+    <p>The result is also a <code>float</code> (of course - the square of an integer is still an integer, but the root of any number is not always an integer, like the square root of 2).</p>
+    <p>The function we’re going to use is called <code>sqrtf</code> (square root float) and needs exactly one argument. Oh, one more thing - to use this function you need to include a header file named <code>cmath</code>.</p>
+    <p>We need to deal with negative numbers as well. If you’re careless and enter a negative number, the program will just ignore you and your input completely. It may not be polite, but at least it won’t attempt to bend the rules of mathematics. Whether we see the result or not will be decided by the conditional statement.</p>
+    <p>Now it’s time to focus on the use of floating point data and the <code>sqrtf</code> function.</p>
+    <p>Complete program is in the editor.</p>
+    <pre>
+      <code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;cmath&gt;
+
+using namespace std;
+
+int main() 
+{
+    float value;
+
+    cout &lt;&lt; "Give me a number and I will find its square root:" &lt;&lt; endl;
+    cin &gt;&gt; value;
+    if(value &gt;= 0.0) {
+        float squareroot = sqrtf(value);
+        cout &lt;&lt; "You have given: " &lt;&lt; value &lt;&lt; endl;
+        cout &lt;&lt; "The square root is: " &lt;&lt; squareroot &lt;&lt; endl;
+    }
+}
+</code>
+    </pre>
+    <p>
+      <strong>console &gt;_</strong>
+    </p>
+    <blockquote>
+      <p>Give me a number and I will find its square root:
+26
+You have given: 26
+The square root is: 5.09902</p>
+    </blockquote>
+    <h1 id="congratulations-you-have-completed-module-1">
+      <strong>Congratulations! You have completed Module 1.</strong>
+    </h1>
+    <p>Well done! You've reached the end of Module 1 and completed a major milestone in your C++ programming education. Here's a short summary of the objectives you've covered and got familiar with in Module 1:</p>
+    <ul>
+      <li>the difference between machine and high-level languages;</li>
+      <li>the machine code and compilation;</li>
+      <li>variables, integers, floats, booleans, characters;</li>
+      <li>comments;</li>
+      <li>the basics of flow control;</li>
+      <li>dealing with streams and basic I/O operations;</li>
+      <li>writing simple programs.</li>
+    </ul>
+    <p>You are now ready to take the module quiz and attempt the final challenge: Module 1 Test, which will help you gauge what you've learned so far.</p>
+    <p>
+      <img src="https://edube.org/uploads/media/default/0001/02/e6a200098d7994c2bb62c07d76e524e41ffadb67.png" alt="https://edube.org/uploads/media/default/0001/02/e6a200098d7994c2bb62c07d76e524e41ffadb67.png" />
+    </p>
+    <hr />
+    <aside>
+💡 **The End of Module I …..**
+</aside>
+  </body>
+</html>

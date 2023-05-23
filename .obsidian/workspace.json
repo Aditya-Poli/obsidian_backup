@@ -8,6 +8,18 @@
         "type": "tabs",
         "children": [
           {
+            "id": "d282953e1bfec189",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Leetcode/Medium Problems.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
             "id": "42ca7dbe80fd485a",
             "type": "leaf",
             "state": {
@@ -69,47 +81,16 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "right": {
     "id": "c27cdf432a4115ed",
     "type": "split",
-    "children": [
-      {
-        "id": "ef82e161d5eba145",
-        "type": "tabs",
-        "children": [
-          {
-            "id": "c0324384341d0739",
-            "type": "leaf",
-            "state": {
-              "type": "backlink",
-              "state": {
-                "file": "Leetcode/Glossary.md",
-                "collapseAll": false,
-                "extraContext": false,
-                "sortOrder": "alphabetical",
-                "showSearch": false,
-                "searchQuery": "",
-                "backlinkCollapsed": false,
-                "unlinkedCollapsed": true
-              }
-            }
-          },
-          {
-            "id": "901bd91b289ac976",
-            "type": "leaf",
-            "state": {
-              "type": "git-history-view",
-              "state": {}
-            }
-          }
-        ],
-        "currentTab": 1
-      }
-    ],
+    "children": [],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -120,10 +101,10 @@
       "markdown-importer:Open format converter": false
     }
   },
-  "active": "42ca7dbe80fd485a",
+  "active": "d282953e1bfec189",
   "lastOpenFiles": [
-    "Leetcode/Medium Problems.md",
     "Leetcode/Glossary.md",
+    "Leetcode/Medium Problems.md",
     "README.md",
     "LeetCode/leetcode_obsidian/Medium Problems.md",
     "Linear_Data_Structures.md",

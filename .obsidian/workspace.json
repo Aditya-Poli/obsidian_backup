@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "LeetCode/leetcode_obsidian/Hard Problems.md",
+                "file": "Leetcode/Glossary.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "LeetCode/leetcode_obsidian/Hard Problems.md",
+                "file": "Leetcode/Glossary.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -120,8 +120,10 @@
       "markdown-importer:Open format converter": false
     }
   },
-  "active": "0797987a14150268",
+  "active": "42ca7dbe80fd485a",
   "lastOpenFiles": [
+    "Leetcode/Medium Problems.md",
+    "Leetcode/Glossary.md",
     "README.md",
     "LeetCode/leetcode_obsidian/Medium Problems.md",
     "Linear_Data_Structures.md",

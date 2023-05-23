@@ -87,7 +87,30 @@
   "right": {
     "id": "c27cdf432a4115ed",
     "type": "split",
-    "children": [],
+    "children": [
+      {
+        "id": "02971d58ecbe967e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ac9c1f55aa6afb7b",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          }
+        ]
+      }
+    ],
     "direction": "horizontal",
     "width": 300,
     "collapsed": true

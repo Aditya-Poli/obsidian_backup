@@ -694,3 +694,253 @@ public:
 };
 ```
 
+
+
+## [146. LRU Cache](https://leetcode.ca/2016-04-24-146-LRU-Cache/#146-lru-cache)
+
+
+### [Question](https://leetcode.ca/2016-04-24-146-LRU-Cache/#question)
+
+Formatted question description: [https://leetcode.ca/all/146.html](https://leetcode.ca/all/146.html)
+
+Design a data structure that follows the constraints of a **[Least Recently Used (LRU) cache](https://en.wikipedia.org/wiki/Cache_replacement_policies#LRU)**.
+
+Implement the `LRUCache` class:
+
+-   `LRUCache(int capacity)` Initialize the LRU cache with **positive** size `capacity`.
+-   `int get(int key)` Return the value of the `key` if the key exists, otherwise return `-1`.
+-   `void put(int key, int value)` Update the value of the `key` if the `key` exists. Otherwise, add the `key-value` pair to the cache. If the number of keys exceeds the `capacity` from this operation, **evict** the least recently used key.
+
+The functions `get` and `put` must each run in `O(1)` average time complexity.
+
+**Example 1:**
+
+**Input**
+["LRUCache", "put", "put", "get", "put", "get", "put", "get", "get", "get"]
+[[2], [1, 1], [2, 2], [1], [3, 3], [2], [4, 4], [1], [3], [4]]
+**Output**
+[null, null, null, 1, null, -1, null, -1, 3, 4]
+
+**Explanation**
+LRUCache lRUCache = new LRUCache(2);
+lRUCache.put(1, 1); // cache is {1=1}
+lRUCache.put(2, 2); // cache is {1=1, 2=2}
+lRUCache.get(1);    // return 1
+lRUCache.put(3, 3); // LRU key was 2, evicts key 2, cache is {1=1, 3=3}
+lRUCache.get(2);    // returns -1 (not found)
+lRUCache.put(4, 4); // LRU key was 1, evicts key 1, cache is {4=4, 3=3}
+lRUCache.get(1);    // return -1 (not found)
+lRUCache.get(3);    // return 3
+lRUCache.get(4);    // return 4
+
+**Constraints:**
+
+-   `1 <= capacity <= 3000`
+-   `0 <= key <= 104`
+-   `0 <= value <= 105`
+-   At most `2 * 105` calls will be made to `get` and `put`.
+
+### [Algorithm](https://leetcode.ca/2016-04-24-146-LRU-Cache/#algorithm)
+
+#### [Solution](https://leetcode.ca/2016-04-24-146-LRU-Cache/#solution)
+
+Create a class `MyNode`, which contains data fields `int key`, `int value`, `Node prev` and `Node next`. That is, each node of type `MyNode` has a key and a value, and have references to its previous node and the next node.
+
+In class `LRUCache`, data fields include `int capacity` that stores the capacity of the cache, `Map<Integer, MyNode> map` that maps each key to its node, `MyNode head` and `Node tail` that represents the head node and the tail node respectively. For Least Recently Used cache, the most recently used node is the head node and the least recently used node is the tail node.
+
+In the constructor, initialize `capacity` with the given `capacity`.
+
+In `get(key)`, if `key` is not in `map`, then `key` is not in the cache, so return -1. If `key` is in `map`, obtain the node and its `value`, remove the node and set the node to be the head, and return `value`.
+
+In `put(key, value)`, if `map` contains `key`, then obtain the node and update its `value`, remove the node, and set the node to be the head. If `map` does not contain `key`, then create a new node using `key` and `value`, and set the new node to be the head. If the size of `map` is greater than or equal to `capacity`, then remove the node `tail` and remove the corresponding entry in `map`. Add a new entry of the new node into the map.
+
+Two supplementary methods are needed.
+
+1.  Method `remove(MyNode node)`. Obtain `MyNode`’s previous node and next node, and update their references to other nodes accordingly. If `MyNode` is `head` or `tail`, then update `head` or `tail` accordingly.
+2.  Method `setHead(MyNode node)`. Set `MyNode` to be the new head and set the previous head’s reference accordingly. If `tail` is `null`, then update `tail` as well.
+
+#### [Code](https://leetcode.ca/2016-04-24-146-LRU-Cache/#code)
+
+Java
+
+  ```java
+    class LRUCache {
+        int capacity;
+        Map<Integer, MyNode> map = new HashMap<Integer, MyNode>(); // key => Node[key,val]
+        MyNode head = null;
+        MyNode tail = null;
+    
+        public LRUCache(int capacity) {
+            this.capacity = capacity;
+        }
+    
+        public int get(int key) {
+            MyNode node = map.get(key);
+            if (node == null) {
+                return -1;
+            } else {
+                remove(node);
+                setHead(node);
+                return node.value;
+            }
+        }
+    
+        public void put(int key, int value) {
+            if (map.containsKey(key)) {
+                MyNode node = map.get(key);
+                node.value = value;
+                remove(node);
+                setHead(node);
+            } else {
+                MyNode node = new MyNode(key, value);
+                setHead(node);
+                map.put(key, node);
+                if (map.size() >= capacity) { // @note: also = , after if will add one more
+                    map.remove(tail.key);
+                    remove(tail);
+                }
+            }
+        }
+    
+        public void remove(MyNode node) {
+            MyNode prev = node.prev;
+            MyNode next = node.next;
+    
+            // process previous node
+            if (prev != null)
+                prev.next = next;
+            else
+                head = next;
+    
+            // process next node
+            if (next != null)
+                next.prev = prev;
+            else
+                tail = prev;
+        }
+    
+        public void setHead(MyNode node) {
+            node.next = head;
+            node.prev = null;
+            if (head != null)
+                head.prev = node;
+            head = node;
+            if (tail == null)
+                tail = head;
+        }
+    }
+    
+    class MyNode {
+        int key;
+        int value;
+        MyNode prev;
+        MyNode next;
+    
+        public MyNode(int key, int value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+    /**
+     * Your LRUCache object will be instantiated and called as such:
+     * LRUCache obj = new LRUCache(capacity);
+     * int param_1 = obj.get(key);
+     * obj.put(key,value);
+     */
+    
+    
+    ############
+    
+    class Node {
+        int key;
+        int val;
+        Node prev;
+        Node next;
+    
+        Node() {
+        }
+    
+        Node(int key, int val) {
+            this.key = key;
+            this.val = val;
+        }
+    }
+    
+    class LRUCache {
+        private Map<Integer, Node> cache = new HashMap<>();
+        private Node head = new Node();
+        private Node tail = new Node();
+        private int capacity;
+        private int size;
+    
+        public LRUCache(int capacity) {
+            this.capacity = capacity;
+            head.next = tail;
+            tail.prev = head;
+        }
+    
+        public int get(int key) {
+            if (!cache.containsKey(key)) {
+                return -1;
+            }
+            Node node = cache.get(key);
+            moveToHead(node);
+            return node.val;
+        }
+    
+        public void put(int key, int value) {
+            if (cache.containsKey(key)) {
+                Node node = cache.get(key);
+                node.val = value;
+                moveToHead(node);
+            } else {
+                Node node = new Node(key, value);
+                cache.put(key, node);
+                addToHead(node);
+                ++size;
+                if (size > capacity) {
+                    node = removeTail();
+                    cache.remove(node.key);
+                    --size;
+                }
+            }
+        }
+    
+        private void moveToHead(Node node) {
+            removeNode(node);
+            addToHead(node);
+        }
+    
+        private void removeNode(Node node) {
+            node.prev.next = node.next;
+            node.next.prev = node.prev;
+        }
+    
+        private void addToHead(Node node) {
+            node.next = head.next;
+            node.prev = head;
+            head.next = node;
+            node.next.prev = node;
+        }
+    
+        private Node removeTail() {
+            Node node = tail.prev;
+            removeNode(node);
+            return node;
+        }
+    }
+    
+    /**
+     * Your LRUCache object will be instantiated and called as such:
+     * LRUCache obj = new LRUCache(capacity);
+     * int param_1 = obj.get(key);
+     * obj.put(key,value);
+     */
+    ```
+    
+
+### [All Problems](https://leetcode.ca/all/problems.html)[old](https://leetcode.ca/2016-04-24-146-LRU-Cache/#all-problems)
+
+### [All Solutions](https://leetcode.ca/blog)
+
+

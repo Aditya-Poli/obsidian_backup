@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Leetcode/Hard Problems.md",
+                "file": "Leetcode/Medium Problems.md",
                 "mode": "source",
                 "source": false
               }
@@ -98,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Leetcode/Hard Problems.md",
+                "file": "Leetcode/Medium Problems.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -127,6 +127,7 @@
   },
   "active": "d282953e1bfec189",
   "lastOpenFiles": [
+    "Leetcode/Hard Problems.md",
     "Leetcode/Medium Problems.md",
     "Leetcode/Glossary.md",
     "README.md",

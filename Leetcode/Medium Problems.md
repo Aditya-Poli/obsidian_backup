@@ -484,6 +484,38 @@ class Solution {
 
 ## [3. Longest Substring Without Repeating Characters](https://leetcode.com/problems/longest-substring-without-repeating-characters/description/)[👍]
 
+Given a string `s`, find the length of the **longest** 
+
+**substring**
+
+ without repeating characters.
+
+**Example 1:**
+
+**Input:** s = "abcabcbb"
+**Output:** 3
+**Explanation:** The answer is "abc", with the length of 3.
+
+**Example 2:**
+
+**Input:** s = "bbbbb"
+**Output:** 1
+**Explanation:** The answer is "b", with the length of 1.
+
+**Example 3:**
+
+**Input:** s = "pwwkew"
+**Output:** 3
+**Explanation:** The answer is "wke", with the length of 3.
+Notice that the answer must be a substring, "pwke" is a subsequence and not a substring.
+
+**Constraints:**
+
+-   `0 <= s.length <= 5 * 104`
+-   `s` consists of English letters, digits, symbols and spaces.
+-
+
+### Solution
   
 So, the prerequisit of this problem is **Sliding Window**, if you know then it's a plus point. But, if you don't know don't worry I'll try to teach you.
 
@@ -597,6 +629,7 @@ Let's understand it visually :-
 
 ![image](https://assets.leetcode.com/users/images/b10fc6ab-9f8b-4035-bfbf-5b9e4cca3cb0_1654839175.0759387.png)
 
+#### Code
 **Java**
 
 ```python
@@ -660,3 +693,4 @@ public:
     }
 };
 ```
+

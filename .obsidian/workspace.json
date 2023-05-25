@@ -25,7 +25,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Leetcode/Untitled.md",
+                "file": "Leetcode/Easy Problems.md",
                 "mode": "source",
                 "source": false
               }
@@ -98,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Leetcode/Untitled.md",
+                "file": "Leetcode/Easy Problems.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -127,7 +127,7 @@
   },
   "active": "34ff425d792e61f8",
   "lastOpenFiles": [
-    "Leetcode/Untitled.md",
+    "Leetcode/Easy Problems.md",
     "Leetcode/Medium Problems.md",
     "Leetcode/Glossary.md",
     "Leetcode/My Notes - LeetCode.pdf",

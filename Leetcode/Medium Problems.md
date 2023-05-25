@@ -944,3 +944,82 @@ Java
 ### [All Solutions](https://leetcode.ca/blog)
 
 
+## [49. Group Anagrams](https://leetcode.com/problems/group-anagrams/description/)[👎]
+
+Given an array of strings `strs`, group **the anagrams** together. You can return the answer in **any order**.
+
+An **Anagram** is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.
+
+**Example 1:**
+
+**Input:** strs = `["eat","tea","tan","ate","nat","bat"]`
+**Output:** `[["bat"],["nat","tan"],["ate","eat","tea"]]`
+
+**Example 2:**
+
+**Input:** strs = `[""]`
+**Output:** `[[""]]`
+
+**Example 3:**
+
+**Input:** strs =` ["a"]`
+**Output:** `[["a"]]`
+
+**Constraints:**
+
+-   `1 <= strs.length <= 104`
+-   `0 <= strs[i].length <= 100`
+-   `strs[i]` consists of lowercase English letters.
+
+
+### Solution
+
+```java
+class Solution {
+
+    public List<List<String>> groupAnagrams(String[] strs) {
+
+        Map<String, ArrayList<String>> map = new HashMap<>();
+
+  
+
+        for( String s: strs ){
+
+  
+
+            char[] valArr = s.toCharArray();
+
+            Arrays.sort( valArr );
+
+            String key = new String(valArr);
+
+  
+
+            ArrayList<String> ll = map.getOrDefault( key,
+
+                                     new ArrayList<String>() );
+
+            ll.add(s);
+
+            map.put( key, ll );
+
+        }
+
+  
+
+        List<List<String>> ans = new ArrayList<>();
+
+        for( Map.Entry<String, ArrayList<String>> entry: map.entrySet() ){
+
+            ans.add( entry.getValue() );
+
+        }
+
+  
+
+        return ans;
+
+    }
+
+}
+```

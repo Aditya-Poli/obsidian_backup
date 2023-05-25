@@ -1,5 +1,8 @@
+#Allow
+!Leetcode\My Notes - LeetCode.pdf
+
+#Ignore
 Trash
 *.pdf
 *.accdb
 *.py
-!Leetcode\My Notes - LeetCode.pdf

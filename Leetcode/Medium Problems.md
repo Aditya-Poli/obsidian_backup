@@ -231,7 +231,7 @@ int pairSum(ListNode* head) {
 ```
 
 
-## 73. Set Matrix Zeroes
+## [73. Set Matrix Zeroes](https://leetcode.com/problems/set-matrix-zeroes/)[👍]
 
 Medium
 
@@ -1023,3 +1023,4 @@ class Solution {
 
 }
 ```
+

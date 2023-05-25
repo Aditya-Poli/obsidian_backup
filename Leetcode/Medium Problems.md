@@ -1024,3 +1024,134 @@ class Solution {
 }
 ```
 
+
+## [15. 3Sum](https://leetcode.com/problems/3sum/description/)[👍]
+Given an integer array nums, return all the triplets `[nums[i], nums[j], nums[k]]` such that `i != j`, `i != k`, and `j != k`, and `nums[i] + nums[j] + nums[k] == 0`.
+
+Notice that the solution set must not contain duplicate triplets.
+
+**Example 1:**
+
+**Input:** nums = `[-1,0,1,2,-1,-4]`
+**Output:** `[[-1,-1,2],[-1,0,1]]`
+**Explanation:** 
+`nums[0] + nums[1] + nums[2] = (-1) + 0 + 1 = 0.
+`nums[1] + nums[2] + nums[4] = 0 + 1 + (-1) = 0.`
+`nums[0] + nums[3] + nums[4] = (-1) + 2 + (-1) = 0.`
+The distinct triplets are` [-1,0,1] `and `[-1,-1,2]`.
+Notice that the order of the output and the order of the triplets does not matter.
+
+**Example 2:**
+
+**Input:** nums = `[0,1,1]`
+**Output:**` []`
+**Explanation:** The only possible triplet does not sum up to 0.
+
+**Example 3:**
+
+**Input:** nums = `[0,0,0]`
+**Output:**` [[0,0,0]]`
+**Explanation:** The only possible triplet sums up to 0.
+
+**Constraints:**
+
+- `3 <= nums.length <= 3000`
+- `-10^5 <= nums[i] <= 10^5`
+
+### Solution
+#### Intuition of this Problem:
+
+Set is used to prevent duplicate triplets and parallely we will use two pointer approach to maintain J and k.
+
+**NOTE - PLEASE READ APPROACH FIRST THEN SEE THE CODE. YOU WILL DEFINITELY UNDERSTAND THE CODE LINE BY LINE AFTER SEEING THE APPROACH.**
+
+#### Approach for this Problem:
+
+1. Sort the input array
+2. Initialize a set to store the unique triplets and an output vector to store the final result
+3. Iterate through the array with a variable i, starting from index 0.
+4. Initialize two pointers, j and k, with j starting at i+1 and k starting at the end of the array.
+5. In the while loop, check if the sum of nums[i], nums[j], and nums[k] is equal to 0. If it is, insert the triplet into the set and increment j and decrement k to move the pointers.
+6. If the sum is less than 0, increment j. If the sum is greater than 0, decrement k.
+7. After the while loop, iterate through the set and add each triplet to the output vector.
+8. Return the output vector
+
+#### Code:
+```java
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        int target = 0;
+        Arrays.sort(nums);
+        Set<List<Integer>> s = new HashSet<>();
+        List<List<Integer>> output = new ArrayList<>();
+        for (int i = 0; i < nums.length; i++){
+            int j = i + 1;
+            int k = nums.length - 1;
+            while (j < k) {
+                int sum = nums[i] + nums[j] + nums[k];
+                if (sum == target) {
+                    s.add(Arrays.asList(nums[i], nums[j], nums[k]));
+                    j++;
+                    k--;
+                } else if (sum < target) {
+                    j++;
+                } else {
+                    k--;
+                }
+            }
+        }
+        output.addAll(s);
+        return output;
+    }
+}
+```
+
+#### Time Complexity and Space Complexity:
+
+- Time complexity: **O(n^2 logn)** // where n is the size of array  
+    Sorting takes O(nlogn) time and loop takes O(n^2) time, So the overall time complexity is O(nlogn + n^2 logn) - O(n^2 logn)
+
+- Space complexity: **O(n)** // for taking hashset.
+
+
+### Solution 2
+```java
+class Solution {
+
+    public List<List<Integer>> threeSum(int[] nums) {
+
+        Arrays.sort(nums);
+
+        List<List<Integer>> list = new ArrayList<List<Integer>>();
+
+        for(int i = 0; i < nums.length-2; i++) {
+
+            if(i > 0 && (nums[i] == nums[i-1])) continue; // avoid duplicates
+
+            for(int j = i+1, k = nums.length-1; j<k;) {
+
+                if(nums[i] + nums[j] + nums[k] == 0) {
+
+                    list.add(Arrays.asList(nums[i],nums[j],nums[k]));
+
+                    j++;k--;
+
+                    while((j < k) && (nums[j] == nums[j-1]))j++;// avoid duplicates
+
+                    while((j < k) && (nums[k] == nums[k+1]))k--;// avoid duplicates
+
+                }else if(nums[i] + nums[j] + nums[k] > 0) k--;
+
+                else j++;
+
+            }
+
+        }
+
+        return list;
+
+    }
+
+}
+```
+

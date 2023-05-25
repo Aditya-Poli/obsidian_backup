@@ -20,6 +20,16 @@
             }
           },
           {
+            "id": "f150a74c834ba0a8",
+            "type": "leaf",
+            "state": {
+              "type": "release-notes",
+              "state": {
+                "currentVersion": "1.3.4"
+              }
+            }
+          },
+          {
             "id": "42ca7dbe80fd485a",
             "type": "leaf",
             "state": {
@@ -31,7 +41,8 @@
               }
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -124,7 +135,7 @@
       "markdown-importer:Open format converter": false
     }
   },
-  "active": "d282953e1bfec189",
+  "active": "f150a74c834ba0a8",
   "lastOpenFiles": [
     "Leetcode/Hard Problems.md",
     "Leetcode/Medium Problems.md",

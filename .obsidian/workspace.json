@@ -4,19 +4,15 @@
     "type": "split",
     "children": [
       {
-        "id": "1c0ad5cdfdeab57f",
+        "id": "7b04457d4c9bbeeb",
         "type": "tabs",
         "children": [
           {
-            "id": "f150a74c834ba0a8",
+            "id": "157da3a7a201e14d",
             "type": "leaf",
-            "pinned": true,
             "state": {
-              "type": "release-notes",
-              "state": {
-                "currentVersion": "1.3.4"
-              },
-              "pinned": true
+              "type": "empty",
+              "state": {}
             }
           }
         ]
@@ -111,7 +107,7 @@
       "markdown-importer:Open format converter": false
     }
   },
-  "active": "f150a74c834ba0a8",
+  "active": "157da3a7a201e14d",
   "lastOpenFiles": [
     "GFG/Maximize Number of 1's.md",
     "Leetcode/Easy Problems.md",

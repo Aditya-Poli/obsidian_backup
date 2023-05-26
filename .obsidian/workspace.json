@@ -18,21 +18,8 @@
               },
               "pinned": true
             }
-          },
-          {
-            "id": "34ff425d792e61f8",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Leetcode/Easy Problems.md",
-                "mode": "source",
-                "source": false
-              }
-            }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -98,7 +85,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Leetcode/Easy Problems.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -125,10 +111,11 @@
       "markdown-importer:Open format converter": false
     }
   },
-  "active": "0797987a14150268",
+  "active": "f150a74c834ba0a8",
   "lastOpenFiles": [
-    "Untitled",
+    "GFG/Maximize Number of 1's.md",
     "Leetcode/Easy Problems.md",
+    "GFG",
     "Leetcode/Medium Problems.md",
     "Leetcode/Glossary.md",
     "Leetcode/My Notes - LeetCode.pdf",

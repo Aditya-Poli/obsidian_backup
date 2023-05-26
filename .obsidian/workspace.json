@@ -11,8 +11,12 @@
             "id": "157da3a7a201e14d",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {}
+              "type": "markdown",
+              "state": {
+                "file": "DSA/Algorithms/Kadane's Algorithm.md",
+                "mode": "source",
+                "source": false
+              }
             }
           }
         ]
@@ -81,6 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "DSA/Algorithms/Kadane's Algorithm.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -109,6 +114,10 @@
   },
   "active": "157da3a7a201e14d",
   "lastOpenFiles": [
+    "DSA/Algorithms/Kadane's Algorithm.md",
+    "DSA/Algorithms",
+    "Untitled",
+    "DSA",
     "GFG/Maximize Number of 1's.md",
     "Leetcode/Easy Problems.md",
     "GFG",

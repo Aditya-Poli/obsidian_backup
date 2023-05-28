@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "DSA/Algorithms/Kadane's Algorithm.md",
+                "file": "DSA/Sorting/Untitled.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "DSA/Algorithms/Kadane's Algorithm.md",
+                "file": "DSA/Sorting/Untitled.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,6 +115,8 @@
   "active": "157da3a7a201e14d",
   "lastOpenFiles": [
     "DSA/Algorithms/Kadane's Algorithm.md",
+    "DSA/Sorting/Untitled.md",
+    "DSA/Sorting",
     "DSA/Algorithms",
     "Untitled",
     "DSA",
@@ -138,7 +140,6 @@
     "Module 3 - Extending expressive power pointers, fu dc33296891704e50b3e1b001452cef80.md",
     "Udacity Deep Learning Syllabus.pdf",
     "Free_Courses.pdf",
-    "Module_1_-_Introduction_to_computer_programming_variables_comments_basic_IO_operations_flow_control_(if).pdf",
     "Module 1 - Introduction to computer programming, v 7c8c4db1e07640babaab85542bbe9160.md",
     "Module 1 - Introduction to computer programming, v 7c8c4db1e07640babaab85542bbe9160/Untitled.png.md"
   ]

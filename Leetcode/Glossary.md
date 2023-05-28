@@ -9,6 +9,9 @@ An **Anagram** is a word or phrase formed by rearranging the letters of a diff
 			 3. Space Complexity of O(1).
 These are the hints to identify whether a problem can be solved using **cyclic Sort** concept or not.
 > Problem Numbers `268(Missing number)`, `448(Find all number disappeared in an array)`, `442(Find All Duplicates in an Array)`, `287(Find the Duplicate Number)`,
+> `645(Set Mismatch)`, `41(First Missing Positive)`
+
+
 
 
 

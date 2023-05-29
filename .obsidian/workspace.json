@@ -4,19 +4,15 @@
     "type": "split",
     "children": [
       {
-        "id": "1f363fb305da4e6d",
+        "id": "a6490ac5c9af5bbb",
         "type": "tabs",
         "children": [
           {
-            "id": "6a435fbc92a15e9c",
+            "id": "b7e3b626acd2f4aa",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Leetcode/Medium Problems.md",
-                "mode": "source",
-                "source": false
-              }
+              "type": "empty",
+              "state": {}
             }
           }
         ]
@@ -85,7 +81,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Leetcode/Medium Problems.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -112,20 +107,20 @@
       "markdown-importer:Open format converter": false
     }
   },
-  "active": "6a435fbc92a15e9c",
+  "active": "b7e3b626acd2f4aa",
   "lastOpenFiles": [
-    "Leetcode/Easy Problems.md",
     "DSA/Searching & Sorting/Boyer-Moore Majority Voting Algorithm.md",
-    "Leetcode/Glossary.md",
     "DSA/Searching & Sorting/Cyclic Sort.md",
-    "DSA/Algorithms/Kadane's Algorithm.md",
     "DSA/Searching & Sorting",
+    "DSA/Algorithms/Kadane's Algorithm.md",
     "DSA/Algorithms",
-    "Untitled",
     "DSA",
+    "Leetcode/Medium Problems.md",
+    "Leetcode/Easy Problems.md",
+    "Leetcode/Glossary.md",
+    "Untitled",
     "GFG/Maximize Number of 1's.md",
     "GFG",
-    "Leetcode/Medium Problems.md",
     "Leetcode/My Notes - LeetCode.pdf",
     "Leetcode/Hard Problems.md",
     "README.md",

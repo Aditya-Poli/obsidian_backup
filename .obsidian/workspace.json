@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Leetcode/Easy Problems.md",
+                "file": "Leetcode/Medium Problems.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Leetcode/Easy Problems.md",
+                "file": "Leetcode/Medium Problems.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -114,6 +114,7 @@
   },
   "active": "6a435fbc92a15e9c",
   "lastOpenFiles": [
+    "Leetcode/Easy Problems.md",
     "DSA/Searching & Sorting/Boyer-Moore Majority Voting Algorithm.md",
     "Leetcode/Glossary.md",
     "DSA/Searching & Sorting/Cyclic Sort.md",
@@ -123,7 +124,6 @@
     "Untitled",
     "DSA",
     "GFG/Maximize Number of 1's.md",
-    "Leetcode/Easy Problems.md",
     "GFG",
     "Leetcode/Medium Problems.md",
     "Leetcode/My Notes - LeetCode.pdf",

@@ -4,16 +4,16 @@
     "type": "split",
     "children": [
       {
-        "id": "7b04457d4c9bbeeb",
+        "id": "1f363fb305da4e6d",
         "type": "tabs",
         "children": [
           {
-            "id": "157da3a7a201e14d",
+            "id": "6a435fbc92a15e9c",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Leetcode/Glossary.md",
+                "file": "Leetcode/Easy Problems.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Leetcode/Glossary.md",
+                "file": "Leetcode/Easy Problems.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -112,11 +112,13 @@
       "markdown-importer:Open format converter": false
     }
   },
-  "active": "157da3a7a201e14d",
+  "active": "6a435fbc92a15e9c",
   "lastOpenFiles": [
-    "DSA/Sorting/Cyclic Sort.md",
+    "DSA/Searching & Sorting/Boyer-Moore Majority Voting Algorithm.md",
+    "Leetcode/Glossary.md",
+    "DSA/Searching & Sorting/Cyclic Sort.md",
     "DSA/Algorithms/Kadane's Algorithm.md",
-    "DSA/Sorting",
+    "DSA/Searching & Sorting",
     "DSA/Algorithms",
     "Untitled",
     "DSA",
@@ -124,7 +126,6 @@
     "Leetcode/Easy Problems.md",
     "GFG",
     "Leetcode/Medium Problems.md",
-    "Leetcode/Glossary.md",
     "Leetcode/My Notes - LeetCode.pdf",
     "Leetcode/Hard Problems.md",
     "README.md",

@@ -396,3 +396,144 @@ the majority element of the overall array.
     overall runtime. [↩](https://leetcode.com/problems/majority-element/editorial/#user-content-fnref-1)
 
 ### [Original Solution Link]([https://leetcode.com/problems/majority-element/solution/](https://leetcode.com/problems/majority-element/solution/))
+
+## [283. Move Zeros](https://leetcode.com/problems/move-zeroes/description/)[👍]
+Given an integer array `nums`, move all `0`'s to the end of it while maintaining the relative order of the non-zero elements.
+
+**Note** that you must do this in-place without making a copy of the array.
+
+**Example 1:**
+
+**Input:** nums = [0,1,0,3,12]
+**Output:** [1,3,12,0,0]
+
+**Example 2:**
+
+**Input:** nums = [0]
+**Output:** [0]
+
+**Constraints:**
+
+- `1 <= nums.length <= 104`
+- `-231 <= nums[i] <= 231 - 1`
+
+**Follow up:** Could you minimize the total number of operations done?
+
+### Solution1
+use bubble sort like algorithm and move zeros to the end.
+#### Code
+```java
+class Solution {
+
+    public void moveZeroes(int[] nums) {
+
+        for(int i = 0; i < nums.length - 1; i++){
+
+            for(int j = i + 1; j< nums.length; j++){
+
+                if(nums[i] == 0){
+
+                    swap(nums, i, j);
+
+                } else {
+
+                    break;
+
+                }
+
+            }
+
+        }
+
+    }
+
+  
+
+    static void swap(int[] array, int idx1, int idx2){
+
+        if(idx1 == idx2 || array[idx1] == array[idx2]) return;
+
+        int temp = array[idx1];
+
+        array[idx1] = array[idx2];
+
+        array[idx2] = temp;
+
+    }
+
+}
+```
+
+
+### Solution2
+#### Practise Questions
+
+**Q1) Move All Zeros to End of an Array**  
+You have been given a random integer array of size N. You have been required to push all the zeros that are present in the array to the end of it such that the relative order of the non-zero elements should be maintained.
+
+```java
+Sample Input/Output
+​Input:  arr[]={3,0,1,5,0,5}
+Output: arr[]={3,1,5,5,0,0}
+```
+
+#### [Approach](https://utkarsh1504.github.io/DSA-Java/practise-question#approach)
+
+Before we discuss the approach for this question let’s see what exactly the question requires us to do. It seems that we have to push all the 0s in the array towards the end of the array. It can also be looked at as pushing all the non-zero elements in the array towards the beginning of the array.  
+First, traverse the whole array and initialize a variable count whose value should be equal to zero. Now, check each element of the array whether it is equal to zero or not. If the element is not equal to zero,put that element at the count position of the array(arr[count]) and increment the value of count by one.  
+Now, after traversing the whole array fill the remaining positions of the array with zeroes.
+
+#### [Program](https://utkarsh1504.github.io/DSA-Java/practise-question#program)
+
+```java
+package main;
+import java.util.*;
+public class Main {
+	public static void pushZerosToEnd(int[] arr, int n) {
+        int count=0;
+        for(int i=0;i<arr.length;i++)
+        {
+            if(arr[i]!=0)
+            {
+                arr[count++]=arr[i];
+            }
+        }
+        for(int j=count;j<n;j++)
+        {
+            arr[count++]=0;
+        }}
+	public static void main(String[] args) {
+		int arr[]= {3,0,5,4,0,2,2};
+		pushZerosToEnd(arr,7);
+		for(int i=0;i<7;i++)
+		{
+	          System.out.print(arr[i]);
+		}}
+}
+```
+
+```java
+Output
+3542200
+```
+
+#### [Explanation](https://utkarsh1504.github.io/DSA-Java/practise-question#explanation)
+
+- Initialize a variable count with a value equal to zero.  
+    
+- Make a function named pushZeroToEnd and input an array.  
+    
+- Traverse through the array and check each element whether it is equal to zero or not.  
+    
+- If the element is not equal to zero, put the element at the countth position of the array.  
+    
+- Increase the value of count by 1.  
+    
+- At last, fill the remaining positions of the array with 0.  
+    
+
+#### [Time Complexity](https://utkarsh1504.github.io/DSA-Java/practise-question#time-complexity)
+
+Since we will be traversing the whole array twice therefore the time complexity of algorithm would be:
+
+- **Time complexity of first loop O(N) + Time complexity of second loop O(N) = O(N)**, where n is number of elements in input array.

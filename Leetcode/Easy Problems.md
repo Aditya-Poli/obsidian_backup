@@ -613,3 +613,46 @@ class Solution {
 ```
 
 
+**Submitted Solution**
+```java
+class Solution {
+
+    public String longestCommonPrefix(String[] strs) {
+
+        // sorting the array
+
+        Arrays.sort(strs);
+
+  
+
+        // take the shortest and the longest string
+
+        String small = strs[0];
+
+        String large = strs[strs.length - 1];
+
+  
+
+        // Now check for the prefix
+
+        int i;
+
+        for(i = 0; i< Math.min(small.length(), large.length()); i++){
+
+            // break if the char is not same
+
+            if(small.charAt(i) != large.charAt(i)) break;
+
+        }
+
+  
+
+        // return the prefix
+
+        return small.substring(0, i);
+
+    }
+
+}
+```
+

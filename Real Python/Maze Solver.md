@@ -2613,7 +2613,7 @@ With this update, both `dump_squares()` and `serialize()` have compatible [
 You’ll modify your deserializing code in a similar way by getting rid of the dependency on `Maze` from both `load()` and `deserialize()`:
 
 ```File Changes (diff)
- # 
+ # File Changes (diff)
  # persistence/serializer.py
 
  import array
@@ -3413,5 +3413,3 @@ You’ve successfully built a maze solver in Python, which you can use to find o
 - Transform the maze into a traversable **weighted graph**
 - Use **graph search algorithms** in the NetworkX library to find the solution
 - Visualize the maze and its solution using **scalable vector graphics (SVG)**
-
-You can find the complete source code for this project, as well as snapshots of the individual steps, in the supporting materials, which you can download using the link below:

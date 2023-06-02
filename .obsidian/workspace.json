@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Leetcode/Medium Problems.md",
+                "file": "Real Python/Maze Solver.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Leetcode/Medium Problems.md",
+                "file": "Real Python/Maze Solver.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -114,8 +114,10 @@
   },
   "active": "5c4d44892f7dcff7",
   "lastOpenFiles": [
-    "pr.canvas",
     "Leetcode/Medium Problems.md",
+    "Real Python/Maze Solver.md",
+    "Real Python",
+    "pr.canvas",
     "Leetcode/Easy Problems.md",
     "DSA/Complexity Analysis.md",
     "DSA/Searching & Sorting/Boyer-Moore Majority Voting Algorithm.md",
@@ -125,7 +127,6 @@
     "DSA/Algorithms",
     "DSA",
     "Leetcode/Glossary.md",
-    "Untitled",
     "GFG/Maximize Number of 1's.md",
     "GFG",
     "Leetcode/My Notes - LeetCode.pdf",

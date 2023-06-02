@@ -63,7 +63,7 @@ From reading a maze from a binary file, to visualizing it using scalable vector 
 
 Click the link below to download the complete source code for this project, along with the supporting materials, which include a few sample mazes:
 
-**Free Download:** [Click here to download the source code and supporting materials](https://realpython.com/bonus/python-maze-solver-code/) that you’ll use to build a maze solver in Python.
+> **Free Download:** [Click here to download the source code and supporting materials](https://realpython.com/bonus/python-maze-solver-code/) that you’ll use to build a maze solver in Python.
 
 ## Demo: Python Maze Solver
 
@@ -124,7 +124,7 @@ Yes, that’s a lot of files, but don’t worry! Most of them are fairly short, 
 
 The `mazes/` subfolder is home to a few binary files with sample data that you’re going to use in this tutorial. You can get these files, along with the final source code and snapshots of the individual steps, by downloading the supporting materials:
 
-**Free Download:** [Click here to download the source code and supporting materials](https://realpython.com/bonus/python-maze-solver-code/) that you’ll use to build a maze solver in Python.
+> **Free Download:** [Click here to download the source code and supporting materials](https://realpython.com/bonus/python-maze-solver-code/) that you’ll use to build a maze solver in Python.
 
 The `src/` subfolder contains your [Python modules and packages](https://realpython.com/python-modules-packages/) for the maze solver project. The `maze_solver` package consists of several subpackages that group logically related code fragments, including:
 
@@ -182,7 +182,7 @@ Mazes come in different shapes and forms, but you’ll concentrate on one kind t
 
 This maze is enclosed in a **rectangle** comprising a grid of **square cells** that form passages along **straight lines**. Therefore, paths in your maze will only be vertical or horizontal rather than diagonal or circular, for example, and each cell will be **one unit** wide. This will become important for calculating and comparing the distances later.
 
-**Note:** You can give your maze any shape by surrounding it with empty squares marked as exterior to form an open space. However, you might want to align the maze’s edges with the enclosing rectangle to save some memory.
+> **Note:** You can give your maze any shape by surrounding it with empty squares marked as exterior to form an open space. However, you might want to align the maze’s edges with the enclosing rectangle to save some memory.
 
 An additional restriction that you’ll impose on your maze is that it must have exactly **one entrance** and exactly **one exit**, both of which should occupy distinct cells. A few alternative paths can connect them, including paths with **cycles** that lead back to a place you’ve already visited.
 
@@ -214,7 +214,20 @@ Use your favorite [code editor](https://realpython.com/python-ides-code-editors
 
 Once you have the project set up in your editor, scaffold the initial folder structure with these two nested Python packages, both of which should be empty at the moment:
 
-`maze-solver/ │ ├── src/ │   │ │   └── maze_solver/ │       │ │       ├── models/ │       │   └── __init__.py │       │ │       └── __init__.py │ └── pyproject.toml`
+```
+maze-solver/
+│
+├── src/
+│   │
+│   └── maze_solver/
+│       │
+│       ├── models/
+│       │   └── __init__.py
+│       │
+│       └── __init__.py
+│
+└── pyproject.toml
+```
 
 By placing the project’s root package under the `src/` subfolder, you follow the so-called **src layout** convention for organizing files in a project. Note that the `pyproject.toml` file should live outside of the `src/` subfolder.
 
@@ -224,7 +237,17 @@ While the project’s name is `maze-solver` with a hyphen (`-`), you named the
 
 To install your project in an active virtual environment, you’ll need to specify the minimum required configuration in the TOML file, such as the name and version of your project. Go ahead and open your `pyproject.toml` file now, and then paste the following content into it:
 
-`# pyproject.toml  [build-system] requires = ["setuptools>=64.0.0", "wheel"] build-backend = "setuptools.build_meta"  [project] name = "maze-solver" version = "1.0.0"`
+```TOML
+# pyproject.toml
+
+[build-system]
+requires = ["setuptools>=64.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "maze-solver"
+version = "1.0.0"
+```
 
 It’s a pretty standard configuration and a good starting point for most Python projects and libraries. Note that you don’t have to explicitly state what folder layout your project is following because the build tools like [setuptools](https://setuptools.pypa.io/en/latest/) will automatically find your Python source code.
 
@@ -232,45 +255,66 @@ If you’re planning to [publish your package on PyPI](https://realpython.com/p
 
 After you’ve saved your changes in the `pyproject.toml` file, you can install `maze-solver` with [`pip`](https://realpython.com/what-is-pip/) by running the following command from the root directory of your project:
 
-`(venv) $ python -m pip install --editable .`
+```Shell
+(venv) $ python -m pip install --editable .
+```
 
 During the development of a src-layout project, it’s advisable to use the `--editable` flag or its `-e` alias to ensure that any changes you make to your code are immediately reflected in the virtual environment. Otherwise, you’d have to manually reinstall the package each time you edit the code.
 
-**Note:** If you run into an error about not being able to install the directory in [editable mode](https://setuptools.pypa.io/en/latest/userguide/development_mode.html) due to a missing `setup.py` or `setup.cfg` file, then you may need to upgrade `pip` itself:
+> **Note:** If you run into an error about not being able to install the directory in [editable mode](https://setuptools.pypa.io/en/latest/userguide/development_mode.html) due to a missing `setup.py` or `setup.cfg` file, then you may need to upgrade `pip` itself:
 
-`(venv) $ python -m pip install --upgrade pip`
+```Shell
+(venv) $ python -m pip install --upgrade pip
+```
 
-Projects based on `pyproject.toml` support editable installs through [PEP 660](https://peps.python.org/pep-0660/), which was implemented in `pip` starting from version 21.3.
+> Projects based on `pyproject.toml` support editable installs through [PEP 660](https://peps.python.org/pep-0660/), which was implemented in `pip` starting from version 21.3.
 
 To confirm that you’ve successfully installed the `maze_solver` package in your virtual environment, head over to the interactive [Python REPL](https://realpython.com/python-repl/) and try importing the package:
 
->>>
 
-`>>> import maze_solver`
+```Python
+>>> import maze_solver
+```
 
 If everything works fine, then you shouldn’t see any output or error messages after running the line of code above. Otherwise, you’ll immediately get a `ModuleNotFoundError`.
 
 Great! With the scaffolded Python project in place, you can now proceed to coding an object-oriented representation of the maze.
 
-[Remove ads](https://realpython.com/account/join/)
 
-## Step 2: Represent the Maze Using an Object-Oriented Approach[](https://realpython.com/python-maze-solver/#step-2-represent-the-maze-using-an-object-oriented-approach "Permanent link")
+## Step 2: Represent the Maze Using an Object-Oriented Approach
 
 At this point, you know what kind of maze you’ll be solving and have a good idea of the best [data structure](https://en.wikipedia.org/wiki/Data_structure) to represent it with.
 
 In this step, you’ll use a top-down approach to conceptually decompose the maze into a set of basic elements. One by one, you’ll implement those elements as objects and combine them to represent the complete maze. By the end of this step, you’ll be able to build any maze you like, including virtual replicas of real-world [hedge mazes](https://en.wikipedia.org/wiki/Hedge_maze), [maize mazes](https://en.wikipedia.org/wiki/Corn_maze), or even [ice mazes](https://www.theguardian.com/news/gallery/2023/jan/23/an-ice-maze-and-a-big-wave-mondays-best-photos#img-15) that can be found in amusement parks around the world!
 
-### Identify the Building Blocks of the Maze[](https://realpython.com/python-maze-solver/#identify-the-building-blocks-of-the-maze "Permanent link")
+### Identify the Building Blocks of the Maze
 
 For the purpose of this tutorial, you can think of the **maze** as a rectangular grid of uniform **squares** arranged in rows and columns. Each square has the same width and height and a piece of **border** around it. Squares can additionally play specific **roles** in the maze to make it more interesting. For example, some of them can represent obstacles like walls or enemies, while others can represent rewards.
 
 To avoid [tight coupling](https://en.wikipedia.org/wiki/Coupling_(computer_programming)) between your building blocks, which could manifest itself through the circular import error mentioned earlier, you’re going to put the individual classes in separate files. Go ahead and create the following four Python module placeholders in the `models` package:
 
-`maze-solver/ │ ├── src/ │   │ │   └── maze_solver/ │       │ │       ├── models/ │       │   ├── __init__.py │       │   ├── border.py │       │   ├── maze.py │       │   ├── role.py │       │   └── square.py │       │ │       └── __init__.py │ └── pyproject.toml`
+```
+maze-solver/
+│
+├── src/
+│   │
+│   └── maze_solver/
+│       │
+│       ├── models/
+│       │   ├── __init__.py
+│       │   ├── border.py
+│       │   ├── maze.py
+│       │   ├── role.py
+│       │   └── square.py
+│       │
+│       └── __init__.py
+│
+└── pyproject.toml
+```
 
 Each empty file corresponds to one of the building blocks you just identified. Over the remaining sections, you’ll fill them with the necessary code. You’ll begin by defining the available roles of a square in the maze.
 
-### Assign Roles to Squares[](https://realpython.com/python-maze-solver/#assign-roles-to-squares "Permanent link")
+### Assign Roles to Squares
 
 Most squares won’t have any particular role in the maze. However, at least two of them must be marked as the **entrance** and the **exit**, respectively. They will tell the [pathfinding](https://en.wikipedia.org/wiki/Pathfinding) algorithm where to start and finish its journey. Some other squares can be marked as obstacles like **walls**, **enemies**, or the **exterior**, which you can’t cross. Finally, a few squares can contain **rewards**, like bonus points or power-ups that may influence the path.
 
@@ -293,7 +337,19 @@ The most appropriate data type for representing square roles in Python, which ca
 
 Open the `role` module in your project and define the following class in it:
 
-`# models/role.py  from enum import IntEnum, auto  class Role(IntEnum):     ENEMY = auto()     ENTRANCE = auto()     EXIT = auto()     EXTERIOR = auto()     REWARD = auto()     WALL = auto()`
+```Python
+# models/role.py
+
+from enum import IntEnum, auto
+
+class Role(IntEnum):
+    ENEMY = auto()
+    ENTRANCE = auto()
+    EXIT = auto()
+    EXTERIOR = auto()
+    REWARD = auto()
+    WALL = auto()
+```
 
 Your class extends the `enum.IntEnum` base class from the standard library, which provides special semantics for its instances. There are currently only six such instances, which have unique identities, called **members** of the enumeration. You usually write their names in uppercase to indicate that they behave like [constants](https://realpython.com/python-constants/), but unlike regular constants, they share a common namespace.
 
@@ -303,9 +359,17 @@ At this point, it doesn’t make much difference whether you extend `enum.IntEn
 
 Because `enum.IntEnum` is also a subclass of `int`, as the name implies, you can treat your `Role` members as numbers:
 
->>>
+```Python
+>>> from maze_solver.models.role import Role  
+>>> Role.ENEMY 
+<Role.ENEMY: 1>
+	
+>>> Role.ENEMY.value
+1  
+>>> Role.ENEMY + 42 
+43
+```
 
-`>>> from maze_solver.models.role import Role  >>> Role.ENEMY <Role.ENEMY: 1>  >>> Role.ENEMY.value 1  >>> Role.ENEMY + 42 43`
 
 Even though regular enumerations defined with `enum.Enum` would have identical numeric values, they don’t support operators associated with math expressions, such as the plus operator (`+`). You’ll use this feature to combine roles with other information about the square.
 
@@ -315,7 +379,20 @@ Fortunately, in the object-oriented world, there’s a convenient [design patte
 
 To follow this pattern in your `Role` enumeration, specify an additional member that’ll serve as the null object:
 
-`# models/role.py  from enum import IntEnum, auto  class Role(IntEnum):     NONE = 0    ENEMY = auto()     ENTRANCE = auto()     EXIT = auto()     EXTERIOR = auto()     REWARD = auto()     WALL = auto()`
+```Python
+# models/role.py
+
+from enum import IntEnum, auto
+
+class Role(IntEnum):
+    NONE = 0
+    ENEMY = auto()
+    ENTRANCE = auto()
+    EXIT = auto()
+    EXTERIOR = auto()
+    REWARD = auto()
+    WALL = auto()
+```
 
 Because `enum.auto()` starts enumerating your members from one and then picks up the value of the previous member, the default values may not always be desirable. If you’d like to change them, then you can explicitly set an arbitrary value for some members, like on the highlighted line in the code snippet above. In this case, using zero as the null object’s value feels more appropriate than one.
 

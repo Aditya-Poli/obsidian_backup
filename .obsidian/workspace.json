@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "5e3b954f90c09cef",
+        "id": "7743efbf9fc28553",
         "type": "tabs",
         "children": [
           {
-            "id": "c5a0a4cd3ce5aae7",
+            "id": "4181635317c8f5ef",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -112,8 +112,9 @@
       "markdown-importer:Open format converter": false
     }
   },
-  "active": "c5a0a4cd3ce5aae7",
+  "active": "4181635317c8f5ef",
   "lastOpenFiles": [
+    "().md",
     "Real Python/Maze Solver.md",
     "Leetcode/Medium Problems.md",
     "Real Python",

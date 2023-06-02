@@ -4,6 +4,10 @@
 
 by [Bartosz Zaczyński](https://realpython.com/python-maze-solver/#author)  Mar 29, 2023 [6 Comments](https://realpython.com/python-maze-solver/#reader-comments) [intermediate](https://realpython.com/tutorials/intermediate/) [projects](https://realpython.com/tutorials/projects/)
 
+>  **Note**
+>1. **This is not my Original code. This is a tutorial from Real Python. Click the title to redirect to the original website.**<br>
+>2. **I created this repository during my practice from the tutorial.**<br><br>
+> **Original Author [link](https://realpython.com/team/bzaczynski/)**
 
 Table of Contents
 
@@ -44,7 +48,6 @@ Table of Contents
     - [Make a Runnable Script](https://realpython.com/python-maze-solver/#make-a-runnable-script)
 - [Conclusion](https://realpython.com/python-maze-solver/#conclusion)
 
-[Remove ads](https://realpython.com/account/join/)
 
 If you’re up for a little challenge and would like to take your programming skills to the next level, then you’ve come to the right place! In this hands-on tutorial, you’ll practice object-oriented programming, among several other good practices, while building a cool maze solver project in Python.
 
@@ -62,21 +65,60 @@ Click the link below to download the complete source code for this project, alon
 
 **Free Download:** [Click here to download the source code and supporting materials](https://realpython.com/bonus/python-maze-solver-code/) that you’ll use to build a maze solver in Python.
 
-## Demo: Python Maze Solver[](https://realpython.com/python-maze-solver/#demo-python-maze-solver "Permanent link")
+## Demo: Python Maze Solver
 
 At the end of this tutorial, you’ll have a command-line maze solver that can load your maze from a binary file and show its solution in the web browser:
 
 You’ll learn how to build your own mazes like this from scratch and save them on disk. In the meantime, feel free to grab one of the sample mazes from the supporting materials. Now, get ready to dive in!
 
-[Remove ads](https://realpython.com/account/join/)
 
-## Project Overview[](https://realpython.com/python-maze-solver/#project-overview "Permanent link")
+## Project Overview
 
 Take a glimpse at the expected file structure of your project. Once finished, your project’s file and directory tree will look as follows:
 
 ```
+maze-solver/
+│
+├── mazes/
+│   ├── labyrinth.maze
+│   ├── miniature.maze
+│   └── pacman.maze
+│
+├── src/
+│   │
+│   └── maze_solver/
+│       │
+│       ├── graphs/
+│       │   ├── __init__.py
+│       │   ├── converter.py
+│       │   └── solver.py
+│       │
+│       ├── models/
+│       │   ├── __init__.py
+│       │   ├── border.py
+│       │   ├── edge.py
+│       │   ├── maze.py
+│       │   ├── role.py
+│       │   ├── solution.py
+│       │   └── square.py
+│       │
+│       ├── persistence/
+│       │   ├── __init__.py
+│       │   ├── file_format.py
+│       │   └── serializer.py
+│       │
+│       ├── view/
+│       │   ├── __init__.py
+│       │   ├── decomposer.py
+│       │   ├── primitives.py
+│       │   └── renderer.py
+│       │
+│       ├── __init__.py
+│       └── __main__.py
+│
+├── pyproject.toml
+└── requirements.txt
 ```
-`maze-solver/ │ ├── mazes/ │   ├── labyrinth.maze │   ├── miniature.maze │   └── pacman.maze │ ├── src/ │   │ │   └── maze_solver/ │       │ │       ├── graphs/ │       │   ├── __init__.py │       │   ├── converter.py │       │   └── solver.py │       │ │       ├── models/ │       │   ├── __init__.py │       │   ├── border.py │       │   ├── edge.py │       │   ├── maze.py │       │   ├── role.py │       │   ├── solution.py │       │   └── square.py │       │ │       ├── persistence/ │       │   ├── __init__.py │       │   ├── file_format.py │       │   └── serializer.py │       │ │       ├── view/ │       │   ├── __init__.py │       │   ├── decomposer.py │       │   ├── primitives.py │       │   └── renderer.py │       │ │       ├── __init__.py │       └── __main__.py │ ├── pyproject.toml └── requirements.txt`
 
 Yes, that’s a lot of files, but don’t worry! Most of them are fairly short, and some contain only a few lines of code. This helps keep things organized and makes the individual pieces reusable, letting you compose them in new ways. Such granularity also plays an important role in Python projects with larger codebases by avoiding the notorious [circular dependency](https://en.wikipedia.org/wiki/Circular_dependency) error that you might encounter if various parts of the code were in one big file.
 
@@ -93,11 +135,16 @@ The `src/` subfolder contains your [Python modules and packages](https://real
 
 You’ll also find the special [`__main__.py`](https://docs.python.org/3/library/__main__.html) file, which makes the enclosing package runnable so that you can execute it directly from the command line using Python’s `-m` option:
 
-`$ python -m maze_solver /path/to/sample.maze`
+```Shell
+$ python -m maze_solver /path/to/sample.maze
+```
+
 
 When launched like this, the package reads the specified file with your maze. After solving the maze, it renders the solution into an SVG format embedded in a temporary HTML file. The file gets automatically opened in your default web browser. You can also run the same Python code using a shortcut command:
 
-`$ solve /path/to/sample.maze`
+```Shell
+$ solve /path/to/sample.maze
+```
 
 It’ll work as long the `solve` command isn’t already taken or [aliased](https://en.wikipedia.org/wiki/Alias_(command)) by another program.
 
@@ -105,7 +152,7 @@ Finally, `pyproject.toml` provides your project’s configuration, metadata, a
 
 Next up, you’ll review a list of relevant resources that might become your savior in case you get stuck at any point. Also, remember the supporting materials, which contain a snapshot of each finished step. Along the way, you can compare your progress to the relevant step to ensure that you’re on the right track.
 
-## Prerequisites[](https://realpython.com/python-maze-solver/#prerequisites "Permanent link")
+## Prerequisites
 
 This tutorial will best suit intermediate Python developers who’d like to practice [object-oriented programming (OOP)](https://realpython.com/python3-object-oriented-programming/) while building a cool project. Throughout this tutorial, you’ll be using several neat features of modern Python, so make sure you’re on [Python 3.10](https://realpython.com/python310-new-features/) or later. Also, it might be worth brushing up on the following topics before you dive in:
 
@@ -122,13 +169,12 @@ Note that you don’t need to be an expert in any of these areas to follow along
 
 With that out of the way, you can move on to your project!
 
-[Remove ads](https://realpython.com/account/join/)
 
-## Step 1: Lay the Groundwork for the Project[](https://realpython.com/python-maze-solver/#step-1-lay-the-groundwork-for-the-project "Permanent link")
+## Step 1: Lay the Groundwork for the Project
 
 The first step to writing any code starts on paper. Therefore, you’ll now take a step back to figure out what problem you’re solving and how you’re going to approach it. You’ll begin by narrowing down the design requirements for your maze.
 
-### Define the Problem Constraints[](https://realpython.com/python-maze-solver/#define-the-problem-constraints "Permanent link")
+### Define the Problem Constraints
 
 Mazes come in different shapes and forms, but you’ll concentrate on one kind that you’d find in a typical maze-puzzle video game from the early 1980s, like [Boulder Dash](https://en.wikipedia.org/wiki/Boulder_Dash) or [Sokoban](https://en.wikipedia.org/wiki/Sokoban). For example, the following maze was inspired by the classic [Pac-Man](https://en.wikipedia.org/wiki/Pac-Man) game:
 
@@ -150,7 +196,7 @@ Well, mazes are a perfect example of [graph theory](https://en.wikipedia.org/wi
 
 Apart from nodes representing the **intersections** and **dead ends** in the maze, there are a few extra nodes in the graph above that capture the presence of enemies and rewards. By associating numeric **weights** with edges that pass through them, you can influence the cost of the given connection. Later, you’ll add nodes for **corners** to make plotting the path from the entrance to the exit a tad bit easier.
 
-**Note:** Strictly speaking, the graph corresponding to a maze can be a more specialized type known as a [multigraph](https://en.wikipedia.org/wiki/Multigraph) when it has two or more [parallel edges](https://en.wikipedia.org/wiki/Multiple_edges) that connect neighboring nodes.
+> **Note:** Strictly speaking, the graph corresponding to a maze can be a more specialized type known as a [multigraph](https://en.wikipedia.org/wiki/Multigraph) when it has two or more [parallel edges](https://en.wikipedia.org/wiki/Multiple_edges) that connect neighboring nodes.
 
 It’s worth noting that you can draw the same graph in different ways without changing its underlying structure. For example, you could draw all edges as straight lines, let them cross each other, or arrange the nodes in a certain pattern.
 
@@ -160,11 +206,11 @@ In this tutorial, you won’t be implementing any [graph traversal](https://en.
 
 Now that you’ve clarified the problem at hand, you can start thinking about how to approach it from a technical perspective. It’s time to lay the groundwork for some Python code!
 
-### Scaffold the Project Structure[](https://realpython.com/python-maze-solver/#scaffold-the-project-structure "Permanent link")
+### Scaffold the Project Structure
 
 Use your favorite [code editor](https://realpython.com/python-ides-code-editors-guide/) or a cloud-based IDE to create a new Python project while specifying an isolated [virtual environment](https://realpython.com/python-virtual-environments-a-primer/) for its dependencies. The minimum interpreter version required for this project is [Python 3.10](https://realpython.com/python310-new-features/) due to a few syntactic constructs introduced in that release, which you’ll be using. If you can, consider switching to a more recent release for better performance and other improvements.
 
-**Note:** You may use [pyenv](https://realpython.com/intro-to-pyenv/) to manage multiple Python versions on your computer.
+> **Note:** You may use [pyenv](https://realpython.com/intro-to-pyenv/) to manage multiple Python versions on your computer.
 
 Once you have the project set up in your editor, scaffold the initial folder structure with these two nested Python packages, both of which should be empty at the moment:
 

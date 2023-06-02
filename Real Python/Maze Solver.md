@@ -1160,7 +1160,26 @@ Next up, you’ll put your primitives to use by decomposing various border patte
 
 Open your `decomposer` module and type the following function stub at the top of the file, which you’ll continue editing in this section:
 
-`# view/decomposer.py  from maze_solver.models.border import Border from maze_solver.view.primitives import (     Line,     Point,     Primitive, )  def decompose(border: Border, top_left: Point, square_size: int) -> Primitive:     top_right: Point = top_left.translate(x=square_size)     bottom_right: Point = top_left.translate(x=square_size, y=square_size)     bottom_left: Point = top_left.translate(y=square_size)      top = Line(top_left, top_right)     bottom = Line(bottom_left, bottom_right)     left = Line(top_left, bottom_left)     right = Line(top_right, bottom_right)`
+```Python
+# view/decomposer.py
+
+from maze_solver.models.border import Border
+from maze_solver.view.primitives import (
+    Line,
+    Point,
+    Primitive,
+)
+
+def decompose(border: Border, top_left: Point, square_size: int) -> Primitive:
+    top_right: Point = top_left.translate(x=square_size)
+    bottom_right: Point = top_left.translate(x=square_size, y=square_size)
+    bottom_left: Point = top_left.translate(y=square_size)
+
+    top = Line(top_left, top_right)
+    bottom = Line(bottom_left, bottom_right)
+    left = Line(top_left, bottom_left)
+    right = Line(top_right, bottom_right)
+```
 
 The function takes a border pattern, the top-left corner of the corresponding square in SVG coordinates, and the desired square size in SVG coordinates as input. Its goal is to decompose the border into a relevant geometric primitive that you can draw.
 
@@ -1170,65 +1189,399 @@ As you may remember, there are **sixteen unique patterns**, which your function
 
 There’s only one pattern consisting of all **four sides**, which you can turn into a polygon:
 
-`# view/decomposer.py  from maze_solver.models.border import Border from maze_solver.view.primitives import (     Line,     Point,     Polygon,    Primitive, )  def decompose(border: Border, top_left: Point, square_size: int) -> Primitive:     top_right: Point = top_left.translate(x=square_size)     bottom_right: Point = top_left.translate(x=square_size, y=square_size)     bottom_left: Point = top_left.translate(y=square_size)      top = Line(top_left, top_right)     bottom = Line(bottom_left, bottom_right)     left = Line(top_left, bottom_left)     right = Line(top_right, bottom_right)      if border is Border.LEFT | Border.TOP | Border.RIGHT | Border.BOTTOM:        return Polygon(            [                top_left,                top_right,                bottom_right,                bottom_left,            ]        )`
+```Python
+# view/decomposer.py
+
+from maze_solver.models.border import Border
+from maze_solver.view.primitives import (
+    Line,
+    Point,
+    Polygon,
+    Primitive,
+)
+
+def decompose(border: Border, top_left: Point, square_size: int) -> Primitive:
+    top_right: Point = top_left.translate(x=square_size)
+    bottom_right: Point = top_left.translate(x=square_size, y=square_size)
+    bottom_left: Point = top_left.translate(y=square_size)
+
+    top = Line(top_left, top_right)
+    bottom = Line(bottom_left, bottom_right)
+    left = Line(top_left, bottom_left)
+    right = Line(top_right, bottom_right)
+
+    if border is Border.LEFT | Border.TOP | Border.RIGHT | Border.BOTTOM:
+        return Polygon(
+            [
+                top_left,
+                top_right,
+                bottom_right,
+                bottom_left,
+            ]
+        )
+```
 
 You compare the square’s border to a predefined pattern to determine whether they match. Next, there are four possible patterns with **three sides**, which you can describe by the bottom-left-top, left-top-right, top-right-bottom, and right-bottom-left directions:
 
-`# view/decomposer.py  from maze_solver.models.border import Border from maze_solver.view.primitives import (     Line,     Point,     Polygon,     Polyline,    Primitive, )  def decompose(border: Border, top_left: Point, square_size: int) -> Primitive:     # ...      if border is Border.BOTTOM | Border.LEFT | Border.TOP:        return Polyline(            [                bottom_right,                bottom_left,                top_left,                top_right,            ]        )     if border is Border.LEFT | Border.TOP | Border.RIGHT:        return Polyline(            [                bottom_left,                top_left,                top_right,                bottom_right,            ]        )     if border is Border.TOP | Border.RIGHT | Border.BOTTOM:        return Polyline(            [                top_left,                top_right,                bottom_right,                bottom_left,            ]        )     if border is Border.RIGHT | Border.BOTTOM | Border.LEFT:        return Polyline(            [                top_right,                bottom_right,                bottom_left,                top_left,            ]        )`
+```Python
+# view/decomposer.py
+
+from maze_solver.models.border import Border
+from maze_solver.view.primitives import (
+    Line,
+    Point,
+    Polygon,
+    Polyline,
+    Primitive,
+)
+
+def decompose(border: Border, top_left: Point, square_size: int) -> Primitive:
+    # ...
+
+    if border is Border.BOTTOM | Border.LEFT | Border.TOP:
+        return Polyline(
+            [
+                bottom_right,
+                bottom_left,
+                top_left,
+                top_right,
+            ]
+        )
+
+    if border is Border.LEFT | Border.TOP | Border.RIGHT:
+        return Polyline(
+            [
+                bottom_left,
+                top_left,
+                top_right,
+                bottom_right,
+            ]
+        )
+
+    if border is Border.TOP | Border.RIGHT | Border.BOTTOM:
+        return Polyline(
+            [
+                top_left,
+                top_right,
+                bottom_right,
+                bottom_left,
+            ]
+        )
+
+    if border is Border.RIGHT | Border.BOTTOM | Border.LEFT:
+        return Polyline(
+            [
+                top_right,
+                bottom_right,
+                bottom_left,
+                top_left,
+            ]
+        )
+```
 
 You return a polyline, leaving one missing side in each case. Then, there are six border patterns with **two sides**, including four patterns—left-top, top-right, bottom-left, and right-bottom—which also form a polyline:
 
-`# view/decomposer.py  # ...  def decompose(border: Border, top_left: Point, square_size: int) -> Primitive:     # ...      if border is Border.LEFT | Border.TOP:        return Polyline(            [                bottom_left,                top_left,                top_right,            ]        )     if border is Border.TOP | Border.RIGHT:        return Polyline(            [                top_left,                top_right,                bottom_right,            ]        )     if border is Border.BOTTOM | Border.LEFT:        return Polyline(            [                bottom_right,                bottom_left,                top_left,            ]        )     if border is Border.RIGHT | Border.BOTTOM:        return Polyline(            [                top_right,                bottom_right,                bottom_left,            ]        )`
+```Python
+# view/decomposer.py
+
+# ...
+
+def decompose(border: Border, top_left: Point, square_size: int) -> Primitive:
+    # ...
+
+    if border is Border.LEFT | Border.TOP:
+        return Polyline(
+            [
+                bottom_left,
+                top_left,
+                top_right,
+            ]
+        )
+
+    if border is Border.TOP | Border.RIGHT:
+        return Polyline(
+            [
+                top_left,
+                top_right,
+                bottom_right,
+            ]
+        )
+
+    if border is Border.BOTTOM | Border.LEFT:
+        return Polyline(
+            [
+                bottom_right,
+                bottom_left,
+                top_left,
+            ]
+        )
+
+    if border is Border.RIGHT | Border.BOTTOM:
+        return Polyline(
+            [
+                top_right,
+                bottom_right,
+                bottom_left,
+            ]
+        )
+```
 
 The two remaining two-sided patterns, left-right and top-bottom, must be represented as two disjoint lines, which run in parallel:
 
-`# view/decomposer.py  from maze_solver.models.border import Border from maze_solver.view.primitives import (     DisjointLines,    Line,     Point,     Polygon,     Polyline     Primitive, )  def decompose(border: Border, top_left: Point, square_size: int) -> Primitive:     # ...      if border is Border.LEFT | Border.RIGHT:        return DisjointLines([left, right])     if border is Border.TOP | Border.BOTTOM:        return DisjointLines([top, bottom])`
+```Python
+# view/decomposer.py
+
+from maze_solver.models.border import Border
+from maze_solver.view.primitives import (
+    DisjointLines,
+    Line,
+    Point,
+    Polygon,
+    Polyline
+    Primitive,
+)
+
+def decompose(border: Border, top_left: Point, square_size: int) -> Primitive:
+    # ...
+
+    if border is Border.LEFT | Border.RIGHT:
+        return DisjointLines([left, right])
+
+    if border is Border.TOP | Border.BOTTOM:
+        return DisjointLines([top, bottom])
+```
 
 Next, you have four patterns with only **one side** for each compass direction:
 
-`# view/decomposer.py  # ...  def decompose(border: Border, top_left: Point, square_size: int) -> Primitive:     # ...      if border is Border.TOP:        return top     if border is Border.RIGHT:        return right     if border is Border.BOTTOM:        return bottom     if border is Border.LEFT:        return left`
+```Python
+# view/decomposer.py
+
+# ...
+
+def decompose(border: Border, top_left: Point, square_size: int) -> Primitive:
+    # ...
+
+    if border is Border.TOP:
+        return top
+
+    if border is Border.RIGHT:
+        return right
+
+    if border is Border.BOTTOM:
+        return bottom
+
+    if border is Border.LEFT:
+        return left
+```
 
 Notice that you return the lines you created at the very beginning of the function. Finally, there’s the only case of an **empty border pattern** without any visual representation, which you can map to the null object primitive:
 
-`# view/decomposer.py  from maze_solver.models.border import Border from maze_solver.view.primitives import (     DisjointLines,     Line,     NullPrimitive,    Point,     Polygon,     Polyline     Primitive, )  def decompose(border: Border, top_left: Point, square_size: int) -> Primitive:     # ...      return NullPrimitive()`
+```Python
+# view/decomposer.py
+
+from maze_solver.models.border import Border
+from maze_solver.view.primitives import (
+    DisjointLines,
+    Line,
+    NullPrimitive,
+    Point,
+    Polygon,
+    Polyline
+    Primitive,
+)
+
+def decompose(border: Border, top_left: Point, square_size: int) -> Primitive:
+    # ...
+
+    return NullPrimitive()
+```
 
 Whew, that was a lot to take in! Now that the hard work is done, you can put the pieces together to achieve some tangible results. It’s time to build the scalable vector graphics renderer.
 
-### Build the SVG Renderer[](https://realpython.com/python-maze-solver/#build-the-svg-renderer "Permanent link")
+### Build the SVG Renderer
 
 Your scalable vector graphics renderer will take the **square size** and **line width** in pixel coordinates as input parameters. At the same time, it’ll assume sensible defaults so that you don’t have to fiddle with numbers to get started:
 
-`# view/renderer.py  from dataclasses import dataclass  @dataclass(frozen=True) class SVGRenderer:     square_size: int = 100     line_width: int = 6      @property     def offset(self):         return self.line_width // 2`
+```Python
+# view/renderer.py
+
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class SVGRenderer:
+    square_size: int = 100
+    line_width: int = 6
+
+    @property
+    def offset(self):
+        return self.line_width // 2
+```
 
 The **offset** is the distance from the top and left edge of the drawing space, which takes your line width into account. Without it, a line starting at the top-left corner would be drawn at the very edge of the canvas and partially out of view.
 
 The renderer returns a lightweight `SVG` object, which wraps the textual XML content:
 
-`# view/renderer.py  from dataclasses import dataclass  from maze_solver.models.maze import Maze from maze_solver.models.solution import Solution @dataclass(frozen=True) class SVG:     xml_content: str @dataclass(frozen=True) class SVGRenderer:     square_size: int = 100     line_width: int = 6      @property     def offset(self):         return self.line_width // 2      def render(self, maze: Maze, solution: Solution | None = None) -> SVG:        ...`
+```Python
+# view/renderer.py
+
+from dataclasses import dataclass
+
+from maze_solver.models.maze import Maze
+from maze_solver.models.solution import Solution
+
+@dataclass(frozen=True)
+class SVG:
+    xml_content: str
+
+@dataclass(frozen=True)
+class SVGRenderer:
+    square_size: int = 100
+    line_width: int = 6
+
+    @property
+    def offset(self):
+        return self.line_width // 2
+
+    def render(self, maze: Maze, solution: Solution | None = None) -> SVG:
+        ...
+```
 
 Later, you’ll add code in the `SVG` wrapper class to allow for viewing the rendered maze in your web browser. Rendering an SVG image boils down to decomposing the **maze** and its optional **solution** into geometric primitives, which you turn into XML tags mashed together into a string:
 
-`# view/renderer.py  from dataclasses import dataclass  from maze_solver.models.maze import Maze from maze_solver.models.solution import Solution from maze_solver.view.primitives import tag @dataclass(frozen=True) class SVG:     xml_content: str  @dataclass(frozen=True) class SVGRenderer:     square_size: int = 100     line_width: int = 6      @property     def offset(self):         return self.line_width // 2      def render(self, maze: Maze, solution: Solution | None = None) -> SVG:         margins = 2 * (self.offset + self.line_width)        width = margins + maze.width * self.square_size        height = margins + maze.height * self.square_size        return SVG(            tag(                "svg",                self._get_body(maze, solution),                xmlns="http://www.w3.org/2000/svg",                stroke_linejoin="round",                width=width,                height=height,                viewBox=f"0 0 {width} {height}",            )        )`
+```Python
+# view/renderer.py
+
+from dataclasses import dataclass
+
+from maze_solver.models.maze import Maze
+from maze_solver.models.solution import Solution
+from maze_solver.view.primitives import tag
+
+@dataclass(frozen=True)
+class SVG:
+    xml_content: str
+
+@dataclass(frozen=True)
+class SVGRenderer:
+    square_size: int = 100
+    line_width: int = 6
+
+    @property
+    def offset(self):
+        return self.line_width // 2
+
+    def render(self, maze: Maze, solution: Solution | None = None) -> SVG:
+        margins = 2 * (self.offset + self.line_width)
+        width = margins + maze.width * self.square_size
+        height = margins + maze.height * self.square_size
+        return SVG(
+            tag(
+                "svg",
+                self._get_body(maze, solution),
+                xmlns="http://www.w3.org/2000/svg",
+                stroke_linejoin="round",
+                width=width,
+                height=height,
+                viewBox=f"0 0 {width} {height}",
+            )
+        )
+```
 
 You calculate the SVG dimensions based on the size of your maze and its squares, and you set the `viewBox` attribute accordingly. You then call a helper method to get the body of the `<svg>` tag, which in turn calls four other methods that you’ll implement shortly:
 
-`# view/renderer.py  # ...  @dataclass(frozen=True) class SVGRenderer:     # ...      def _get_body(self, maze: Maze, solution: Solution | None) -> str:        return "".join([            arrow_marker(),            background(),            *map(self._draw_square, maze),            self._draw_solution(solution) if solution else "",        ])`
+```Python
+# view/renderer.py
+
+# ...
+
+@dataclass(frozen=True)
+class SVGRenderer:
+    # ...
+
+    def _get_body(self, maze: Maze, solution: Solution | None) -> str:
+        return "".join([
+            arrow_marker(),
+            background(),
+            *map(self._draw_square, maze),
+            self._draw_solution(solution) if solution else "",
+        ])
+```
 
 The body of your SVG consists of a [marker](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/marker) definition, which you’ll use to end the line representing the solution with an arrow pointing to the exit. This definition is followed by a rectangle occupying the entire view to provide a white background. Next, you render the individual squares and overlay them with the solution if supplied.
 
-[Remove ads](https://realpython.com/account/join/)
 
-### Fill the SVG Body[](https://realpython.com/python-maze-solver/#fill-the-svg-body "Permanent link")
+### Fill the SVG Body
 
 To get the arrow marker and the background tags, you call these two top-level functions defined at the bottom of your module:
 
-`# view/renderer.py  from dataclasses import dataclass  from maze_solver.models.maze import Maze from maze_solver.models.solution import Solution from maze_solver.view.primitives import Rect, tag # ...  def arrow_marker() -> str:     return tag(        "defs",        tag(            "marker",            tag(                "path",                d="M 0,0 L 10,5 L 0,10 2,5 z",                fill="red",                fill_opacity="50%"            ),            id="arrow",            viewBox="0 0 20 20",            refX="2",            refY="5",            markerUnits="strokeWidth",            markerWidth="10",            markerHeight="10",            orient="auto"        )    ) def background() -> str:     return Rect().draw(width="100%", height="100%", fill="white")`
+```Python
+# view/renderer.py
+
+from dataclasses import dataclass
+
+from maze_solver.models.maze import Maze
+from maze_solver.models.solution import Solution
+from maze_solver.view.primitives import Rect, tag
+
+# ...
+
+def arrow_marker() -> str:
+    return tag(
+        "defs",
+        tag(
+            "marker",
+            tag(
+                "path",
+                d="M 0,0 L 10,5 L 0,10 2,5 z",
+                fill="red",
+                fill_opacity="50%"
+            ),
+            id="arrow",
+            viewBox="0 0 20 20",
+            refX="2",
+            refY="5",
+            markerUnits="strokeWidth",
+            markerWidth="10",
+            markerHeight="10",
+            orient="auto"
+        )
+    )
+
+def background() -> str:
+    return Rect().draw(width="100%", height="100%", fill="white")
+```
 
 The `<defs>` and `<marker>` elements define an arrow shape that you’ll reference later in the SVG document. The other function uses your `Rect` primitive to draw a white rectangle stretched across the entire image.
 
 Before drawing one of the maze’s squares, you need to establish where it should go by [transforming](https://en.wikipedia.org/wiki/Affine_transformation) its row and column into pixel coordinates:
 
-`# view/renderer.py  from dataclasses import dataclass  from maze_solver.models.maze import Maze from maze_solver.models.solution import Solution from maze_solver.models.square import Square from maze_solver.view.primitives import Point, Rect, tag # ...  @dataclass(frozen=True) class SVGRenderer:     # ...      def _transform(self, square: Square, extra_offset: int = 0) -> Point:        return Point(            x=square.column * self.square_size,            y=square.row * self.square_size,        ).translate(            x=self.offset + extra_offset,            y=self.offset + extra_offset        ) # ...`
+```Python
+# view/renderer.py
+
+from dataclasses import dataclass
+
+from maze_solver.models.maze import Maze
+from maze_solver.models.solution import Solution
+from maze_solver.models.square import Square
+from maze_solver.view.primitives import Point, Rect, tag
+
+# ...
+
+@dataclass(frozen=True)
+class SVGRenderer:
+    # ...
+
+    def _transform(self, square: Square, extra_offset: int = 0) -> Point:
+        return Point(
+            x=square.column * self.square_size,
+            y=square.row * self.square_size,
+        ).translate(
+            x=self.offset + extra_offset,
+            y=self.offset + extra_offset
+        )
+
+# ...
+```
 
 You scale and translate the square’s coordinates using the desired square size and offset. The resulting point is the top-left corner of your square in the SVG pixel space.
 
@@ -1236,13 +1589,111 @@ Next, you can start drawing your square, which will involve drawing a **border*
 
 After transforming the coordinates, you’ll call the function that you defined in the previous section to decompose a border pattern into a drawable primitive:
 
-`# view/renderer.py  from dataclasses import dataclass  from maze_solver.models.maze import Maze from maze_solver.models.solution import Solution from maze_solver.models.square import Square from maze_solver.view.decomposer import decompose from maze_solver.view.primitives import Point, Rect, tag  # ...  @dataclass(frozen=True) class SVGRenderer:     # ...      def _draw_square(self, square: Square) -> str:        top_left: Point = self._transform(square)        tags = []        tags.append(self._draw_border(square, top_left))        return "".join(tags)     def _draw_border(self, square: Square, top_left: Point) -> str:        return decompose(square.border, top_left, self.square_size).draw(            stroke_width=self.line_width,            stroke="black",            fill="none"        )     # ...  # ...`
+```Python
+# view/renderer.py
+
+from dataclasses import dataclass
+
+from maze_solver.models.maze import Maze
+from maze_solver.models.solution import Solution
+from maze_solver.models.square import Square
+from maze_solver.view.decomposer import decompose
+from maze_solver.view.primitives import Point, Rect, tag
+
+# ...
+
+@dataclass(frozen=True)
+class SVGRenderer:
+    # ...
+
+    def _draw_square(self, square: Square) -> str:
+        top_left: Point = self._transform(square)
+        tags = []
+        tags.append(self._draw_border(square, top_left))
+        return "".join(tags)
+
+    def _draw_border(self, square: Square, top_left: Point) -> str:
+        return decompose(square.border, top_left, self.square_size).draw(
+            stroke_width=self.line_width,
+            stroke="black",
+            fill="none"
+        )
+
+    # ...
+
+# ...
+```
 
 You draw the **border** around the given square in the specified pixel location by getting its geometric representation first. This is where the null object pattern shows its strength by letting you treat all border patterns in the same way, even when they don’t have any visual representation.
 
 Note that you created a list of tags that you’ll fill with other elements associated with the same square. Apart from the border, the walls and exterior can have a **background**, while squares with special roles will have an extra **icon** inside them:
 
- `1# view/renderer.py  2  3from dataclasses import dataclass  4  5from maze_solver.models.maze import Maze  6from maze_solver.models.role import Role 7from maze_solver.models.solution import Solution  8from maze_solver.models.square import Square  9from maze_solver.view.decomposer import decompose 10from maze_solver.view.primitives import Point, Rect, Text, tag 11 12ROLE_EMOJI = { 13    Role.ENTRANCE: "\N{pedestrian}", 14    Role.EXIT: "\N{chequered flag}", 15    Role.ENEMY: "\N{ghost}", 16    Role.REWARD: "\N{white medium star}", 17} 18 19# ... 20 21@dataclass(frozen=True) 22class SVGRenderer: 23    # ... 24 25    def _draw_square(self, square: Square) -> str: 26        top_left: Point = self._transform(square) 27        tags = [] 28        if square.role is Role.EXTERIOR: 29            tags.append(exterior(top_left, self.square_size, self.line_width)) 30        elif square.role is Role.WALL: 31            tags.append(wall(top_left, self.square_size, self.line_width)) 32        elif emoji := ROLE_EMOJI.get(square.role): 33            tags.append(label(emoji, top_left, self.square_size // 2)) 34        tags.append(self._draw_border(square, top_left)) 35        return "".join(tags) 36 37    # ... 38 39# ... 40 41def exterior(top_left: Point, size: int, line_width: int) -> str: 42    return Rect(top_left).draw( 43        width=size, 44        height=size, 45        stroke_width=line_width, 46        stroke="none", 47        fill="white" 48    ) 49 50def wall(top_left: Point, size: int, line_width: int) -> str: 51    return Rect(top_left).draw( 52        width=size, 53        height=size, 54        stroke_width=line_width, 55        stroke="none", 56        fill="lightgray" 57    ) 58 59def label(emoji: str, top_left: Point, offset: int) -> str: 60    return Text(emoji, top_left.translate(x=offset, y=offset)).draw( 61        font_size=f"{offset}px", 62        text_anchor="middle", 63        dominant_baseline="middle" 64    )`
+```Python
+ 1# view/renderer.py
+ 2
+ 3from dataclasses import dataclass
+ 4
+ 5from maze_solver.models.maze import Maze
+ 6from maze_solver.models.role import Role
+ 7from maze_solver.models.solution import Solution
+ 8from maze_solver.models.square import Square
+ 9from maze_solver.view.decomposer import decompose
+10from maze_solver.view.primitives import Point, Rect, Text, tag
+11
+12ROLE_EMOJI = {
+13    Role.ENTRANCE: "\N{pedestrian}",
+14    Role.EXIT: "\N{chequered flag}",
+15    Role.ENEMY: "\N{ghost}",
+16    Role.REWARD: "\N{white medium star}",
+17}
+18
+19# ...
+20
+21@dataclass(frozen=True)
+22class SVGRenderer:
+23    # ...
+24
+25    def _draw_square(self, square: Square) -> str:
+26        top_left: Point = self._transform(square)
+27        tags = []
+28        if square.role is Role.EXTERIOR:
+29            tags.append(exterior(top_left, self.square_size, self.line_width))
+30        elif square.role is Role.WALL:
+31            tags.append(wall(top_left, self.square_size, self.line_width))
+32        elif emoji := ROLE_EMOJI.get(square.role):
+33            tags.append(label(emoji, top_left, self.square_size // 2))
+34        tags.append(self._draw_border(square, top_left))
+35        return "".join(tags)
+36
+37    # ...
+38
+39# ...
+40
+41def exterior(top_left: Point, size: int, line_width: int) -> str:
+42    return Rect(top_left).draw(
+43        width=size,
+44        height=size,
+45        stroke_width=line_width,
+46        stroke="none",
+47        fill="white"
+48    )
+49
+50def wall(top_left: Point, size: int, line_width: int) -> str:
+51    return Rect(top_left).draw(
+52        width=size,
+53        height=size,
+54        stroke_width=line_width,
+55        stroke="none",
+56        fill="lightgray"
+57    )
+58
+59def label(emoji: str, top_left: Point, offset: int) -> str:
+60    return Text(emoji, top_left.translate(x=offset, y=offset)).draw(
+61        font_size=f"{offset}px",
+62        text_anchor="middle",
+63        dominant_baseline="middle"
+64    )
+```
 
 Here’s what the highlighted lines do:
 
@@ -1253,51 +1704,236 @@ Here’s what the highlighted lines do:
 
 Finally, the last missing method in the `SVGRenderer` class is one that draws the solution as a line ending with an arrow marker:
 
-`# view/renderer.py  from dataclasses import dataclass  from maze_solver.models.maze import Maze from maze_solver.models.role import Role from maze_solver.models.solution import Solution from maze_solver.models.square import Square from maze_solver.view.decomposer import decompose from maze_solver.view.primitives import Point, Polyline, Rect, Text, tag # ...  @dataclass(frozen=True) class SVGRenderer:     # ...      def _draw_solution(self, solution: Solution) -> str:        return Polyline(            [                self._transform(point, self.square_size // 2)                for point in solution            ]        ).draw(            stroke_width=self.line_width * 2,            stroke_opacity="50%",            stroke="red",            fill="none",            marker_end="url(#arrow)"        )     # ...  # ...`
+```Python
+# view/renderer.py
 
+from dataclasses import dataclass
+
+from maze_solver.models.maze import Maze
+from maze_solver.models.role import Role
+from maze_solver.models.solution import Solution
+from maze_solver.models.square import Square
+from maze_solver.view.decomposer import decompose
+from maze_solver.view.primitives import Point, Polyline, Rect, Text, tag
+
+# ...
+
+@dataclass(frozen=True)
+class SVGRenderer:
+    # ...
+
+    def _draw_solution(self, solution: Solution) -> str:
+        return Polyline(
+            [
+                self._transform(point, self.square_size // 2)
+                for point in solution
+            ]
+        ).draw(
+            stroke_width=self.line_width * 2,
+            stroke_opacity="50%",
+            stroke="red",
+            fill="none",
+            marker_end="url(#arrow)"
+        )
+
+    # ...
+
+# ...
+```
 You transform the squares of the solution to get their corresponding pixel coordinates. Notice that you add an extra offset to center the solution’s line vertically and horizontally in each square. The `marker-end` SVG attribute refers to the SVG object identified as `#arrow`, which you defined earlier.
 
 At this point, you can print the resulting SVG in the console or save its XML content to a local file:
 
->>>
+```Python
+>>> from pathlib import Path
 
-`>>> from pathlib import Path  >>> from maze_solver.models.border import Border >>> from maze_solver.models.maze import Maze >>> from maze_solver.models.role import Role >>> from maze_solver.models.solution import Solution >>> from maze_solver.models.square import Square >>> from maze_solver.view.renderer import SVGRenderer  >>> maze = Maze( ...     squares=( ...         Square(0, 0, 0, Border.TOP | Border.LEFT), ...         Square(1, 0, 1, Border.TOP | Border.RIGHT), ...         Square(2, 0, 2, Border.LEFT | Border.RIGHT, Role.EXIT), ...         Square(3, 0, 3, Border.TOP | Border.LEFT | Border.RIGHT), ...         Square(4, 1, 0, Border.BOTTOM | Border.LEFT | Border.RIGHT), ...         Square(5, 1, 1, Border.LEFT | Border.RIGHT), ...         Square(6, 1, 2, Border.BOTTOM | Border.LEFT), ...         Square(7, 1, 3, Border.RIGHT), ...         Square(8, 2, 0, Border.TOP | Border.LEFT, Role.ENTRANCE), ...         Square(9, 2, 1, Border.BOTTOM), ...         Square(10, 2, 2, Border.TOP | Border.BOTTOM), ...         Square(11, 2, 3, Border.BOTTOM | Border.RIGHT), ...     ) ... )  >>> solution = Solution(squares=tuple(maze[i] for i in (8, 11, 7, 6, 2))) >>> svg = SVGRenderer().render(maze, solution)  >>> with Path("maze.svg").open(mode="w", encoding="utf-8") as file: ...     file.write(svg.xml_content) ...`
+>>> from maze_solver.models.border import Border
+>>> from maze_solver.models.maze import Maze
+>>> from maze_solver.models.role import Role
+>>> from maze_solver.models.solution import Solution
+>>> from maze_solver.models.square import Square
+>>> from maze_solver.view.renderer import SVGRenderer
+
+>>> maze = Maze(
+...     squares=(
+...         Square(0, 0, 0, Border.TOP | Border.LEFT),
+...         Square(1, 0, 1, Border.TOP | Border.RIGHT),
+...         Square(2, 0, 2, Border.LEFT | Border.RIGHT, Role.EXIT),
+...         Square(3, 0, 3, Border.TOP | Border.LEFT | Border.RIGHT),
+...         Square(4, 1, 0, Border.BOTTOM | Border.LEFT | Border.RIGHT),
+...         Square(5, 1, 1, Border.LEFT | Border.RIGHT),
+...         Square(6, 1, 2, Border.BOTTOM | Border.LEFT),
+...         Square(7, 1, 3, Border.RIGHT),
+...         Square(8, 2, 0, Border.TOP | Border.LEFT, Role.ENTRANCE),
+...         Square(9, 2, 1, Border.BOTTOM),
+...         Square(10, 2, 2, Border.TOP | Border.BOTTOM),
+...         Square(11, 2, 3, Border.BOTTOM | Border.RIGHT),
+...     )
+... )
+
+>>> solution = Solution(squares=tuple(maze[i] for i in (8, 11, 7, 6, 2)))
+>>> svg = SVGRenderer().render(maze, solution)
+
+>>> with Path("maze.svg").open(mode="w", encoding="utf-8") as file:
+...     file.write(svg.xml_content)
+...
+```
 
 This will save the rendered maze and your manually built solution in a file named `maze.svg`, which you can open using an external editor or viewer. However, it would be much more convenient to have a `.preview()` method on the `SVG` instance that you could call directly to have the image displayed to you. You’ll implement that method now.
 
-[Remove ads](https://realpython.com/account/join/)
 
-### Preview the Rendered Maze and Its Solution[](https://realpython.com/python-maze-solver/#preview-the-rendered-maze-and-its-solution "Permanent link")
+
+### Preview the Rendered Maze and Its Solution
 
 These days, modern web browsers support scalable vector graphics out of the box, making them ideal SVG viewers. Websites embed SVG elements within their HTML content, style them using [CSS](https://realpython.com/html-css-python/), and even animate and interact with them dynamically through [JavaScript](https://realpython.com/python-vs-javascript/). You’ll leverage some of these features to show your rendered SVG image using Python.
 
 Head over to the `renderer` module again and add an `.html_content` property in your `SVG` class:
 
-`# view/renderer.py  import textwrap from dataclasses import dataclass  from maze_solver.models.maze import Maze from maze_solver.models.role import Role from maze_solver.models.solution import Solution from maze_solver.models.square import Square from maze_solver.view.decomposer import decompose from maze_solver.view.primitives import Point, Polyline, Rect, Text, tag  # ...  @dataclass(frozen=True) class SVG:     xml_content: str      @property    def html_content(self) -> str:        return textwrap.dedent("""\        <!DOCTYPE html>        <html lang="en">        <head>          <meta charset="utf-8">          <meta name="viewport" content="width=device-width, initial-scale=1">          <title>SVG Preview</title>        </head>        <body>        {0}        </body>        </html>""").format(self.xml_content) # ...`
+```Python
+# view/renderer.py
+
+import textwrap
+from dataclasses import dataclass
+
+from maze_solver.models.maze import Maze
+from maze_solver.models.role import Role
+from maze_solver.models.solution import Solution
+from maze_solver.models.square import Square
+from maze_solver.view.decomposer import decompose
+from maze_solver.view.primitives import Point, Polyline, Rect, Text, tag
+
+# ...
+
+@dataclass(frozen=True)
+class SVG:
+    xml_content: str
+
+    @property
+    def html_content(self) -> str:
+        return textwrap.dedent("""\
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <title>SVG Preview</title>
+        </head>
+        <body>
+        {0}
+        </body>
+        </html>""").format(self.xml_content)
+
+# ...
+```
 
 This property returns a minimal [HTML5](https://en.wikipedia.org/wiki/HTML5) website with your rendered SVG image in its body. You use [textwrap.dedent()](https://docs.python.org/3/library/textwrap.html#textwrap.dedent) to remove the leading whitespace from each line of your HTML template and replace the `{0}` placeholder with the object’s `.xml_content` attribute. Note that, in this case, using the `str.format()` method is preferable over an [f-string](https://realpython.com/python-f-strings/) literal, which would affect the indentation of the lines in an undesirable way.
 
 This is what the output will look like when you print it against a sample `SVG` instance:
 
->>>
-
-`>>> from maze_solver.view.renderer import SVG >>> svg = SVG('<svg><rect width="30" height="20" fill="red" /></svg>') >>> print(svg.html_content) <!DOCTYPE html> <html lang="en"> <head>   <meta charset="utf-8">   <meta name="viewport" content="width=device-width, initial-scale=1">   <title>SVG Preview</title> </head> <body> <svg><rect width="30" height="20" fill="red" /></svg> </body> </html>`
+```Python
+>>> from maze_solver.view.renderer import SVG
+>>> svg = SVG('<svg><rect width="30" height="20" fill="red" /></svg>')
+>>> print(svg.html_content)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SVG Preview</title>
+</head>
+<body>
+<svg><rect width="30" height="20" fill="red" /></svg>
+</body>
+</html>
+```
 
 If you save this piece of HTML in a file and open it with your web browser, then you’ll see a small red rectangle in the top-left corner. However, you can automate these steps using a few modules in Python’s standard library.
 
 Define the `.preview()` method in your class, which will save the HTML to a [temporary file](https://realpython.com/working-with-files-in-python/#making-temporary-files-and-directories) and open it using your web browser:
 
-`# view/renderer.py  import tempfile import textwrap import webbrowser from dataclasses import dataclass  from maze_solver.models.maze import Maze from maze_solver.models.role import Role from maze_solver.models.solution import Solution from maze_solver.models.square import Square from maze_solver.view.decomposer import decompose from maze_solver.view.primitives import Point, Polyline, Rect, Text, tag  # ...  @dataclass(frozen=True) class SVG:     xml_content: str      @property     def html_content(self) -> str:         return textwrap.dedent("""\         <!DOCTYPE html>         <html lang="en">         <head>           <meta charset="utf-8">           <meta name="viewport" content="width=device-width, initial-scale=1">           <title>SVG Preview</title>         </head>         <body>         {0}         </body>         </html>""").format(self.xml_content)      def preview(self) -> None:        with tempfile.NamedTemporaryFile(            mode="w", encoding="utf-8", suffix=".html", delete=False        ) as file:            file.write(self.html_content)        webbrowser.open(f"file://{file.name}") # ...`
+```Python
+# view/renderer.py
+
+import tempfile
+import textwrap
+import webbrowser
+from dataclasses import dataclass
+
+from maze_solver.models.maze import Maze
+from maze_solver.models.role import Role
+from maze_solver.models.solution import Solution
+from maze_solver.models.square import Square
+from maze_solver.view.decomposer import decompose
+from maze_solver.view.primitives import Point, Polyline, Rect, Text, tag
+
+# ...
+
+@dataclass(frozen=True)
+class SVG:
+    xml_content: str
+
+    @property
+    def html_content(self) -> str:
+        return textwrap.dedent("""\
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <title>SVG Preview</title>
+        </head>
+        <body>
+        {0}
+        </body>
+        </html>""").format(self.xml_content)
+
+    def preview(self) -> None:
+        with tempfile.NamedTemporaryFile(
+            mode="w", encoding="utf-8", suffix=".html", delete=False
+        ) as file:
+            file.write(self.html_content)
+        webbrowser.open(f"file://{file.name}")
+
+# ...
+```
 
 You create a named temporary file with the `.html` suffix so that your web browser can recognize it correctly. Note that you also set the `delete=False` flag to prevent Python from automatically deleting that file before you have a chance to load it in the first place. Next, you display the rendered SVG image in your **default web browser** using the [`webbrowser`](https://docs.python.org/3/library/webbrowser.html) module.
 
-**Note:** Make sure to put the last line of code in the `.preview()` method outside of the `with` statement’s block. Because temporary files are always [buffered](https://en.wikipedia.org/wiki/Data_buffer) in the text mode, calling `.write()` may not immediately [flush](https://realpython.com/python-flush-print-output/) pending data onto the physical disk. Only when you manually [close the file](https://realpython.com/why-close-file-python/) or have the [`with` statement](https://realpython.com/python-with-statement/) do it for you at the end of the block will the temporary file be written to disk.
+> **Note:** Make sure to put the last line of code in the `.preview()` method outside of the `with` statement’s block. Because temporary files are always [buffered](https://en.wikipedia.org/wiki/Data_buffer) in the text mode, calling `.write()` may not immediately [flush](https://realpython.com/python-flush-print-output/) pending data onto the physical disk. Only when you manually [close the file](https://realpython.com/why-close-file-python/) or have the [`with` statement](https://realpython.com/python-with-statement/) do it for you at the end of the block will the temporary file be written to disk.
 
 Now, try this code snippet in your Python REPL:
 
->>>
+```Python
+>>> from maze_solver.models.border import Border
+>>> from maze_solver.models.maze import Maze
+>>> from maze_solver.models.role import Role
+>>> from maze_solver.models.solution import Solution
+>>> from maze_solver.models.square import Square
+>>> from maze_solver.view.renderer import SVGRenderer
 
-`>>> from maze_solver.models.border import Border >>> from maze_solver.models.maze import Maze >>> from maze_solver.models.role import Role >>> from maze_solver.models.solution import Solution >>> from maze_solver.models.square import Square >>> from maze_solver.view.renderer import SVGRenderer  >>> maze = Maze( ...     squares=( ...         Square(0, 0, 0, Border.TOP | Border.LEFT), ...         Square(1, 0, 1, Border.TOP | Border.RIGHT), ...         Square(2, 0, 2, Border.LEFT | Border.RIGHT, Role.EXIT), ...         Square(3, 0, 3, Border.TOP | Border.LEFT | Border.RIGHT), ...         Square(4, 1, 0, Border.BOTTOM | Border.LEFT | Border.RIGHT), ...         Square(5, 1, 1, Border.LEFT | Border.RIGHT), ...         Square(6, 1, 2, Border.BOTTOM | Border.LEFT), ...         Square(7, 1, 3, Border.RIGHT), ...         Square(8, 2, 0, Border.TOP | Border.LEFT, Role.ENTRANCE), ...         Square(9, 2, 1, Border.BOTTOM), ...         Square(10, 2, 2, Border.TOP | Border.BOTTOM), ...         Square(11, 2, 3, Border.BOTTOM | Border.RIGHT), ...     ) ... )  >>> solution = Solution(squares=[maze[i] for i in (8, 11, 7, 6, 2)])  >>> renderer = SVGRenderer() >>> renderer.render(maze).preview() >>> renderer.render(maze, solution).preview()`
+>>> maze = Maze(
+...     squares=(
+...         Square(0, 0, 0, Border.TOP | Border.LEFT),
+...         Square(1, 0, 1, Border.TOP | Border.RIGHT),
+...         Square(2, 0, 2, Border.LEFT | Border.RIGHT, Role.EXIT),
+...         Square(3, 0, 3, Border.TOP | Border.LEFT | Border.RIGHT),
+...         Square(4, 1, 0, Border.BOTTOM | Border.LEFT | Border.RIGHT),
+...         Square(5, 1, 1, Border.LEFT | Border.RIGHT),
+...         Square(6, 1, 2, Border.BOTTOM | Border.LEFT),
+...         Square(7, 1, 3, Border.RIGHT),
+...         Square(8, 2, 0, Border.TOP | Border.LEFT, Role.ENTRANCE),
+...         Square(9, 2, 1, Border.BOTTOM),
+...         Square(10, 2, 2, Border.TOP | Border.BOTTOM),
+...         Square(11, 2, 3, Border.BOTTOM | Border.RIGHT),
+...     )
+... )
+
+>>> solution = Solution(squares=[maze[i] for i in (8, 11, 7, 6, 2)])
+
+>>> renderer = SVGRenderer()
+>>> renderer.render(maze).preview()
+>>> renderer.render(maze, solution).preview()
+```
 
 Isn’t it more convenient than manually writing the rendered solution each time and trying to find the resulting file with your file manager? Notice how the `.preview()` method lets you choose between showing the solution or not. The maze with its solution rendered in your web browser should look like this:
 
@@ -1305,11 +1941,11 @@ Isn’t it more convenient than manually writing the rendered solution each time
 
 Having the means to quickly visualize your work is an invaluable help when you build the maze manually or when you debug a maze-solving algorithm. In the next step, you’ll add code allowing you to load a few sample mazes shipped with this tutorial.
 
-## Step 4: Load the Maze From a Binary File[](https://realpython.com/python-maze-solver/#step-4-load-the-maze-from-a-binary-file "Permanent link")
+## Step 4: Load the Maze From a Binary File
 
 At this point, you can build and draw the maze. However, creating it by hand in Python takes a lot of error-prone and tedious effort. By the end of this step, you’ll have a custom file format for the persistent storage of mazes, which you’ll be able to save and load at a push of a button. Besides that, you’ll be able to load the sample mazes supplied with this tutorial.
 
-### Design the File Format[](https://realpython.com/python-maze-solver/#design-the-file-format "Permanent link")
+### Design the File Format
 
 Squares in the maze are very much like pixels in an image. One of the sample mazes included in the supporting materials has several hundred of them, but you could very easily be looking at thousands of squares in some of the larger mazes.
 
@@ -1323,17 +1959,19 @@ You’re going to need more than one byte to store values like the width or heig
 
 Binary files often begin with a fixed sequence of bytes to uniquely identify their particular format. For example, [Java’s](https://realpython.com/java-vs-python/) class files always start with four bytes whose hexadecimal representation reads as `0xCAFEBABE`, which is one of the geeky references to coffee in the language’s vast ecosystem. Such an initial value is known as the [magic number](https://en.wikipedia.org/wiki/Magic_number_(programming)), although it can sometimes be textual.
 
-**Note:** Tools like the Unix [`file`](https://en.wikipedia.org/wiki/File_(command)) command leverage known magic numbers to detect file types:
+> **Note:** Tools like the Unix [`file`](https://en.wikipedia.org/wiki/File_(command)) command leverage known magic numbers to detect file types:
 
-`$ file Hello.class Hello.class: compiled Java class data, version 62.0`
+```Shell
+$ file Hello.class Hello.class: compiled Java class data, version 62.0
+```
 
-In this case, the tool correctly recognized a compiled Java class file.
+> In this case, the tool correctly recognized a compiled Java class file.
 
 You can choose any **magic number** for your custom maze file format, but in this tutorial, you’ll use the four [ASCII](https://en.wikipedia.org/wiki/ASCII) characters `MAZE` in uppercase. Their hexadecimal representation, `0x4D415A45`, looks less coffee-like but is just as unique and recognizable.
 
 Next, the magic number is usually immediately followed by a **file header**, which provides useful [metadata](https://en.wikipedia.org/wiki/Metadata) about the actual data in the file. The header has a fixed structure consisting of **fields**, such as the width of the maze. However, the header may have a variable length—for example, due to enemy positions kept in a [lookup table (LUT)](https://en.wikipedia.org/wiki/Lookup_table) or optional fields.
 
-**Note:** If you envision introducing breaking changes to your file format in the future, for example, due to new features, then consider including a **version** field either at the beginning or before the header. This should allow you to gracefully handle slight differences across file format versions.
+> **Note:** If you envision introducing breaking changes to your file format in the future, for example, due to new features, then consider including a **version** field either at the beginning or before the header. This should allow you to gracefully handle slight differences across file format versions.
 
 Each header field must have a known **type**, **size**, and **offset** measured in bytes since the beginning of the file so that you know where the next field begins. The maze file header will have the following three fields:
 
@@ -1349,9 +1987,8 @@ Once you get through the header and have complete information about the amount a
 
 In the next section, you’ll look into packing your file body’s data neatly on as few bytes as possible.
 
-[Remove ads](https://realpython.com/account/join/)
 
-### Choose Your Data Alignment[](https://realpython.com/python-maze-solver/#choose-your-data-alignment "Permanent link")
+### Choose Your Data Alignment
 
 Although each border pattern can be defined by as little as four bits—because there are sixteen different combinations of border sides—you’ll need to use the whole byte with eight bits to represent a border. That’s because a single byte is the smallest [unit of information](https://en.wikipedia.org/wiki/Units_of_information) in the digital world.
 
@@ -1361,25 +1998,60 @@ Now, it’s entirely up to you how you want to [align data](https://en.wikipedi
 
 A far better option is to fit both numbers, which correspond to borders and roles, on a single byte. You can do this by [shifting the bits](https://realpython.com/python-bitwise-operators/#bitwise-shift-operators) of one number a few places to the left (`<<`) and computing their [bitwise union (`|`)](https://realpython.com/python-bitwise-operators/#bitwise-or) with the other number:
 
->>>
+```Python
+>>> border = 11
+>>> role = 5
 
-`>>> border = 11 >>> role = 5  >>> (role << 4) | border 91  >>> format(91, "08b") '01011011'  >>> format(role, "b") '101'  >>> format(border, "b") '1011'`
+>>> (role << 4) | border
+91
+
+>>> format(91, "08b")
+'01011011'
+
+>>> format(role, "b")
+'101'
+
+>>> format(border, "b")
+'1011'
+```
 
 Here, the role number’s three bits are followed by the four bits of the border number. When you look at the resulting bit pattern from its right edge, you’ll see that the first four bits (`1011`) are the same as the bits of the border. The next three bits (`101`) to the left come from the role. Finally, the [most significant bit](https://en.wikipedia.org/wiki/Bit_numbering#Bit_significance_and_indexing) remains unused, so its value will always be zero.
 
 Despite using plain integers in this demonstration example, you’ll get an identical result when you replace them with your `Border` and `Role` enumeration members:
 
->>>
+```Python
+>>> from maze_solver.models.square import Border
+>>> from maze_solver.models.square import Role
 
-`>>> from maze_solver.models.square import Border >>> from maze_solver.models.square import Role  >>> border = Border.TOP | Border.BOTTOM | Border.RIGHT >>> role = Role.REWARD  >>> border <Border.TOP|BOTTOM|RIGHT: 11>  >>> role <Role.REWARD: 5>  >>> (role << 4) | border.value 91`
+>>> border = Border.TOP | Border.BOTTOM | Border.RIGHT
+>>> role = Role.REWARD
+
+>>> border
+<Border.TOP|BOTTOM|RIGHT: 11>
+
+>>> role
+<Role.REWARD: 5>
+
+>>> (role << 4) | border.value
+91
+```
 
 One crucial difference, though, is that you have to explicitly refer to the `.value` attribute of the border or cast the border to `int()`. Otherwise, Python would interpret the highlighted line of code as an attempt to make a compound `Border` member instead of an integer number. The underlying `enum.IntFlag` data type overwrites the bitwise OR (`|`) operator to mean something other than its usual definition.
 
 The combined border and role is your **square value**, which you’ll keep in the array of numbers in the file body. You can decipher the border by superimposing a [bitmask](https://realpython.com/python-bitwise-operators/#bitmasks) on top of the square value to isolate specific bits. To get the role back, you’ll use the [bitwise right-shift operator (`>>`)](https://realpython.com/python-bitwise-operators/#right-shift), which brings the bits shifted earlier to their original position:
 
->>>
+```
+>>> square_value = 91
 
-`>>> square_value = 91  >>> border = square_value & 0b1111 >>> role = square_value >> 4  >>> border 11  >>> role 5`
+>>> border = square_value & 0b1111
+>>> role = square_value >> 4
+
+>>> border
+11
+
+>>> role
+5
+```
 
 In this case, the bitmask `0b1111` lets you extract the four least significant bits from a number while disregarding bits to the left. Note that you can express the same bitmask in different [numeral systems](https://en.wikipedia.org/wiki/Numeral_system). It’s customary to use the hexadecimal system because it’s usually the most compact. For example, `0b1111` is the binary counterpart of `15` in the decimal system and the equivalent `0xf` in the hexadecimal system.
 

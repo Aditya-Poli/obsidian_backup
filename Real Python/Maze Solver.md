@@ -2040,7 +2040,7 @@ One crucial difference, though, is that you have to explicitly refer to the `.v
 
 The combined border and role is your **square value**, which you’ll keep in the array of numbers in the file body. You can decipher the border by superimposing a [bitmask](https://realpython.com/python-bitwise-operators/#bitmasks) on top of the square value to isolate specific bits. To get the role back, you’ll use the [bitwise right-shift operator (`>>`)](https://realpython.com/python-bitwise-operators/#right-shift), which brings the bits shifted earlier to their original position:
 
-```
+```Python
 >>> square_value = 91
 
 >>> border = square_value & 0b1111
@@ -2057,51 +2057,128 @@ In this case, the bitmask `0b1111` lets you extract the four least significant
 
 Finally, you can pass the extracted numeric values to the relevant [class constructors](https://realpython.com/python-class-constructor/) of your enumeration types:
 
->>>
+```Python
+>>> from maze_solver.models.square import Border
+>>> from maze_solver.models.square import Role
 
-`>>> from maze_solver.models.square import Border >>> from maze_solver.models.square import Role  >>> square_value = 91  >>> Border(square_value & 0xf) <Border.TOP|BOTTOM|RIGHT: 11>  >>> Role(square_value >> 4) <Role.REWARD: 5>`
+>>> square_value = 91
+
+>>> Border(square_value & 0xf)
+<Border.TOP|BOTTOM|RIGHT: 11>
+
+>>> Role(square_value >> 4)
+<Role.REWARD: 5>
+```
 
 Congratulations! You’ve just defined a custom binary file format that’ll allow you to share your wonderful mazes with friends or keep them on disk to yourself. Note that this isn’t the only way to organize data in binary files. Some applications have specific needs, which may require the ability to quickly append data at the end of the file without rewriting its header. In such a case, you’d store data in blocks pointing to one another.
 
 As you can see, there’s a lot to consider when designing a custom binary file format. Fortunately, having all that behind you now, it’s time to start digging into the implementation.
 
-### Prepare the Placeholder Modules[](https://realpython.com/python-maze-solver/#prepare-the-placeholder-modules "Permanent link")
+### Prepare the Placeholder Modules
 
 As before, you’re going to make some space for your code. Go ahead and create another Python package with these two placeholder modules in it:
 
-`maze-solver/ │ ├── src/ │   │ │   └── maze_solver/ │       │ │       ├── models/ │       │   ├── __init__.py │       │   ├── border.py │       │   ├── maze.py │       │   ├── role.py │       │   ├── solution.py │       │   └── square.py │       │ │       ├── persistence/ │       │   ├── __init__.py │       │   ├── file_format.py │       │   └── serializer.py │       │ │       ├── view/ │       │   ├── __init__.py │       │   ├── decomposer.py │       │   ├── primitives.py │       │   └── renderer.py │       │ │       └── __init__.py │ └── pyproject.toml`
+```
+maze-solver/
+│
+├── src/
+│   │
+│   └── maze_solver/
+│       │
+│       ├── models/
+│       │   ├── __init__.py
+│       │   ├── border.py
+│       │   ├── maze.py
+│       │   ├── role.py
+│       │   ├── solution.py
+│       │   └── square.py
+│       │
+│       ├── persistence/
+│       │   ├── __init__.py
+│       │   ├── file_format.py
+│       │   └── serializer.py
+│       │
+│       ├── view/
+│       │   ├── __init__.py
+│       │   ├── decomposer.py
+│       │   ├── primitives.py
+│       │   └── renderer.py
+│       │
+│       └── __init__.py
+│
+└── pyproject.toml
+```
 
 The `file_format` module will contain your file header and its body, while the `serializer` module will provide the loading and saving routines.
 
 Next up, you’ll define a Python class to represent your file header.
 
-### Define the File Header[](https://realpython.com/python-maze-solver/#define-the-file-header "Permanent link")
+### Define the File Header
 
 Remember that the header follows the magic number, which uniquely identifies your file format. To avoid hard-coding literal numeric values, it makes sense to keep your magic number in a Python constant, which you can refer to by name.
 
-**Note:** Interestingly enough, using unnamed numeric literals, such as 3.1415 to mean π, is known as the magic number [anti-pattern](https://en.wikipedia.org/wiki/Anti-pattern). So, the term can take either a positive or negative meaning, depending on the context.
+> **Note:** Interestingly enough, using unnamed numeric literals, such as 3.1415 to mean π, is known as the magic number [anti-pattern](https://en.wikipedia.org/wiki/Anti-pattern). So, the term can take either a positive or negative meaning, depending on the context.
 
 You can define the magic number as a read-only [`bytes`](https://realpython.com/python-strings/#bytes-objects) object in Python by prepending the letter _b_ to a string literal:
 
-`# persistence/file_format.py  MAGIC_NUMBER: bytes = b"MAZE"`
+```Python
+# persistence/file_format.py
+
+MAGIC_NUMBER: bytes = b"MAZE"
+```
 
 Even though a `bytes` literal looks similar to a Python string, it’s actually a disguised sequence of integers in the range of 0 and 255. The letters `M`, `A`, `Z`, and `E` get internally turned into their ASCII codes:
 
->>>
+```Python
+>>> list(b"MAZE")
+[77, 65, 90, 69]
 
-`>>> list(b"MAZE") [77, 65, 90, 69]  >>> b"\x4D\x41\x5A\x45" b'MAZE'`
+>>> b"\x4D\x41\x5A\x45"
+b'MAZE'
+```
 
 Because you can only use ASCII characters in such a literal, it may sometimes be more convenient to encode them with the hexadecimal notation (`\x`) as an alternative. In general, dealing with bytes instead of characters is preferable when your work with binary data.
 
 The file header is perhaps best modeled as a Python data class, letting you declare the fields and their types in the expected order:
 
-`# persistence/file_format.py  from dataclasses import dataclass MAGIC_NUMBER: bytes = b"MAZE"  @dataclass(frozen=True) class FileHeader:     format_version: int    width: int    height: int`
+```Python
+# persistence/file_format.py
+
+from dataclasses import dataclass
+
+MAGIC_NUMBER: bytes = b"MAZE"
+
+@dataclass(frozen=True)
+class FileHeader:
+    format_version: int
+    width: int
+    height: int
+```
 
 This definition closely follows the table that you saw at the beginning of the current step in the tutorial. There are three mandatory fields in the header, all represented as integers in Python.
 
 A file header object should be capable of writing its own content into a supplied binary file. You can use the standard library’s [`struct`](https://docs.python.org/3/library/struct.html) module to tell Python how to serialize the individual fields as C data types:
 
-`# persistence/file_format.py  import struct from dataclasses import dataclass from typing import BinaryIO MAGIC_NUMBER: bytes = b"MAZE"  @dataclass(frozen=True) class FileHeader:     format_version: int     width: int     height: int      def write(self, file: BinaryIO) -> None:        file.write(MAGIC_NUMBER)        file.write(struct.pack("B", self.format_version))        file.write(struct.pack("<2I", self.width, self.height))`
+```Python
+# persistence/file_format.py
+
+import struct
+from dataclasses import dataclass
+from typing import BinaryIO
+
+MAGIC_NUMBER: bytes = b"MAZE"
+
+@dataclass(frozen=True)
+class FileHeader:
+    format_version: int
+    width: int
+    height: int
+
+    def write(self, file: BinaryIO) -> None:
+        file.write(MAGIC_NUMBER)
+        file.write(struct.pack("B", self.format_version))
+        file.write(struct.pack("<2I", self.width, self.height))
+```
 
 You start by dumping the bytes of your magic number and then proceed to write the remaining fields using types encoded with a special [format string](https://docs.python.org/3/library/struct.html#format-strings). The uppercase letter `B` stands for unsigned byte, which agrees with your expected version field.
 
@@ -2111,7 +2188,35 @@ So, the string `<2I` means two unsigned integers, one after the other, in litt
 
 Reading back the header from a file is fairly similar to writing it, only in reverse order:
 
- `1# persistence/file_format.py  2  3import struct  4from dataclasses import dataclass  5from typing import BinaryIO  6  7MAGIC_NUMBER: bytes = b"MAZE"  8  9@dataclass(frozen=True) 10class FileHeader: 11    format_version: int 12    width: int 13    height: int 14 15    @classmethod 16    def read(cls, file: BinaryIO) -> "FileHeader": 17        assert ( 18            file.read(len(MAGIC_NUMBER)) == MAGIC_NUMBER 19        ), "Unknown file type" 20        format_version, = struct.unpack("B", file.read(1)) 21        width, height = struct.unpack("<2I", file.read(2 * 4)) 22        return cls(format_version, width, height) 23 24    def write(self, file: BinaryIO) -> None: 25        file.write(MAGIC_NUMBER) 26        file.write(struct.pack("B", self.format_version)) 27        file.write(struct.pack("<2I", self.width, self.height))`
+```Python
+ 1# persistence/file_format.py
+ 2
+ 3import struct
+ 4from dataclasses import dataclass
+ 5from typing import BinaryIO
+ 6
+ 7MAGIC_NUMBER: bytes = b"MAZE"
+ 8
+ 9@dataclass(frozen=True)
+10class FileHeader:
+11    format_version: int
+12    width: int
+13    height: int
+14
+15    @classmethod
+16    def read(cls, file: BinaryIO) -> "FileHeader":
+17        assert (
+18            file.read(len(MAGIC_NUMBER)) == MAGIC_NUMBER
+19        ), "Unknown file type"
+20        format_version, = struct.unpack("B", file.read(1))
+21        width, height = struct.unpack("<2I", file.read(2 * 4))
+22        return cls(format_version, width, height)
+23
+24    def write(self, file: BinaryIO) -> None:
+25        file.write(MAGIC_NUMBER)
+26        file.write(struct.pack("B", self.format_version))
+27        file.write(struct.pack("<2I", self.width, self.height))
+```
 
 At the time of reading the header from a file, no class instance exists yet, so you must define a [class method](https://realpython.com/instance-class-and-static-methods-demystified/#class-methods) that can act on the class rather than an object. Here’s a breakdown of what happens inside that method:
 
@@ -2124,7 +2229,7 @@ Notice that your file header is currently version-agnostic, so it should work wi
 
 When you finish reading the header, you’ll know how many squares there are and how they’re arranged in rows and columns. This will allow you to interpret the remaining part of the file correctly, which you’ll do now.
 
-### Define the File Body[](https://realpython.com/python-maze-solver/#define-the-file-body "Permanent link")
+### Define the File Body
 
 The file body is less exciting than the header because it’s merely a stream of small integers representing border patterns and square roles in the maze. It might be your first instinct to put them in a Python list or tuple. However, the [`array`](https://docs.python.org/3/library/array.html) module in the standard library provides a much better-suited data type for efficiently storing such _homogeneous_ numeric sequences.
 
@@ -2132,27 +2237,91 @@ Lists and tuples are _heterogenous_, meaning you can stuff elements of all kind
 
 Your `FileBody` class will have only one attribute to accommodate the square values:
 
-`# persistence/file_format.py  import array import struct from dataclasses import dataclass from typing import BinaryIO  MAGIC_NUMBER: bytes = b"MAZE"  # ...  @dataclass(frozen=True) class FileBody:     square_values: array.array`
+```Python
+# persistence/file_format.py
+
+import array
+import struct
+from dataclasses import dataclass
+from typing import BinaryIO
+
+MAGIC_NUMBER: bytes = b"MAZE"
+
+# ...
+
+@dataclass(frozen=True)
+class FileBody:
+    square_values: array.array
+```
 
 When passing an `array` instance to the file body object, you’ll need to ensure that the array was created with the right [type code](https://docs.python.org/3/library/array.html#module-array) that identifies the underlying C type. In this case, you must use the uppercase letter `B` to mean an array of unsigned bytes. You’ll do that right before reading the file body:
 
-`# persistence/file_format.py  # ...  @dataclass(frozen=True) class FileBody:     square_values: array.array      @classmethod    def read(cls, header: FileHeader, file: BinaryIO) -> "FileBody":        return cls(            array.array("B", file.read(header.width * header.height))        )`
+```Python
+# persistence/file_format.py
+
+# ...
+
+@dataclass(frozen=True)
+class FileBody:
+    square_values: array.array
+
+    @classmethod
+    def read(cls, header: FileHeader, file: BinaryIO) -> "FileBody":
+        return cls(
+            array.array("B", file.read(header.width * header.height))
+        )
+```
 
 To read the body, you must’ve read the header before so that the internal **file pointer** is set at the right offset. Besides that, the header object is one of the parameters expected by this class method. You use the information stored in the file header to calculate the number of remaining bytes to read by multiplying the width and height of the maze. This data is then converted to a byte array and passed to the `FileBody` instance.
 
 Writing the file body becomes more straightforward when you call the array’s `.tobytes()` method, which takes care of serializing the items into the correct data type in the requested byte order. That said, the byte order becomes irrelevant when your array contains only single-byte values:
 
-`# persistence/file_format.py  # ...  @dataclass(frozen=True) class FileBody:     square_values: array.array      @classmethod     def read(cls, header: FileHeader, file: BinaryIO) -> "FileBody":         return cls(             array.array("B", file.read(header.width * header.height))         )      def write(self, file: BinaryIO) -> None:        file.write(self.square_values.tobytes())`
+```Python
+# persistence/file_format.py
+
+# ...
+
+@dataclass(frozen=True)
+class FileBody:
+    square_values: array.array
+
+    @classmethod
+    def read(cls, header: FileHeader, file: BinaryIO) -> "FileBody":
+        return cls(
+            array.array("B", file.read(header.width * header.height))
+        )
+
+    def write(self, file: BinaryIO) -> None:
+        file.write(self.square_values.tobytes())
+```
 
 Later, you’ll use the numbers stored in your array to create `Border` and `Role` instances like you did before.
 
 Okay, you can now individually write and read the file header and body, which are the low-level details of your custom file format. However, you still need to serialize and deserialize the higher-level maze object. You’ll address that in the following sections.
 
-### Serialize the Maze[](https://realpython.com/python-maze-solver/#serialize-the-maze "Permanent link")
+### Serialize the Maze
 
 Unless you already have some data to work with, you’re better off implementing the serialization code first, which will eventually write a file that you can later use to test the loading procedure. Open the `serializer` module and type the following code in it:
 
- `1# persistence/serializer.py  2  3import array  4  5from maze_solver.models.maze import Maze  6from maze_solver.models.square import Square  7from maze_solver.persistence.file_format import FileBody, FileHeader  8  9FORMAT_VERSION: int = 1 10 11def serialize(maze: Maze) -> tuple[FileHeader, FileBody]: 12    header = FileHeader(FORMAT_VERSION, maze.width, maze.height) 13    body = FileBody(array.array("B", map(compress, maze))) 14    return header, body 15 16def compress(square: Square) -> int: 17    return (square.role << 4) | square.border.value`
+```Python
+ 1# persistence/serializer.py
+ 2
+ 3import array
+ 4
+ 5from maze_solver.models.maze import Maze
+ 6from maze_solver.models.square import Square
+ 7from maze_solver.persistence.file_format import FileBody, FileHeader
+ 8
+ 9FORMAT_VERSION: int = 1
+10
+11def serialize(maze: Maze) -> tuple[FileHeader, FileBody]:
+12    header = FileHeader(FORMAT_VERSION, maze.width, maze.height)
+13    body = FileBody(array.array("B", map(compress, maze)))
+14    return header, body
+15
+16def compress(square: Square) -> int:
+17    return (square.role << 4) | square.border.value
+```
 
 Here’s a line-by-line explanation of what this code does:
 
@@ -2163,15 +2332,59 @@ Here’s a line-by-line explanation of what this code does:
 
 Writing the header and the body to a file is pretty straightforward, thanks to the [`pathlib.Path`](https://realpython.com/python-pathlib/) object:
 
-`# persistence/serializer.py  import array import pathlib from maze_solver.models.maze import Maze from maze_solver.models.square import Square from maze_solver.persistence.file_format import FileBody, FileHeader  FORMAT_VERSION: int = 1  def dump(maze: Maze, path: pathlib.Path) -> None:     header, body = serialize(maze)    with path.open(mode="wb") as file:        header.write(file)        body.write(file) # ...`
+```Python
+# persistence/serializer.py
+
+import array
+import pathlib
+
+from maze_solver.models.maze import Maze
+from maze_solver.models.square import Square
+from maze_solver.persistence.file_format import FileBody, FileHeader
+
+FORMAT_VERSION: int = 1
+
+def dump(maze: Maze, path: pathlib.Path) -> None:
+    header, body = serialize(maze)
+    with path.open(mode="wb") as file:
+        header.write(file)
+        body.write(file)
+
+# ...
+```
 
 However, it’s important that you open the file for **writing** (`w`) in **binary mode** (`b`) to ensure that Python writes your data as is, without any implicit conversions.
 
 With these three short functions, you can now take your miniature test maze that you [built earlier](https://realpython.com/python-maze-solver/#build-the-maze) and try dumping it to a file:
 
->>>
+```Python
+>>> from pathlib import Path
 
-`>>> from pathlib import Path  >>> from maze_solver.models.border import Border >>> from maze_solver.models.maze import Maze >>> from maze_solver.models.role import Role >>> from maze_solver.models.square import Square >>> from maze_solver.persistence.serializer import dump  >>> maze = Maze( ...     squares=( ...         Square(0, 0, 0, Border.TOP | Border.LEFT), ...         Square(1, 0, 1, Border.TOP | Border.RIGHT), ...         Square(2, 0, 2, Border.LEFT | Border.RIGHT, Role.EXIT), ...         Square(3, 0, 3, Border.TOP | Border.LEFT | Border.RIGHT), ...         Square(4, 1, 0, Border.BOTTOM | Border.LEFT | Border.RIGHT), ...         Square(5, 1, 1, Border.LEFT | Border.RIGHT), ...         Square(6, 1, 2, Border.BOTTOM | Border.LEFT), ...         Square(7, 1, 3, Border.RIGHT), ...         Square(8, 2, 0, Border.TOP | Border.LEFT, Role.ENTRANCE), ...         Square(9, 2, 1, Border.BOTTOM), ...         Square(10, 2, 2, Border.TOP | Border.BOTTOM), ...         Square(11, 2, 3, Border.BOTTOM | Border.RIGHT), ...     ) ... )  >>> dump(maze, Path("miniature.maze"))`
+>>> from maze_solver.models.border import Border
+>>> from maze_solver.models.maze import Maze
+>>> from maze_solver.models.role import Role
+>>> from maze_solver.models.square import Square
+>>> from maze_solver.persistence.serializer import dump
+
+>>> maze = Maze(
+...     squares=(
+...         Square(0, 0, 0, Border.TOP | Border.LEFT),
+...         Square(1, 0, 1, Border.TOP | Border.RIGHT),
+...         Square(2, 0, 2, Border.LEFT | Border.RIGHT, Role.EXIT),
+...         Square(3, 0, 3, Border.TOP | Border.LEFT | Border.RIGHT),
+...         Square(4, 1, 0, Border.BOTTOM | Border.LEFT | Border.RIGHT),
+...         Square(5, 1, 1, Border.LEFT | Border.RIGHT),
+...         Square(6, 1, 2, Border.BOTTOM | Border.LEFT),
+...         Square(7, 1, 3, Border.RIGHT),
+...         Square(8, 2, 0, Border.TOP | Border.LEFT, Role.ENTRANCE),
+...         Square(9, 2, 1, Border.BOTTOM),
+...         Square(10, 2, 2, Border.TOP | Border.BOTTOM),
+...         Square(11, 2, 3, Border.BOTTOM | Border.RIGHT),
+...     )
+... )
+
+>>> dump(maze, Path("miniature.maze"))
+```
 
 This should create a new file named `miniature.maze` in your [current working directory](https://en.wikipedia.org/wiki/Working_directory), which is where you started the [Python REPL](https://realpython.com/python-repl/) session. If the file already exists, then it’ll get overwritten without any warning, so be careful!
 
@@ -2179,53 +2392,150 @@ To quickly verify that the file was created, head over to the file manager in yo
 
 If you have a [hex editor](https://en.wikipedia.org/wiki/Hex_editor) or a tool like [`hexdump`](https://en.wikipedia.org/wiki/Hex_dump), then you can inspect the file’s binary content, which should look something like this:
 
-`$ hd miniature.maze 00000000  4d 41 5a 45 01 04 00 00  00 03 00 00 00 05 09 3c  |MAZE...........<| 00000010  0d 0e 0c 06 08 25 02 03  0a                       |.....%...| 00000019`
+```Shell
+$ hd miniature.maze
+00000000  4d 41 5a 45 01 04 00 00  00 03 00 00 00 05 09 3c  |MAZE...........<|
+00000010  0d 0e 0c 06 08 25 02 03  0a                       |.....%...|
+00000019
+```
 
-The first column is the hexadecimal offset of the first byte in each line, which shows the next sixteen bytes of the file in a two-digit hexadecimal notation. For example, the byte at offset zero is 4d16 or 7710 in the decimal system, which corresponds to the uppercase letter _M_ in ASCII.
+The first column is the hexadecimal offset of the first byte in each line, which shows the next sixteen bytes of the file in a two-digit hexadecimal notation. For example, the byte at offset zero is 4d<sub>16</sub> or 77<sub>10</sub> in the decimal system, which corresponds to the uppercase letter _M_ in ASCII.
 
 Over to the right, you’ll see a text representation of the same data. The dots represent non-printable characters. Other characters depict bytes that happen to have a visual representation in ASCII.
 
 When you discard the header, you’ll be left with the last twelve bytes of the file, which translate to the following decimal values:
 
->>>
-
-`>>> hex_digits = "05 09 3c 0d 0e 0c 06 08 25 02 03 0a" >>> [int(x, 16) for x in hex_digits.split()] [5, 9, 60, 13, 14, 12, 6, 8, 37, 2, 3, 10]`
+```Python
+>>> hex_digits = "05 09 3c 0d 0e 0c 06 08 25 02 03 0a"
+>>> [int(x, 16) for x in hex_digits.split()]
+[5, 9, 60, 13, 14, 12, 6, 8, 37, 2, 3, 10]
+```
 
 The resulting sequence of numbers consists of bit fields that should match the squares in your miniature maze. The two outliers with noticeably higher values, 60 and 37, contain extra information about the special roles of these particular squares. In their case, one must be the entrance and the other the maze’s exit.
 
 However, you can’t know that for sure yet because you haven’t implemented the maze deserialization code. You’ll fix that now.
 
-### Deserialize the Maze[](https://realpython.com/python-maze-solver/#deserialize-the-maze "Permanent link")
+### Deserialize the Maze
 
 To deserialize a binary file into an instance of your `Maze` class, you’re going to follow the same steps but in the opposite order. Modify your `serializer` module by adding new functions to complement the ones that you created earlier. The first function will take a file path as an argument and return the loaded maze object:
 
-`# persistence/serializer.py  # ...  def dump(maze: Maze, path: pathlib.Path) -> None:     header, body = serialize(maze)     with path.open(mode="wb") as file:         header.write(file)         body.write(file)  def load(path: pathlib.Path) -> Maze:     with path.open("rb") as file:        header = FileHeader.read(file)        if header.format_version != FORMAT_VERSION:            raise ValueError("Unsupported file format version")        body = FileBody.read(header, file)        return deserialize(header, body) # ...`
+```Python
+# persistence/serializer.py
+
+# ...
+
+def dump(maze: Maze, path: pathlib.Path) -> None:
+    header, body = serialize(maze)
+    with path.open(mode="wb") as file:
+        header.write(file)
+        body.write(file)
+
+def load(path: pathlib.Path) -> Maze:
+    with path.open("rb") as file:
+        header = FileHeader.read(file)
+        if header.format_version != FORMAT_VERSION:
+            raise ValueError("Unsupported file format version")
+        body = FileBody.read(header, file)
+        return deserialize(header, body)
+
+# ...
+```
 
 You open the file for **reading** (`r`) in **binary mode** (`b`), obtain the file header, and check the file’s format version before attempting to read its body. When the file format is unsupported, you raise an exception. Otherwise, you pass the header and body to another function, which can create a new maze object based on the information provided. In the future, you can branch the code to read the file body differently depending on the detected version.
 
 The deserializing function should look as follows:
 
-`# persistence/serializer.py  # ...  def serialize(maze: Maze) -> tuple[FileHeader, FileBody]:     header = FileHeader(FORMAT_VERSION, maze.width, maze.height)     body = FileBody(array.array("B", map(compress, maze)))     return header, body  def deserialize(header: FileHeader, body: FileBody) -> Maze:     squares: list[Square] = []    for index, square_value in enumerate(body.square_values):        row, column = divmod(index, header.width)        border, role = decompress(square_value)        squares.append(Square(index, row, column, border, role))    return Maze(tuple(squares)) # ...`
+```Python
+# persistence/serializer.py
+
+# ...
+
+def serialize(maze: Maze) -> tuple[FileHeader, FileBody]:
+    header = FileHeader(FORMAT_VERSION, maze.width, maze.height)
+    body = FileBody(array.array("B", map(compress, maze)))
+    return header, body
+
+def deserialize(header: FileHeader, body: FileBody) -> Maze:
+    squares: list[Square] = []
+    for index, square_value in enumerate(body.square_values):
+        row, column = divmod(index, header.width)
+        border, role = decompress(square_value)
+        squares.append(Square(index, row, column, border, role))
+    return Maze(tuple(squares))
+
+# ...
+```
 
 First, you create an empty list, which you then populate with `Square` instances by looping over the square values in the file body. To keep track of the current square index, you [enumerate](https://realpython.com/python-enumerate/) the values and calculate their row and column based on metadata in the header. Each bit field gets decompressed into the relevant `Border` and `Role`, which the square’s class constructor requires. Finally, you pass the squares as a tuple to the `Maze` constructor.
 
 The decompression of a single square value follows the principles outlined at the beginning of this step, when you were choosing how to pack your data on a single byte:
 
-`# persistence/serializer.py  import array import pathlib  from maze_solver.models.border import Border from maze_solver.models.maze import Maze from maze_solver.models.role import Role from maze_solver.models.square import Square from maze_solver.persistence.file_format import FileBody, FileHeader  # ...  def compress(square: Square) -> int:     return (square.role << 4) | square.border.value  def decompress(square_value: int) -> tuple[Border, Role]:     return Border(square_value & 0xf), Role(square_value >> 4)`
+```Python
+# persistence/serializer.py
+
+import array
+import pathlib
+
+from maze_solver.models.border import Border
+from maze_solver.models.maze import Maze
+from maze_solver.models.role import Role
+from maze_solver.models.square import Square
+from maze_solver.persistence.file_format import FileBody, FileHeader
+
+# ...
+
+def compress(square: Square) -> int:
+    return (square.role << 4) | square.border.value
+
+def decompress(square_value: int) -> tuple[Border, Role]:
+    return Border(square_value & 0xf), Role(square_value >> 4)
+```
 
 The bitmask and bit shifting allow you to separate the two pieces of data from one number. Your enumerations can be seeded with those two numbers, while their resulting members can be wrapped in a tuple and returned.
 
 Finally, you can verify whether you’ll get the same object that you started with by dumping your test maze into a file, and then loading it back:
 
->>>
+```Python
+>>> from pathlib import Path
 
-`>>> from pathlib import Path  >>> from maze_solver.models.border import Border >>> from maze_solver.models.maze import Maze >>> from maze_solver.models.role import Role >>> from maze_solver.models.square import Square >>> from maze_solver.persistence.serializer import dump, load  >>> maze = Maze( ...     squares=( ...         Square(0, 0, 0, Border.TOP | Border.LEFT), ...         Square(1, 0, 1, Border.TOP | Border.RIGHT), ...         Square(2, 0, 2, Border.LEFT | Border.RIGHT, Role.EXIT), ...         Square(3, 0, 3, Border.TOP | Border.LEFT | Border.RIGHT), ...         Square(4, 1, 0, Border.BOTTOM | Border.LEFT | Border.RIGHT), ...         Square(5, 1, 1, Border.LEFT | Border.RIGHT), ...         Square(6, 1, 2, Border.BOTTOM | Border.LEFT), ...         Square(7, 1, 3, Border.RIGHT), ...         Square(8, 2, 0, Border.TOP | Border.LEFT, Role.ENTRANCE), ...         Square(9, 2, 1, Border.BOTTOM), ...         Square(10, 2, 2, Border.TOP | Border.BOTTOM), ...         Square(11, 2, 3, Border.BOTTOM | Border.RIGHT), ...     ) ... )  >>> path = Path("miniature.maze")  >>> dump(maze, path) >>> load(path) == maze True  >>> load(path) is maze False`
+>>> from maze_solver.models.border import Border
+>>> from maze_solver.models.maze import Maze
+>>> from maze_solver.models.role import Role
+>>> from maze_solver.models.square import Square
+>>> from maze_solver.persistence.serializer import dump, load
+
+>>> maze = Maze(
+...     squares=(
+...         Square(0, 0, 0, Border.TOP | Border.LEFT),
+...         Square(1, 0, 1, Border.TOP | Border.RIGHT),
+...         Square(2, 0, 2, Border.LEFT | Border.RIGHT, Role.EXIT),
+...         Square(3, 0, 3, Border.TOP | Border.LEFT | Border.RIGHT),
+...         Square(4, 1, 0, Border.BOTTOM | Border.LEFT | Border.RIGHT),
+...         Square(5, 1, 1, Border.LEFT | Border.RIGHT),
+...         Square(6, 1, 2, Border.BOTTOM | Border.LEFT),
+...         Square(7, 1, 3, Border.RIGHT),
+...         Square(8, 2, 0, Border.TOP | Border.LEFT, Role.ENTRANCE),
+...         Square(9, 2, 1, Border.BOTTOM),
+...         Square(10, 2, 2, Border.TOP | Border.BOTTOM),
+...         Square(11, 2, 3, Border.BOTTOM | Border.RIGHT),
+...     )
+... )
+
+>>> path = Path("miniature.maze")
+
+>>> dump(maze, path)
+>>> load(path) == maze
+True
+
+>>> load(path) is maze
+False
+```
 
 You can rely on the [equality test (`==`)](https://realpython.com/python-is-identity-vs-equality/) provided by your data class, which correctly compares `Maze` instances by their value rather than identity. While the original maze and the loaded counterpart are two distinct objects in computer memory, they compare as equal because they’re made up of the same squares!
 
 There’s one last detail to improve in your current implementation of the maze serialization. Notice that in order to load or dump the maze to a file, you need to import both the `Maze` model and the relevant function from the `serializer` module. That’s not ideal from an object-oriented perspective, so you’ll work on that in the next section.
 
-### Add the Serializing Methods to the `Maze` Class[](https://realpython.com/python-maze-solver/#add-the-serializing-methods-to-the-maze-class "Permanent link")
+### Add the Serializing Methods to the `Maze` Class
 
 To make your `Maze` class more self-contained, you may augment it with `.load()` and `.dump()` methods that’ll delegate processing to their respective counterparts in the `serializer` module. However, doing so without any modifications would inevitably lead to the dreaded [circular dependency](https://realpython.com/python-import/#handle-cyclical-imports), which Python doesn’t allow. You can’t have your class depend on functions in another module and the other way around at the same time.
 
@@ -2233,23 +2543,107 @@ There are a few ways to work around this problem, each with its pros and cons, b
 
 Start refactoring your code by first deleting the following [import statement](https://realpython.com/python-import/) from the `serializer` module:
 
- `# persistence/serializer.py   import array  import pathlib   from maze_solver.models.border import Border -from maze_solver.models.maze import Maze  from maze_solver.models.role import Role  from maze_solver.models.square import Square  from maze_solver.persistence.file_format import FileBody, FileHeader   # ...`
+ ```File Changes (diff)
+ # persistence/serializer.py
+
+ import array
+ import pathlib
+
+ from maze_solver.models.border import Border
+-from maze_solver.models.maze import Maze
+ from maze_solver.models.role import Role
+ from maze_solver.models.square import Square
+ from maze_solver.persistence.file_format import FileBody, FileHeader
+
+ # ...
+```
 
 As soon as you do that, your code editor should flag all unresolved `Maze` class references in this module. You’ll find the first one in your `dump()` function at the top of the file. The function currently accepts a maze object as an argument, which you can replace with intermediary [data transfer objects (DTOs)](https://en.wikipedia.org/wiki/Data_transfer_object), such as Python built-in types or other models:
 
- `# persistence/serializer.py   # ...  -def dump(maze: Maze, path: pathlib.Path) -> None: +def dump_squares( +    width: int, +    height: int, +    squares: tuple[Square, ...], +    path: pathlib.Path, +) -> None: -    header, body = serialize(maze) +    header, body = serialize(width, height, squares)      with path.open(mode="wb") as file:          header.write(file)          body.write(file)  # ...`
+```File Changes (diff)
+ # persistence/serializer.py
+
+ # ...
+
+-def dump(maze: Maze, path: pathlib.Path) -> None:
++def dump_squares(
++    width: int,
++    height: int,
++    squares: tuple[Square, ...],
++    path: pathlib.Path,
++) -> None:
+-    header, body = serialize(maze)
++    header, body = serialize(width, height, squares)
+     with path.open(mode="wb") as file:
+         header.write(file)
+         body.write(file)
+
+# ...
+```
 
 Rather than serializing a `Maze` instance, you’ll now serialize its building blocks, which the `Maze` class can put together again. Notice that you rename the function to convey its purpose more accurately by emphasizing its new interface.
 
 You must also cascade this change down to the called function, `serialize()`, while `compress()` and `decompress()` will remain intact:
 
- `# persistence/serializer.py   # ...  -def serialize(maze: Maze) -> tuple[FileHeader, FileBody]: +def serialize( +    width: int, +    height: int, +    squares: tuple[Square, ...] +) -> tuple[FileHeader, FileBody]: -    header = FileHeader(FORMAT_VERSION, maze.width, maze.height) +    header = FileHeader(FORMAT_VERSION, width, height) -    body = FileBody(array.array("B", map(compress, maze))) +    body = FileBody(array.array("B", map(compress, squares)))      return header, body   # ...`
+```File Changes (diff)
+ # persistence/serializer.py
+
+ # ...
+
+-def serialize(maze: Maze) -> tuple[FileHeader, FileBody]:
++def serialize(
++    width: int,
++    height: int,
++    squares: tuple[Square, ...]
++) -> tuple[FileHeader, FileBody]:
+-    header = FileHeader(FORMAT_VERSION, maze.width, maze.height)
++    header = FileHeader(FORMAT_VERSION, width, height)
+-    body = FileBody(array.array("B", map(compress, maze)))
++    body = FileBody(array.array("B", map(compress, squares)))
+     return header, body
+
+ # ...
+```
 
 With this update, both `dump_squares()` and `serialize()` have compatible [function signatures](https://en.wikipedia.org/wiki/Type_signature) again.
 
 You’ll modify your deserializing code in a similar way by getting rid of the dependency on `Maze` from both `load()` and `deserialize()`:
 
- `# persistence/serializer.py   import array  import pathlib +from typing import Iterator   from maze_solver.models.border import Border  from maze_solver.models.role import Role  from maze_solver.models.square import Square  from maze_solver.persistence.file_format import FileBody, FileHeader   # ...  -def load(path: pathlib.Path) -> Maze: +def load_squares(path: pathlib.Path) -> Iterator[Square]:     with path.open("rb") as file:         header = FileHeader.read(file)         if header.format_version != FORMAT_VERSION:             raise ValueError("Unsupported file format version")         body = FileBody.read(header, file)         return deserialize(header, body)  -def deserialize(header: FileHeader, body: FileBody) -> Maze: +def deserialize(header: FileHeader, body: FileBody) -> Iterator[Square]: -    squares: list[Square] = []      for index, square_value in enumerate(body.square_values):          row, column = divmod(index, header.width)          border, role = decompress(square_value) -        squares.append(Square(index, row, column, border, role)) +        yield Square(index, row, column, border, role) -    return Maze(tuple(squares))  # ...`
+```File Changes 
+ # persistence/serializer.py
+
+ import array
+ import pathlib
++from typing import Iterator
+
+ from maze_solver.models.border import Border
+ from maze_solver.models.role import Role
+ from maze_solver.models.square import Square
+ from maze_solver.persistence.file_format import FileBody, FileHeader
+
+ # ...
+
+-def load(path: pathlib.Path) -> Maze:
++def load_squares(path: pathlib.Path) -> Iterator[Square]:
+    with path.open("rb") as file:
+        header = FileHeader.read(file)
+        if header.format_version != FORMAT_VERSION:
+            raise ValueError("Unsupported file format version")
+        body = FileBody.read(header, file)
+        return deserialize(header, body)
+
+-def deserialize(header: FileHeader, body: FileBody) -> Maze:
++def deserialize(header: FileHeader, body: FileBody) -> Iterator[Square]:
+-    squares: list[Square] = []
+     for index, square_value in enumerate(body.square_values):
+         row, column = divmod(index, header.width)
+         border, role = decompress(square_value)
+-        squares.append(Square(index, row, column, border, role))
++        yield Square(index, row, column, border, role)
+-    return Maze(tuple(squares))
+
+# ...
+```
 
 The loading function is now named `load_squares()` to follow a consistent naming convention, and it returns an iterator of squares rather than a complete maze. Additionally, you simplified the other function, `deserialize()`, by turning it into a [generator function](https://realpython.com/introduction-to-python-generators/), which returns a [generator iterator](https://docs.python.org/3/glossary.html#term-generator-iterator) of `Square` instances.
 

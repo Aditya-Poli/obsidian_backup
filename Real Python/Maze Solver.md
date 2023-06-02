@@ -400,9 +400,8 @@ Now, you can assign a `Role` instance to _all_ of the squares, even if some 
 
 So far, you’ve defined roles for the squares in the maze. Its next building block is the border around each square, which will let you give them a visual appearance and sense of location.
 
-[Remove ads](https://realpython.com/account/join/)
 
-### Create Border Patterns[](https://realpython.com/python-maze-solver/#create-border-patterns "Permanent link")
+### Create Border Patterns
 
 Each square can have between zero and four sides painted along the main [compass directions](https://en.wikipedia.org/wiki/Compass)—that is, **north (N)**, **south (S)**, **east (E)**, and **west (W)**. When you do the math, then you’ll find out that there are sixteen combinations of unique side patterns in total, ranging from an empty square to one with all four sides painted:
 
@@ -452,55 +451,134 @@ Okay, now that you know what makes a square border, how do you define it in Pyth
 
 In short, you’ll use the `Enum` data type again, but with a slight twist. This time around, you’ll extend the [`enum.IntFlag`](https://docs.python.org/3/library/enum.html#enum.IntFlag) base class, which is an even more specific enumeration type that implements the bit field logic. You’ll give more common names to your enum members instead of using the compass directions. Add this code to the `border` module:
 
-`# models/border.py  from enum import IntFlag, auto  class Border(IntFlag):     EMPTY = 0     TOP = auto()     BOTTOM = auto()     LEFT = auto()     RIGHT = auto()`
+```Python
+# models/border.py
+
+from enum import IntFlag, auto
+
+class Border(IntFlag):
+    EMPTY = 0
+    TOP = auto()
+    BOTTOM = auto()
+    LEFT = auto()
+    RIGHT = auto()
+```
 
 You override the default value of `Border.EMPTY` with a zero to indicate the absence of border sides.
 
 This class resembles the `Role` enumeration that you defined in the previous section, but `IntFlag` allows you to do much more with its members. Rather than being a mutually exclusive choice of one member, the `Border` enumeration lets you combine any number of its members to create a composite value. For example, to define a closed border, you’d combine all four sides using the [bitwise OR (`|`)](https://realpython.com/python-bitwise-operators/#bitwise-or) operator:
 
->>>
+```Python
+>>> from maze_solver.models.border import Border
 
-`>>> from maze_solver.models.border import Border  >>> border = Border.TOP | Border.BOTTOM | Border.RIGHT | Border.LEFT  >>> border <Border.TOP|BOTTOM|LEFT|RIGHT: 15>  >>> border.name 'TOP|BOTTOM|LEFT|RIGHT'  >>> border.value 15`
+>>> border = Border.TOP | Border.BOTTOM | Border.RIGHT | Border.LEFT
+
+>>> border
+<Border.TOP|BOTTOM|LEFT|RIGHT: 15>
+
+>>> border.name
+'TOP|BOTTOM|LEFT|RIGHT'
+
+>>> border.value
+15
+```
 
 The `.name` and `.value` attributes of the resulting border are calculated dynamically based on the combination of its sides.
 
 Note that the order of the individual sides doesn’t matter when you define a composite bit field:
 
->>>
+```Python
+>>> Border.TOP | Border.BOTTOM
+<Border.TOP|BOTTOM: 3>
 
-`>>> Border.TOP | Border.BOTTOM <Border.TOP|BOTTOM: 3>  >>> Border.BOTTOM | Border.TOP <Border.TOP|BOTTOM: 3>`
+>>> Border.BOTTOM | Border.TOP
+<Border.TOP|BOTTOM: 3>
+```
 
 Underneath, it’s a numeric value resulting from turning on the specific bits. Python will always show a consistent text representation of that value, determined by the order of your members in the class definition.
 
 To compare your border to another border pattern, use the [identity test operator (`is`)](https://realpython.com/python-is-identity-vs-equality/#comparing-identity-with-the-python-is-and-is-not-operators). Alternatively, you can use the [equality test operator (`==`)](https://realpython.com/python-is-identity-vs-equality/#comparing-equality-with-the-python-and-operators) to directly compare your border against a known numeric value. Additionally, you can check if the border contains a given side using the [membership test operator (`in`)](https://realpython.com/python-in-operator/):
 
->>>
+```Python
+>>> border is Border.TOP | Border.BOTTOM | Border.RIGHT | Border.LEFT
+True
+>>> border is Border.TOP
+False
 
-`>>> border is Border.TOP | Border.BOTTOM | Border.RIGHT | Border.LEFT True >>> border is Border.TOP False  >>> border == 15 True >>> border == 16 False  >>> Border.TOP in border True`
+>>> border == 15
+True
+>>> border == 16
+False
+
+>>> Border.TOP in border
+True
+```
 
 Comparing an instance of `enum.IntFlag` to a number is possible because the flag is a subclass of the built-in integer type, just like `enum.IntEnum`, which you used before.
 
 Go ahead and add a few convenience [properties](https://realpython.com/python-property/) to your enumeration so that you can detect **corners**, **dead ends**, and **intersections**:
 
-`# models/border.py  from enum import IntFlag, auto  class Border(IntFlag):     EMPTY = 0     TOP = auto()     BOTTOM = auto()     LEFT = auto()     RIGHT = auto()      @property    def corner(self) -> bool:        return self in (            self.TOP | self.LEFT,            self.TOP | self.RIGHT,            self.BOTTOM | self.LEFT,            self.BOTTOM | self.RIGHT,        )     @property    def dead_end(self) -> bool:        return self.bit_count() == 3     @property    def intersection(self) -> bool:        return self.bit_count() < 2`
+```Python
+# models/border.py
+
+from enum import IntFlag, auto
+
+class Border(IntFlag):
+    EMPTY = 0
+    TOP = auto()
+    BOTTOM = auto()
+    LEFT = auto()
+    RIGHT = auto()
+
+    @property
+    def corner(self) -> bool:
+        return self in (
+            self.TOP | self.LEFT,
+            self.TOP | self.RIGHT,
+            self.BOTTOM | self.LEFT,
+            self.BOTTOM | self.RIGHT,
+        )
+
+    @property
+    def dead_end(self) -> bool:
+        return self.bit_count() == 3
+
+    @property
+    def intersection(self) -> bool:
+        return self.bit_count() < 2
+```
 
 All three properties return a [Boolean value](https://realpython.com/python-boolean/). In the `.corner` property, you use the membership test operator (`in`) to check if an instance of the `Border` enumeration—indicated by `self`—is one of the predefined corners. The other two properties rely on the integer’s `.bit_count()` method, which returns the number of ones in the binary representation of your border.
 
 With the `Role` and `Border` building blocks in place, you can now tie them together on a higher abstraction level. In the next section, you’ll implement the `Square` class.
 
-[Remove ads](https://realpython.com/account/join/)
 
-### Model the Square[](https://realpython.com/python-maze-solver/#model-the-square "Permanent link")
+### Model the Square
 
 The purpose of a square is to convey information about a particular location in the maze. Therefore, every square should have known coordinates that can determine its position. The square should also have a border pattern that describes the maze structure at that location. Depending on the purpose of the square, it may optionally play a special role—for example, by indicating the maze entrance.
 
 You’ve already done the hard work by offloading most of these responsibilities to helper classes. The only remaining task is to combine them into a final square object. Open the `square` module and paste the following code:
 
-`# models/square.py  from dataclasses import dataclass  from maze_solver.models.border import Border from maze_solver.models.role import Role  @dataclass(frozen=True) class Square:     index: int     row: int     column: int     border: Border     role: Role = Role.NONE`
+```Python
+# models/square.py
+
+from dataclasses import dataclass
+
+from maze_solver.models.border import Border
+from maze_solver.models.role import Role
+
+@dataclass(frozen=True)
+class Square:
+    index: int
+    row: int
+    column: int
+    border: Border
+    role: Role = Role.NONE
+```
 
 You’re using [Python’s data class](https://realpython.com/python-data-classes/) to generate the mundane code for you, which will correctly initialize instances of this class, among a few other things. Enabling the `frozen` parameter ensures that square objects become [immutable](https://en.wikipedia.org/wiki/Immutable_object) after you create them. There’s no point in changing the values of the instance variables once they’re set.
 
-**Note:** Preferring immutable objects over mutable ones where possible is considered a good programming practice, which can prevent subtle bugs caused by unexpected changes in data.
+> **Note:** Preferring immutable objects over mutable ones where possible is considered a good programming practice, which can prevent subtle bugs caused by unexpected changes in data.
 
 Notice that, in addition to storing the square’s **row** and **column** indices, you also keep track of its one-dimensional **index** within a flat sequence of squares. This way, the search algorithm can uniquely identify squares. While you could theoretically infer the index from the row and column, you’d also need to know the width and height of the maze, which are none of the square’s business. A little redundancy can sometimes keep data [encapsulated](https://en.wikipedia.org/wiki/Encapsulation_(computer_programming)).
 
@@ -508,23 +586,76 @@ When creating your `Square` instance, you must specify its index, row, column,
 
 That’s it! You’ve successfully modeled the `Square` data type, so all the building blocks are now in place to build the maze.
 
-### Build the Maze[](https://realpython.com/python-maze-solver/#build-the-maze "Permanent link")
+### Build the Maze
 
 At the very core, a maze is an ordered collection of squares, which you can represent with a [Python tuple](https://realpython.com/python-lists-tuples/). However, you’ll eventually want to augment your maze model with additional properties and methods, so it makes sense to wrap the sequence of squares in a custom class right away. Type the following code in your `maze` module:
 
-`# models/maze.py  from dataclasses import dataclass  from maze_solver.models.square import Square  @dataclass(frozen=True) class Maze:     squares: tuple[Square, ...]`
+```Python
+# models/maze.py
+
+from dataclasses import dataclass
+
+from maze_solver.models.square import Square
+
+@dataclass(frozen=True)
+class Maze:
+    squares: tuple[Square, ...]
+```
 
 Here, you use an [immutable](https://realpython.com/python-mutable-vs-immutable-types/) data class again to ensure that the underlying tuple of `Square` objects remains unchanged once assigned. You might be inclined to use a Python list instead of a tuple to keep your squares, but that would prevent you from caching partial results of your computations later. Python’s cache requires [memoized](https://en.wikipedia.org/wiki/Memoization) function arguments to be [hashable](https://realpython.com/python-hash-table/#hashability-vs-immutability) and, therefore, immutable.
 
 To avoid the extra work when looping over the squares or when accessing one of them by index, you can make your class [iterable](https://docs.python.org/3/glossary.html#term-iterable) and [subscriptable](https://docs.python.org/3/reference/expressions.html#subscriptions) by implementing these two [special methods](https://docs.python.org/3/glossary.html#term-special-method):
 
-`# models/maze.py  from dataclasses import dataclass from typing import Iterator from maze_solver.models.square import Square  @dataclass(frozen=True) class Maze:     squares: tuple[Square, ...]      def __iter__(self) -> Iterator[Square]:        return iter(self.squares)     def __getitem__(self, index: int) -> Square:        return self.squares[index]`
+```Python
+# models/maze.py
+
+from dataclasses import dataclass
+from typing import Iterator
+
+from maze_solver.models.square import Square
+
+@dataclass(frozen=True)
+class Maze:
+    squares: tuple[Square, ...]
+
+    def __iter__(self) -> Iterator[Square]:
+        return iter(self.squares)
+
+    def __getitem__(self, index: int) -> Square:
+        return self.squares[index]
+```
 
 The first one lets the `Maze` instances cooperate with the [`for` loop](https://realpython.com/python-for-loop/), while the second one enables the square bracket notation for getting squares by index.
 
 Next, you might want to calculate the **width** and **height** of the maze, knowing the column and row indices of the underlying squares:
 
-`# models/maze.py  from dataclasses import dataclass from functools import cached_property from typing import Iterator  from maze_solver.models.square import Square  @dataclass(frozen=True) class Maze:     squares: tuple[Square, ...]      def __iter__(self) -> Iterator[Square]:         return iter(self.squares)      def __getitem__(self, index: int) -> Square:         return self.squares[index]      @cached_property    def width(self):        return max(square.column for square in self) + 1     @cached_property    def height(self):        return max(square.row for square in self) + 1`
+```Python
+# models/maze.py
+
+from dataclasses import dataclass
+from functools import cached_property
+from typing import Iterator
+
+from maze_solver.models.square import Square
+
+@dataclass(frozen=True)
+class Maze:
+    squares: tuple[Square, ...]
+
+    def __iter__(self) -> Iterator[Square]:
+        return iter(self.squares)
+
+    def __getitem__(self, index: int) -> Square:
+        return self.squares[index]
+
+    @cached_property
+    def width(self):
+        return max(square.column for square in self) + 1
+
+    @cached_property
+    def height(self):
+        return max(square.row for square in self) + 1
+```
 
 You take advantage of the iterable nature of the maze by iterating over it to find the maximum column and row index of its squares with the help of the [`max()`](https://realpython.com/python-min-and-max/) function. Adding `1` to the highest index accounts for the [zero-based numbering](https://en.wikipedia.org/wiki/Zero-based_numbering) of tuple indices.
 
@@ -534,29 +665,127 @@ The benefit of calculating the maze size by hand is [data consistency](https://
 
 Speaking of consistency, you can also include the **validation of the maze** by looping over it again when it’s created to make sure that its squares have the expected rows and columns with matching indices. To do that, you’ll leverage the special method [`.__post_init__()`](https://docs.python.org/3/library/dataclasses.html#post-init-processing) to hook into the initialization process of your data class:
 
-`# models/maze.py  # ...  @dataclass(frozen=True) class Maze:     squares: tuple[Square, ...]      def __post_init__(self) -> None:        validate_indices(self)        validate_rows_columns(self)     # ...  def validate_indices(maze: Maze) -> None:     assert [square.index for square in maze] == list(        range(len(maze.squares))    ), "Wrong square.index" def validate_rows_columns(maze: Maze) -> None:     for y in range(maze.height):        for x in range(maze.width):            square = maze[y * maze.width + x]            assert square.row == y, "Wrong square.row"            assert square.column == x, "Wrong square.column"`
+```Python
+# models/maze.py
+
+# ...
+
+@dataclass(frozen=True)
+class Maze:
+    squares: tuple[Square, ...]
+
+    def __post_init__(self) -> None:
+        validate_indices(self)
+        validate_rows_columns(self)
+
+    # ...
+
+def validate_indices(maze: Maze) -> None:
+    assert [square.index for square in maze] == list(
+        range(len(maze.squares))
+    ), "Wrong square.index"
+
+def validate_rows_columns(maze: Maze) -> None:
+    for y in range(maze.height):
+        for x in range(maze.width):
+            square = maze[y * maze.width + x]
+            assert square.row == y, "Wrong square.row"
+            assert square.column == x, "Wrong square.column"
+```
 
 The first function checks whether the `.index` property of each square fits into a continuous sequence of numbers that enumerates all the squares in the maze. The second function iterates over the rows and columns in the maze, ensuring that the `.row` and `.column` attributes of the corresponding square match up with the current row and column of the loops.
 
-**Note:** Watch out for the proper indentation of these functions, as they don’t belong to the class body.
+> **Note:** Watch out for the proper indentation of these functions, as they don’t belong to the class body.
 
 Both validation functions rely on the [`assert` statement](https://realpython.com/python-assert-statement/) to raise the `AssertionError` and prevent the maze from being created in case of invalid data.
 
 Earlier, you stated that a maze must have an entrance and an exit, so it’s worth confirming that it has both. Go ahead and add two more validation functions:
 
-`# models/maze.py  from dataclasses import dataclass from functools import cached_property from typing import Iterator  from maze_solver.models.role import Role from maze_solver.models.square import Square  @dataclass(frozen=True) class Maze:     squares: tuple[Square, ...]      def __post_init__(self) -> None:         validate_indices(self)         validate_rows_columns(self)         validate_entrance(self)        validate_exit(self)     # ...  # ...  def validate_entrance(maze: Maze) -> None:     assert 1 == sum(        1 for square in maze if square.role is Role.ENTRANCE    ), "Must be exactly one entrance" def validate_exit(maze: Maze) -> None:     assert 1 == sum(        1 for square in maze if square.role is Role.EXIT    ), "Must be exactly one exit"`
+```Python
+# models/maze.py
+
+from dataclasses import dataclass
+from functools import cached_property
+from typing import Iterator
+
+from maze_solver.models.role import Role
+from maze_solver.models.square import Square
+
+@dataclass(frozen=True)
+class Maze:
+    squares: tuple[Square, ...]
+
+    def __post_init__(self) -> None:
+        validate_indices(self)
+        validate_rows_columns(self)
+        validate_entrance(self)
+        validate_exit(self)
+
+    # ...
+
+# ...
+
+def validate_entrance(maze: Maze) -> None:
+    assert 1 == sum(
+        1 for square in maze if square.role is Role.ENTRANCE
+    ), "Must be exactly one entrance"
+
+def validate_exit(maze: Maze) -> None:
+    assert 1 == sum(
+        1 for square in maze if square.role is Role.EXIT
+    ), "Must be exactly one exit"
+```
 
 These count the number of squares whose role is either `ENTRANCE` or `EXIT` and verify that there’s exactly one of each. For your convenience, you might as well implement the relevant properties that’ll return the squares with those special roles:
 
-`# models/maze.py  # ...  @dataclass(frozen=True) class Maze:     squares: tuple[Square, ...]      # ...      @cached_property    def entrance(self) -> Square:        return next(sq for sq in self if sq.role is Role.ENTRANCE)     @cached_property    def exit(self) -> Square:        return next(sq for sq in self if sq.role is Role.EXIT) # ...`
+```Python
+# models/maze.py
+
+# ...
+
+@dataclass(frozen=True)
+class Maze:
+    squares: tuple[Square, ...]
+
+    # ...
+
+    @cached_property
+    def entrance(self) -> Square:
+        return next(sq for sq in self if sq.role is Role.ENTRANCE)
+
+    @cached_property
+    def exit(self) -> Square:
+        return next(sq for sq in self if sq.role is Role.EXIT)
+
+# ...
+```
 
 The code above calls [`next()`](https://docs.python.org/3/library/functions.html#next) on a [generator expression](https://realpython.com/introduction-to-python-generators/#building-generators-with-generator-expressions) that filters the squares by their role. Because you already validated them, you can safely assume that the appropriate squares exist in the maze, and `next()` won’t raise any exception.
 
 Okay, you can finally build your first maze using the building blocks defined earlier:
 
->>>
-
-`>>> from maze_solver.models.border import Border >>> from maze_solver.models.maze import Maze >>> from maze_solver.models.role import Role >>> from maze_solver.models.square import Square >>> maze = Maze( ...     squares=( ...         Square(0, 0, 0, Border.TOP | Border.LEFT), ...         Square(1, 0, 1, Border.TOP | Border.RIGHT), ...         Square(2, 0, 2, Border.LEFT | Border.RIGHT, Role.EXIT), ...         Square(3, 0, 3, Border.TOP | Border.LEFT | Border.RIGHT), ...         Square(4, 1, 0, Border.BOTTOM | Border.LEFT | Border.RIGHT), ...         Square(5, 1, 1, Border.LEFT | Border.RIGHT), ...         Square(6, 1, 2, Border.BOTTOM | Border.LEFT), ...         Square(7, 1, 3, Border.RIGHT), ...         Square(8, 2, 0, Border.TOP | Border.LEFT, Role.ENTRANCE), ...         Square(9, 2, 1, Border.BOTTOM), ...         Square(10, 2, 2, Border.TOP | Border.BOTTOM), ...         Square(11, 2, 3, Border.BOTTOM | Border.RIGHT), ...     ) ... )`
+```Python
+>>> from maze_solver.models.border import Border
+>>> from maze_solver.models.maze import Maze
+>>> from maze_solver.models.role import Role
+>>> from maze_solver.models.square import Square
+>>> maze = Maze(
+...     squares=(
+...         Square(0, 0, 0, Border.TOP | Border.LEFT),
+...         Square(1, 0, 1, Border.TOP | Border.RIGHT),
+...         Square(2, 0, 2, Border.LEFT | Border.RIGHT, Role.EXIT),
+...         Square(3, 0, 3, Border.TOP | Border.LEFT | Border.RIGHT),
+...         Square(4, 1, 0, Border.BOTTOM | Border.LEFT | Border.RIGHT),
+...         Square(5, 1, 1, Border.LEFT | Border.RIGHT),
+...         Square(6, 1, 2, Border.BOTTOM | Border.LEFT),
+...         Square(7, 1, 3, Border.RIGHT),
+...         Square(8, 2, 0, Border.TOP | Border.LEFT, Role.ENTRANCE),
+...         Square(9, 2, 1, Border.BOTTOM),
+...         Square(10, 2, 2, Border.TOP | Border.BOTTOM),
+...         Square(11, 2, 3, Border.BOTTOM | Border.RIGHT),
+...     )
+... )
+```
 
 This sample maze has **twelve squares**, with ten unique border patterns, arranged in **three rows** and **four columns**. The entrance to the maze is located in the bottom-left corner, while the exit is in the first row, slightly to the right. The highlighted lines indicate both special squares.
 
@@ -568,111 +797,366 @@ This may not be a masterpiece yet, but having a small dataset sample to work wit
 
 In this step, you identified the building blocks of the maze and implemented them in Python. Now that you can build a maze, the next step for you will be to figure out how to display the maze in a graphical form like the one depicted above.
 
-[Remove ads](https://realpython.com/account/join/)
 
-## Step 3: Visualize the Maze With Scalable Vector Graphics (SVG)[](https://realpython.com/python-maze-solver/#step-3-visualize-the-maze-with-scalable-vector-graphics-svg "Permanent link")
+## Step 3: Visualize the Maze With Scalable Vector Graphics (SVG)
 
 If you tried [printing](https://realpython.com/python-print/) a crude visualization of your maze in the console using ASCII characters, then you might have noticed that it doesn’t look all that great. The reason is that, unlike squares, [font glyphs](https://en.wikipedia.org/wiki/Glyph) are rectangular, which results in a vertically stretched image that doesn’t have the right proportions. Therefore, you need to find a different way to visualize your maze.
 
 By the end of this step, you’ll be able to render any maze and, optionally, one of its solutions using the [XML-based](https://realpython.com/python-xml-parser/) [scalable vector graphics (SVG)](https://en.wikipedia.org/wiki/SVG) format. You can use your web browser to preview the resulting SVG image, or you can open it in a [vector graphics](https://en.wikipedia.org/wiki/Vector_graphics) editor like [Inkscape](https://inkscape.org/).
 
-### Model the Maze Solution[](https://realpython.com/python-maze-solver/#model-the-maze-solution "Permanent link")
+### Model the Maze Solution
 
 Drawing the maze can be fun on its own. However, your end goal is to solve even the most complex maze and render the **shortest path** from its entrance, through the corridors, to the maze exit. Finding the solution by eyeballing the maze may not always be feasible, but it should be a piece of cake for a computer program.
 
 Add yet another module to your `models` package, where you’ll define a class to represent the maze solution in an object-oriented way:
 
-`maze-solver/ │ ├── src/ │   │ │   └── maze_solver/ │       │ │       ├── models/ │       │   ├── __init__.py │       │   ├── border.py │       │   ├── maze.py │       │   ├── role.py │       │   ├── solution.py │       │   └── square.py │       │ │       └── __init__.py │ └── pyproject.toml`
+```Python
+maze-solver/
+│
+├── src/
+│   │
+│   └── maze_solver/
+│       │
+│       ├── models/
+│       │   ├── __init__.py
+│       │   ├── border.py
+│       │   ├── maze.py
+│       │   ├── role.py
+│       │   ├── solution.py
+│       │   └── square.py
+│       │
+│       └── __init__.py
+│
+└── pyproject.toml
+```
 
 The solution is a sequence of `Square` objects, which originates at the maze entrance and ends at the exit. Note, however, that you may jump over a few squares at a time without stepping on each as long as they line up horizontally or vertically. This reflects how you’re going to represent the path through the maze as an ordered collection of nodes in a graph.
 
 You can implement the maze solution using the following class:
 
-`# models/solution.py  from dataclasses import dataclass  from maze_solver.models.square import Square  @dataclass(frozen=True) class Solution:     squares: tuple[Square, ...]`
+```Python
+# models/solution.py
+
+from dataclasses import dataclass
+
+from maze_solver.models.square import Square
+
+@dataclass(frozen=True)
+class Solution:
+    squares: tuple[Square, ...]
+```
 
 Coincidentally, this code resembles your `Maze` data type, which is also a data class with a `.squares` attribute defined as a tuple. Unlike in the maze implementation, however, this sequence is one-dimensional instead of representing rows and columns. Because of some similarities, though, you can make the `Solution` instances iterable and subscriptable, too, by implementing a few special methods:
 
-`# models/solution.py  from dataclasses import dataclass from typing import Iterator from maze_solver.models.square import Square  @dataclass(frozen=True) class Solution:     squares: tuple[Square, ...]      def __iter__(self) -> Iterator[Square]:        return iter(self.squares)     def __getitem__(self, index: int) -> Square:        return self.squares[index]     def __len__(self) -> int:        return len(self.squares)`
+```Python
+# models/solution.py
+
+from dataclasses import dataclass
+from typing import Iterator
+
+from maze_solver.models.square import Square
+
+@dataclass(frozen=True)
+class Solution:
+    squares: tuple[Square, ...]
+
+    def __iter__(self) -> Iterator[Square]:
+        return iter(self.squares)
+
+    def __getitem__(self, index: int) -> Square:
+        return self.squares[index]
+
+    def __len__(self) -> int:
+        return len(self.squares)
+```
 
 Additionally, you add the special method `.__len__()` to compare the length of a solution against other possible solutions.
 
 To make sure that instances of your `Solution` class represent actual solutions instead of random locations in the maze, you can add a `.__post_init__()` method to validate the sequence of squares:
 
-`# models/solution.py  from dataclasses import dataclass from functools import reduce from typing import Iterator  from maze_solver.models.role import Role from maze_solver.models.square import Square  @dataclass(frozen=True) class Solution:     squares: tuple[Square, ...]      def __post_init__(self) -> None:        assert self.squares[0].role is Role.ENTRANCE        assert self.squares[-1].role is Role.EXIT        reduce(validate_corridor, self.squares)     def __iter__(self) -> Iterator[Square]:         return iter(self.squares)      def __getitem__(self, index: int) -> Square:         return self.squares[index]      def __len__(self) -> int:         return len(self.squares)  def validate_corridor(current: Square, following: Square) -> Square:     assert any([        current.row == following.row,        current.column == following.column    ]), "Squares must lie in the same row or column"    return following`
+```Python
+# models/solution.py
+
+from dataclasses import dataclass
+from functools import reduce
+from typing import Iterator
+
+from maze_solver.models.role import Role
+from maze_solver.models.square import Square
+
+@dataclass(frozen=True)
+class Solution:
+    squares: tuple[Square, ...]
+
+    def __post_init__(self) -> None:
+        assert self.squares[0].role is Role.ENTRANCE
+        assert self.squares[-1].role is Role.EXIT
+        reduce(validate_corridor, self.squares)
+
+    def __iter__(self) -> Iterator[Square]:
+        return iter(self.squares)
+
+    def __getitem__(self, index: int) -> Square:
+        return self.squares[index]
+
+    def __len__(self) -> int:
+        return len(self.squares)
+
+def validate_corridor(current: Square, following: Square) -> Square:
+    assert any([
+        current.row == following.row,
+        current.column == following.column
+    ]), "Squares must lie in the same row or column"
+    return following
+```
 
 Validation of a solution involves checking that its first square is the maze entrance, the last square is the exit, and every two consecutive squares belong to the same row or column. You can do this by using [`reduce()`](https://realpython.com/python-reduce-function/) to check that each pair of squares align either horizontally or vertically. You call [`any()`](https://realpython.com/any-python/) to assert that either of the two conditions is true.
 
 Now that you have all the building blocks of the maze and its solution, you can draw them using vector graphics.
 
-### Implement Geometric Primitives[](https://realpython.com/python-maze-solver/#implement-geometric-primitives "Permanent link")
+### Implement Geometric Primitives
 
 Create a new Python package in your project with these three placeholder modules in it:
 
-`maze-solver/ │ ├── src/ │   │ │   └── maze_solver/ │       │ │       ├── models/ │       │   ├── __init__.py │       │   ├── border.py │       │   ├── maze.py │       │   ├── role.py │       │   ├── solution.py │       │   └── square.py │       │ │       ├── view/ │       │   ├── __init__.py │       │   ├── decomposer.py │       │   ├── primitives.py │       │   └── renderer.py │       │ │       └── __init__.py │ └── pyproject.toml`
+```
+maze-solver/
+│
+├── src/
+│   │
+│   └── maze_solver/
+│       │
+│       ├── models/
+│       │   ├── __init__.py
+│       │   ├── border.py
+│       │   ├── maze.py
+│       │   ├── role.py
+│       │   ├── solution.py
+│       │   └── square.py
+│       │
+│       ├── view/
+│       │   ├── __init__.py
+│       │   ├── decomposer.py
+│       │   ├── primitives.py
+│       │   └── renderer.py
+│       │
+│       └── __init__.py
+│
+└── pyproject.toml
+```
 
 You’ll cover each of these modules in more detail in the next few sections, starting with the [geometric primitives](https://en.wikipedia.org/wiki/Geometric_primitive) in this section. Primitives are the basic shapes—like points, lines, rectangles, or polygons—that you’ll build your maze with. Each primitive has only one responsibility, to draw itself by providing the corresponding XML representation according to SVG semantics.
 
 To help generate [SVG elements](https://developer.mozilla.org/en-US/docs/Web/SVG/Element), you’re going to devise a generic function that’ll spit out an XML tag with the given name, optional value, and zero or more attributes:
 
-`# view/primitives.py  def tag(name: str, value: str | None = None, **attributes) -> str:     attrs = "" if not attributes else " " + " ".join(         f'{key.replace("_", "-")}="{value}"'         for key, value in attributes.items()     )     if value is None:         return f"<{name}{attrs} />"     return f"<{name}{attrs}>{value}</{name}>"`
+```Python
+# view/primitives.py
+
+def tag(name: str, value: str | None = None, **attributes) -> str:
+    attrs = "" if not attributes else " " + " ".join(
+        f'{key.replace("_", "-")}="{value}"'
+        for key, value in attributes.items()
+    )
+    if value is None:
+        return f"<{name}{attrs} />"
+    return f"<{name}{attrs}>{value}</{name}>"
+```
 
 Because SVG element attributes, such as `stroke-width`, can contain hyphens, which aren’t valid in Python names, you’ll automatically replace underscores (`_`) with hyphens (`-`) so that you can pass them as function arguments. If an element has no value, then you’ll use the XML **self-closing tag** (`<element />`).
 
 Here are a few examples illustrating the use of this function:
 
->>>
+```Python
+>>> from maze_solver.view.primitives import tag
 
-`>>> from maze_solver.view.primitives import tag  >>> # Element name >>> tag("svg") '<svg />'  >>> # Element name and value >>> tag("svg", "Your web browser doesn't support SVG") "<svg>Your web browser doesn't support SVG</svg>"  >>> # Element name and attributes (including one with a hyphen) >>> tag("svg", xmlns="http://www.w3.org/2000/svg", stroke_linejoin="round") '<svg xmlns="http://www.w3.org/2000/svg" stroke-linejoin="round" />'  >>> # Element name, value, and attributes >>> tag("svg", "SVG not supported", width="100%", height="100%") '<svg width="100%" height="100%">SVG not supported</svg>'  >>> # Nested elements >>> tag("svg", tag("rect", fill="blue"), width="100%") '<svg width="100%"><rect fill="blue" /></svg>'`
+>>> # Element name
+>>> tag("svg")
+'<svg />'
+
+>>> # Element name and value
+>>> tag("svg", "Your web browser doesn't support SVG")
+"<svg>Your web browser doesn't support SVG</svg>"
+
+>>> # Element name and attributes (including one with a hyphen)
+>>> tag("svg", xmlns="http://www.w3.org/2000/svg", stroke_linejoin="round")
+'<svg xmlns="http://www.w3.org/2000/svg" stroke-linejoin="round" />'
+
+>>> # Element name, value, and attributes
+>>> tag("svg", "SVG not supported", width="100%", height="100%")
+'<svg width="100%" height="100%">SVG not supported</svg>'
+
+>>> # Nested elements
+>>> tag("svg", tag("rect", fill="blue"), width="100%")
+'<svg width="100%"><rect fill="blue" /></svg>'
+```
 
 The element name is the first and only required parameter of the function. The second parameter is the optional value. Notice that both are **positional arguments**, while element attributes are variable-length **keyword arguments**. You can also nest elements by using the output of one call to the function as input for another.
 
 To take advantage of [static duck typing](https://peps.python.org/pep-0544/), which your type checker tool can leverage, you’ll define a [protocol](https://docs.python.org/3/library/typing.html#typing.Protocol) or an interface common to all geometric primitives:
 
-`# view/primitives.py  from typing import Protocol  class Primitive(Protocol):     def draw(self, **attributes) -> str:         ...  # ...`
+```Python
+# view/primitives.py
+
+from typing import Protocol
+
+class Primitive(Protocol):
+    def draw(self, **attributes) -> str:
+        ...
+
+# ...
+```
 
 Because protocols are about the interface rather than implementation, it’s common to find either the [`pass` statement](https://realpython.com/python-pass/) or the [ellipsis literal (`...`)](https://realpython.com/python-ellipsis/) in their method bodies. Both work as a placeholder to silence the Python interpreter, which requires that every block of code starting with a colon must not be empty.
 
 The type checker will consider _any_ class implementing the `.draw()` method with this signature as a subtype of `Primitive`, even if they’re unrelated through [inheritance](https://realpython.com/inheritance-composition-python/#whats-inheritance). The most basic primitive is a [Euclidean point](https://en.wikipedia.org/wiki/Point_(geometry)) comprising the x and y coordinates:
 
-`# view/primitives.py  from typing import NamedTuple, Protocol class Primitive(Protocol):     def draw(self, **attributes) -> str:         ...  class Point(NamedTuple):     x: int    y: int     def draw(self, **attributes) -> str:        return f"{self.x},{self.y}"     def translate(self, x=0, y=0) -> "Point":        return Point(self.x + x, self.y + y) # ...`
+```Python
+# view/primitives.py
+
+from typing import NamedTuple, Protocol
+
+class Primitive(Protocol):
+    def draw(self, **attributes) -> str:
+        ...
+
+class Point(NamedTuple):
+    x: int
+    y: int
+
+    def draw(self, **attributes) -> str:
+        return f"{self.x},{self.y}"
+
+    def translate(self, x=0, y=0) -> "Point":
+        return Point(self.x + x, self.y + y)
+
+# ...
+```
 
 The class extends a [named tuple](https://realpython.com/python-namedtuple/) but not your `Primitive` protocol. It’s sufficient that it implements the `.draw()` method, which returns an [SVG point](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/points) as a Python string, to define a concrete primitive. Later, you’ll need to translate your points in x and y directions, so you also implement a relevant method. Because named tuples are immutable, translating a point creates a brand-new object.
 
 The next most basic primitive is a [line segment](https://en.wikipedia.org/wiki/Line_segment) delimited by starting and ending points:
 
-`# view/primitives.py  # ...  class Line(NamedTuple):     start: Point     end: Point      def draw(self, **attributes) -> str:         return tag(             "line",             x1=self.start.x,             y1=self.start.y,             x2=self.end.x,             y2=self.end.y,             **attributes,         )  # ...`
+```Python
+# view/primitives.py
+
+# ...
+
+class Line(NamedTuple):
+    start: Point
+    end: Point
+
+    def draw(self, **attributes) -> str:
+        return tag(
+            "line",
+            x1=self.start.x,
+            y1=self.start.y,
+            x2=self.end.x,
+            y2=self.end.y,
+            **attributes,
+        )
+
+# ...
+```
 
 This time, the `.draw()` method returns an [SVG line](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/line), which is a stand-alone element rather than a value of an attribute.
 
 Two other primitives closely related to a line are SVG [polylines](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/polyline) and [polygons](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/polygon), which extend the idea of a line:
 
-`# view/primitives.py  # ...  class Polyline(tuple[Point, ...]):     def draw(self, **attributes) -> str:         points = " ".join(point.draw() for point in self)         return tag("polyline", points=points, **attributes)  class Polygon(tuple[Point, ...]):     def draw(self, **attributes) -> str:         points = " ".join(point.draw() for point in self)         return tag("polygon", points=points, **attributes)  # ...`
+```Python
+# view/primitives.py
+
+# ...
+
+class Polyline(tuple[Point, ...]):
+    def draw(self, **attributes) -> str:
+        points = " ".join(point.draw() for point in self)
+        return tag("polyline", points=points, **attributes)
+
+class Polygon(tuple[Point, ...]):
+    def draw(self, **attributes) -> str:
+        points = " ".join(point.draw() for point in self)
+        return tag("polygon", points=points, **attributes)
+
+# ...
+```
 
 They’re both tuples of two or more points, which look nearly identical. The difference is that a polygon is _closed_, meaning it connects the first and last point, while the polyline isn’t, leaving the last point unconnected.
 
-**Note:** In case you were wondering, the `points` parameter must be passed as a [keyword argument](https://realpython.com/defining-your-own-python-function/#keyword-arguments) to avoid conflating it with the `value` [positional argument](https://realpython.com/defining-your-own-python-function/#positional-arguments).
+> **Note:** In case you were wondering, the `points` parameter must be passed as a [keyword argument](https://realpython.com/defining-your-own-python-function/#keyword-arguments) to avoid conflating it with the `value` [positional argument](https://realpython.com/defining-your-own-python-function/#positional-arguments).
 
 Sometimes, it may be more convenient to combine existing lines instead of individual points, especially when they don’t form a continuous polyline. That’s when a `DisjointLines` primitive comes in handy:
 
-`# view/primitives.py  # ...  class DisjointLines(tuple[Line, ...]):     def draw(self, **attributes) -> str:         return "".join(line.draw(**attributes) for line in self)  # ...`
+```Python
+# view/primitives.py
+
+# ...
+
+class DisjointLines(tuple[Line, ...]):
+    def draw(self, **attributes) -> str:
+        return "".join(line.draw(**attributes) for line in self)
+
+# ...
+```
 
 Note that this is merely a logical collection of lines and has no SVG equivalent. Other, more specific SVG primitives that you’ll be interested in include a [rectangle](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/rect) and a [text](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/text) element:
 
-`# view/primitives.py  from dataclasses import dataclass from typing import NamedTuple, Protocol  # ...  @dataclass(frozen=True) class Rect:     top_left: Point | None = None      def draw(self, **attributes) -> str:         if self.top_left:             attrs = attributes | {"x": self.top_left.x, "y": self.top_left.y}         else:             attrs = attributes         return tag("rect", **attrs)  @dataclass(frozen=True) class Text:     content: str     point: Point      def draw(self, **attributes) -> str:         return tag(             "text",             self.content,             x=self.point.x,             y=self.point.y,             **attributes         )  # ...`
+```Python
+# view/primitives.py
+
+from dataclasses import dataclass
+from typing import NamedTuple, Protocol
+
+# ...
+
+@dataclass(frozen=True)
+class Rect:
+    top_left: Point | None = None
+
+    def draw(self, **attributes) -> str:
+        if self.top_left:
+            attrs = attributes | {"x": self.top_left.x, "y": self.top_left.y}
+        else:
+            attrs = attributes
+        return tag("rect", **attrs)
+
+@dataclass(frozen=True)
+class Text:
+    content: str
+    point: Point
+
+    def draw(self, **attributes) -> str:
+        return tag(
+            "text",
+            self.content,
+            x=self.point.x,
+            y=self.point.y,
+            **attributes
+        )
+
+# ...
+```
 
 You implement them as data classes rather than tuples or named tuples because they’re not inherently sequences of elements. The rectangle accepts an optional top-left corner, whose coordinates get mixed in with the rest of the attributes through the [union operator (`|`)](https://peps.python.org/pep-0584/).
 
 Last but not least, you’ll apply the **null object pattern** again by implementing a dummy `NullPrimitive`, which returns an empty string:
 
-`# view/primitives.py  # ...  class NullPrimitive:     def draw(self, **attributes) -> str:        return "" # ...`
+```Python
+# view/primitives.py
+
+# ...
+
+class NullPrimitive:
+    def draw(self, **attributes) -> str:
+        return ""
+
+# ...
+```
 
 It’ll let you avoid checking for a special case when there are no primitives to represent something in SVG, ultimately leading to cleaner and more readable code.
 
 Next up, you’ll put your primitives to use by decomposing various border patterns around the maze’s squares into SVG elements.
 
-[Remove ads](https://realpython.com/account/join/)
 
-### Decompose a Border Into Primitives[](https://realpython.com/python-maze-solver/#decompose-a-border-into-primitives "Permanent link")
+### Decompose a Border Into Primitives
 
 Open your `decomposer` module and type the following function stub at the top of the file, which you’ll continue editing in this section:
 

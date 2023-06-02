@@ -2609,7 +2609,7 @@ With this update, both `dump_squares()` and `serialize()` have compatible [
 
 You’ll modify your deserializing code in a similar way by getting rid of the dependency on `Maze` from both `load()` and `deserialize()`:
 
-```File Changes 
+```File Changes (diff)
  # persistence/serializer.py
 
  import array
@@ -2649,27 +2649,87 @@ The loading function is now named `load_squares()` to follow a consistent nami
 
 At this point, the `serializer` module doesn’t depend on the `Maze` class anymore because there are no direct references to it. You can safely update your `maze` model as a consequence:
 
-`# models/maze.py  from dataclasses import dataclass from functools import cached_property from pathlib import Path from typing import Iterator  from maze_solver.models.role import Role from maze_solver.models.square import Square from maze_solver.persistence.serializer import (     dump_squares,    load_squares, ) @dataclass(frozen=True) class Maze:     squares: tuple[Square, ...]      @classmethod    def load(cls, path: Path) -> "Maze":        return Maze(tuple(load_squares(path)))     # ...      def dump(self, path: Path) -> None:        dump_squares(self.width, self.height, self.squares, path) # ...`
+```Python
+# models/maze.py
+
+from dataclasses import dataclass
+from functools import cached_property
+from pathlib import Path
+from typing import Iterator
+
+from maze_solver.models.role import Role
+from maze_solver.models.square import Square
+from maze_solver.persistence.serializer import (
+    dump_squares,
+    load_squares,
+)
+
+@dataclass(frozen=True)
+class Maze:
+    squares: tuple[Square, ...]
+
+    @classmethod
+    def load(cls, path: Path) -> "Maze":
+        return Maze(tuple(load_squares(path)))
+
+    # ...
+
+    def dump(self, path: Path) -> None:
+        dump_squares(self.width, self.height, self.squares, path)
+
+# ...
+```
 
 With the class method depicted above, you can `.load()` squares from the specified path and turn them into a new `Maze` instance. Conversely, by calling `.dump()` on an existing maze object, you’ll dump its squares along with the necessary metadata to a given path.
 
 Here’s an example of the `Maze.load()` class method in action, which loads your miniature test maze:
 
->>>
+```Python
+>>> from pathlib import Path
+>>> from maze_solver.models.maze import Maze
 
-`>>> from pathlib import Path >>> from maze_solver.models.maze import Maze  >>> maze = Maze.load(Path("miniature.maze")) >>> maze.width, maze.height (4, 3)  >>> len(maze.squares) 12  >>> maze.entrance Square(index=8,        row=2,        column=0,        border=<Border.TOP|LEFT: 5>,        role=<Role.ENTRANCE: 2>)  >>> maze.exit Square(index=2,        row=0,        column=2,        border=<Border.LEFT|RIGHT: 12>,        role=<Role.EXIT: 3>)`
+>>> maze = Maze.load(Path("miniature.maze"))
+
+>>> maze.width, maze.height
+(4, 3)
+
+>>> len(maze.squares)
+12
+
+>>> maze.entrance
+Square(index=8,
+       row=2,
+       column=0,
+       border=<Border.TOP|LEFT: 5>,
+       role=<Role.ENTRANCE: 2>)
+
+>>> maze.exit
+Square(index=2,
+       row=0,
+       column=2,
+       border=<Border.LEFT|RIGHT: 12>,
+       role=<Role.EXIT: 3>)
+```
 
 Now, you only need to import one symbol from the `maze_solver` package to work with mazes stored in files. The deserialized object’s attribute values confirm that you successfully loaded the maze. By the way, check if you correctly guessed which squares are the entrance and exit of your miniature maze!
 
 Why don’t you go ahead and try loading a more challenging maze from the supporting materials? For example, the `labyrinth.maze` has 896 squares arranged in 32 rows and 28 columns.
 
-**Free Download:** [Click here to download the source code and supporting materials](https://realpython.com/bonus/python-maze-solver-code/) that you’ll use to build a maze solver in Python.
+> **Free Download:** [Click here to download the source code and supporting materials](https://realpython.com/bonus/python-maze-solver-code/) that you’ll use to build a maze solver in Python.
 
 You can preview it in your web browser by running the following code snippet in your Python REPL:
 
->>>
+```Python
+>>> from pathlib import Path
+>>> from maze_solver.models.maze import Maze
+>>> from maze_solver.view.renderer import SVGRenderer
 
-`>>> from pathlib import Path >>> from maze_solver.models.maze import Maze >>> from maze_solver.view.renderer import SVGRenderer  >>> maze = Maze.load(Path("mazes") / "labyrinth.maze") >>> len(maze.squares), maze.height, maze.width (896, 32, 28)  >>> SVGRenderer().render(maze).preview()`
+>>> maze = Maze.load(Path("mazes") / "labyrinth.maze")
+>>> len(maze.squares), maze.height, maze.width
+(896, 32, 28)
+
+>>> SVGRenderer().render(maze).preview()
+```
 
 Make sure that you specify the right path to the file and run this code from a virtual environment that has your `maze_solver` package installed. Afterward, you should see the following maze on your screen:
 
@@ -2679,11 +2739,11 @@ This maze was assembled from satellite and aerial photos of a real-world labyrin
 
 In the next and final step of this tutorial, you’ll implement a graph representation of that maze so that you can solve it with Python. In fact, you’ll be able to find the shortest path between the entrance and exit of any valid maze stored in your custom binary file format.
 
-## Step 5: Solve the Maze Using a Graph-Based Approach[](https://realpython.com/python-maze-solver/#step-5-solve-the-maze-using-a-graph-based-approach "Permanent link")
+## Step 5: Solve the Maze Using a Graph-Based Approach
 
 At this point, you can represent the maze and its solution in an object-oriented form. You can visualize them, as well as serialize the maze using a custom binary file format. Now, it’s time to convert your maze to a graph and let Python find the shortest path from the entrance to the exit. By the end of this step, you’ll have a command-line program for solving and visualizing mazes loaded from the specified file.
 
-### Install the NetworkX Library[](https://realpython.com/python-maze-solver/#install-the-networkx-library "Permanent link")
+### Install the NetworkX Library
 
 Graphs are an important [data structure](https://realpython.com/python-data-structures/) in theoretical computer science, which often come up during [code interviews](https://realpython.com/python-coding-interview-tips/). While you may use them sparingly in your day-to-day programming practice, graphs can help solve a variety of problems, like finding your way out of a maze.
 
@@ -2691,23 +2751,75 @@ A graph is a set of nodes and the edges between them. Because nodes have no inhe
 
 Rather than reinventing the wheel, you’ll use a graph representation provided by the popular [NetworkX](https://pypi.org/project/networkx/) library, which ships with a couple of useful graph algorithms. Go ahead and add this library to your `pyproject.toml` file now by listing it as the project’s dependency:
 
-`# pyproject.toml  [build-system] requires = ["setuptools>=64.0.0", "wheel"] build-backend = "setuptools.build_meta"  [project] name = "maze-solver" version = "1.0.0"  dependencies = [     "networkx >= 3.0", ]`
+```TOML
+# pyproject.toml
+
+[build-system]
+requires = ["setuptools>=64.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "maze-solver"
+version = "1.0.0"
+
+dependencies = [
+    "networkx >= 3.0",
+]
+```
 
 As a rule of thumb, avoid specifying concrete dependency versions directly in the `pyproject.toml` file, especially when you intend to use your package as a reusable library in other projects that might depend on different NetworkX versions. However, it’s always a good idea to [pin dependency versions](https://realpython.com/what-is-pip/#pinning-requirements) in a `requirements.txt` file to ensure reproducible builds.
 
 Now, reinstall your package in the associated virtual environment using the editable mode again so that the `networkx` package becomes available for importing. You can also pin the specific dependencies:
 
-`(venv) $ python -m pip install -e . (venv) $ python -m pip freeze > requirements.txt`
+```Shell
+(venv) $ python -m pip install -e .
+(venv) $ python -m pip freeze > requirements.txt
+```
 
 Before moving on, you can also create another Python package in your project with the `converter` and `solver` placeholder modules:
 
-`maze-solver/ │ ├── src/ │   │ │   └── maze_solver/ │       │ │       ├── graphs/ │       │   ├── __init__.py │       │   ├── converter.py │       │   └── solver.py │       │ │       ├── models/ │       │   ├── __init__.py │       │   ├── border.py │       │   ├── maze.py │       │   ├── role.py │       │   ├── solution.py │       │   └── square.py │       │ │       ├── persistence/ │       │   ├── __init__.py │       │   ├── file_format.py │       │   └── serializer.py │       │ │       ├── view/ │       │   ├── __init__.py │       │   ├── decomposer.py │       │   ├── primitives.py │       │   └── renderer.py │       │ │       └── __init__.py │ ├── pyproject.toml └── requirements.txt`
+```
+maze-solver/
+│
+├── src/
+│   │
+│   └── maze_solver/
+│       │
+│       ├── graphs/
+│       │   ├── __init__.py
+│       │   ├── converter.py
+│       │   └── solver.py
+│       │
+│       ├── models/
+│       │   ├── __init__.py
+│       │   ├── border.py
+│       │   ├── maze.py
+│       │   ├── role.py
+│       │   ├── solution.py
+│       │   └── square.py
+│       │
+│       ├── persistence/
+│       │   ├── __init__.py
+│       │   ├── file_format.py
+│       │   └── serializer.py
+│       │
+│       ├── view/
+│       │   ├── __init__.py
+│       │   ├── decomposer.py
+│       │   ├── primitives.py
+│       │   └── renderer.py
+│       │
+│       └── __init__.py
+│
+├── pyproject.toml
+└── requirements.txt
+```
 
 The `converter` module will contain a few functions for turning your maze into a graph, while the `solver` module will use those functions as [glue code](https://en.wikipedia.org/wiki/Glue_code) to wrap NetworkX’s algorithms and solve your maze.
 
 Next up, you’ll start writing the `converter` module.
 
-### Transform the Maze Into a Graph[](https://realpython.com/python-maze-solver/#transform-the-maze-into-a-graph "Permanent link")
+### Transform the Maze Into a Graph
 
 To create a graph, you’ll need to provide **nodes** and **edges** that connect them. You’ve already established that your maze consists of nodes that represent path intersections, dead ends, and special squares, like enemies or the entrance. However, if you connect them directly without taking the corners into account, then you won’t be able to follow the maze’s horizontal and vertical pathways:
 
@@ -2717,49 +2829,182 @@ The image on the left depicts six color-coded nodes, including two **intersecti
 
 Your `Border` model can already identify a `.corner`, `.intersection`, and `.dead_end`, while the `Role` model will tell you whether the associated square has some special function in the maze. You can treat the square as a synonym for a graph node because the NetworkX library lets you use any object as a node—as long as it’s [hashable](https://docs.python.org/3/glossary.html#term-hashable). The `Square` class is hashable out of the box because you implemented it as an immutable, or frozen, data class.
 
-**Note:** The reason why graph nodes must be hashable is that NetworkX maintains an internal [adjacency matrix](https://en.wikipedia.org/wiki/Adjacency_matrix) of the nodes, which are kept as keys in a Python dictionary.
+> **Note:** The reason why graph nodes must be hashable is that NetworkX maintains an internal [adjacency matrix](https://en.wikipedia.org/wiki/Adjacency_matrix) of the nodes, which are kept as keys in a Python dictionary.
 
 To use consistent terminology, you’ll define a [type alias](https://realpython.com/python-type-checking/#type-aliases) for the `Square` class so that you can refer to it as a `Node` in your code. Once you’ve done this, you’ll model the edge as a pair of two nodes, which you can implement as a named tuple:
 
-`# graphs/converter.py  from typing import NamedTuple, TypeAlias  from maze_solver.models.square import Square  Node: TypeAlias = Square  class Edge(NamedTuple):     node1: Node     node2: Node`
+```Python
+# graphs/converter.py
+
+from typing import NamedTuple, TypeAlias
+
+from maze_solver.models.square import Square
+
+Node: TypeAlias = Square
+
+class Edge(NamedTuple):
+    node1: Node
+    node2: Node
+```
 
 It’s possible to represent edges of [directed graphs](https://en.wikipedia.org/wiki/Directed_graph) with this class because it’s an [ordered pair](https://en.wikipedia.org/wiki/Ordered_pair). But you’ll only consider undirected graphs with two-way connections between their nodes for now.
 
 Now that you have a representation for nodes and edges, you can start transforming your maze into a graph by first getting a collection of nodes from it. The simple way would be to turn all squares into nodes. However, capturing only intersections, corners, and dead ends as nodes can lead to a more efficient and accurate solution for solving mazes. You can identify these nodes by checking the role and border pattern of each square in the maze:
 
-`# graphs/converter.py  from typing import NamedTuple, TypeAlias  from maze_solver.models.maze import Maze from maze_solver.models.role import Role from maze_solver.models.square import Square  Node: TypeAlias = Square  class Edge(NamedTuple):     node1: Node     node2: Node  def get_nodes(maze: Maze) -> set[Node]:     nodes: set[Node] = set()    for square in maze:        if square.role in (Role.EXTERIOR, Role.WALL):            continue        if square.role is not Role.NONE:            nodes.add(square)        if (            square.border.intersection            or square.border.dead_end            or square.border.corner        ):            nodes.add(square)    return nodes`
+```Python
+# graphs/converter.py
+
+from typing import NamedTuple, TypeAlias
+
+from maze_solver.models.maze import Maze
+from maze_solver.models.role import Role
+from maze_solver.models.square import Square
+
+Node: TypeAlias = Square
+
+class Edge(NamedTuple):
+    node1: Node
+    node2: Node
+
+def get_nodes(maze: Maze) -> set[Node]:
+    nodes: set[Node] = set()
+    for square in maze:
+        if square.role in (Role.EXTERIOR, Role.WALL):
+            continue
+        if square.role is not Role.NONE:
+            nodes.add(square)
+        if (
+            square.border.intersection
+            or square.border.dead_end
+            or square.border.corner
+        ):
+            nodes.add(square)
+    return nodes
+```
 
 If a square is marked as either a **wall** or **exterior**, then it’s definitely not part of the graph, so you skip it with the `continue` statement. Otherwise, if the square has some special role other than `None`, then you record it as a graph node. Finally, regardless of the square’s role, you take note of intersections, dead ends, and corners.
 
-**Note:** Thanks to using a [Python set](https://realpython.com/python-sets/), you don’t have to worry about adding the same square more than once when, for example, a reward happens to be placed at an intersection. That’s because sets filter out duplicates.
+> **Note:** Thanks to using a [Python set](https://realpython.com/python-sets/), you don’t have to worry about adding the same square more than once when, for example, a reward happens to be placed at an intersection. That’s because sets filter out duplicates.
 
 Next, you’ll need to connect your nodes with edges. To do that, you’ll take advantage of the fact that the maze is a rectangular grid. That means you can loop through the nodes that you just identified, checking to the right and down for any adjacent nodes in the maze and stopping once you reach a wall:
 
-`# graphs/converter.py  from typing import NamedTuple, TypeAlias  from maze_solver.models.border import Border from maze_solver.models.maze import Maze from maze_solver.models.role import Role from maze_solver.models.square import Square  # ...  def get_edges(maze: Maze, nodes: set[Node]) -> set[Edge]:     edges: set[Edge] = set()    for source_node in nodes:        # Follow right:        node = source_node        for x in range(node.column + 1, maze.width):            if node.border & Border.RIGHT:                break            node = maze.squares[node.row * maze.width + x]            if node in nodes:                edges.add(Edge(source_node, node))                break        # Follow down:        node = source_node        for y in range(node.row + 1, maze.height):            if node.border & Border.BOTTOM:                break            node = maze.squares[y * maze.width + node.column]            if node in nodes:                edges.add(Edge(source_node, node))                break    return edges`
+```Python
+# graphs/converter.py
+
+from typing import NamedTuple, TypeAlias
+
+from maze_solver.models.border import Border
+from maze_solver.models.maze import Maze
+from maze_solver.models.role import Role
+from maze_solver.models.square import Square
+
+# ...
+
+def get_edges(maze: Maze, nodes: set[Node]) -> set[Edge]:
+    edges: set[Edge] = set()
+    for source_node in nodes:
+        # Follow right:
+        node = source_node
+        for x in range(node.column + 1, maze.width):
+            if node.border & Border.RIGHT:
+                break
+            node = maze.squares[node.row * maze.width + x]
+            if node in nodes:
+                edges.add(Edge(source_node, node))
+                break
+        # Follow down:
+        node = source_node
+        for y in range(node.row + 1, maze.height):
+            if node.border & Border.BOTTOM:
+                break
+            node = maze.squares[y * maze.width + node.column]
+            if node in nodes:
+                edges.add(Edge(source_node, node))
+                break
+    return edges
+```
 
 You look for the immediate neighbors of each node supplied to the function. In this case, you move east and south in the maze, but you could just as well follow the opposite directions, remembering to change the loop indexing and wall detection accordingly. You use the [bitwise AND operator (`&`)](https://realpython.com/python-bitwise-operators/#bitwise-and) to check if a border around the current square has either the right or bottom side, indicating a wall that terminates the search in that direction.
 
 On the other hand, if you find that a square located in the same row or column as your source node is also present in the set of nodes, and there’s no wall between them, then you create an `Edge` instance. Knowing the edges is sufficient to define a new NetworkX graph object:
 
-`# graphs/converter.py  from typing import NamedTuple, TypeAlias  import networkx as nx from maze_solver.models.border import Border from maze_solver.models.maze import Maze from maze_solver.models.role import Role from maze_solver.models.square import Square  Node: TypeAlias = Square  class Edge(NamedTuple):     node1: Node     node2: Node  def make_graph(maze: Maze) -> nx.Graph:     return nx.Graph(get_edges(maze, get_nodes(maze))) # ...`
+```Python
+# graphs/converter.py
+
+from typing import NamedTuple, TypeAlias
+
+import networkx as nx
+
+from maze_solver.models.border import Border
+from maze_solver.models.maze import Maze
+from maze_solver.models.role import Role
+from maze_solver.models.square import Square
+
+Node: TypeAlias = Square
+
+class Edge(NamedTuple):
+    node1: Node
+    node2: Node
+
+def make_graph(maze: Maze) -> nx.Graph:
+    return nx.Graph(get_edges(maze, get_nodes(maze)))
+
+# ...
+```
 
 The initializer method of [`nx.Graph`](https://networkx.org/documentation/stable/reference/classes/graph.html) can optionally take various graph data types, including a collection of edges. Normally, you should create an instance of [`nx.MultiGraph`](https://networkx.org/documentation/stable/reference/classes/multigraph.html) to account for parallel edges that might appear in one of your mazes. However, the extra corners that you’ve added before make each parallel connection unique, so there’s no need to use a multigraph in this case.
 
 In the next section, you’ll use NetworkX to find the shortest path from the entrance to the exit of the maze.
 
-### Find the Shortest Path[](https://realpython.com/python-maze-solver/#find-the-shortest-path "Permanent link")
+### Find the Shortest Path
 
 Open the `solver` module and define the following function, which takes a `Maze` instance and returns the corresponding `Solution`:
 
-`# graphs/solver.py  import networkx as nx  from maze_solver.graphs.converter import make_graph from maze_solver.models.maze import Maze from maze_solver.models.solution import Solution  def solve(maze: Maze) -> Solution | None:     try:         return Solution(             squares=tuple(                 nx.shortest_path(                     make_graph(maze),                     source=maze.entrance,                     target=maze.exit,                 )             )         )     except nx.NetworkXException:         return None`
+```Python
+# graphs/solver.py
+
+import networkx as nx
+
+from maze_solver.graphs.converter import make_graph
+from maze_solver.models.maze import Maze
+from maze_solver.models.solution import Solution
+
+def solve(maze: Maze) -> Solution | None:
+    try:
+        return Solution(
+            squares=tuple(
+                nx.shortest_path(
+                    make_graph(maze),
+                    source=maze.entrance,
+                    target=maze.exit,
+                )
+            )
+        )
+    except nx.NetworkXException:
+        return None
+```
 
 In this function, you call your `make_graph()` function from the `converter` module to obtain an `nx.Graph` object, which you then pass to the [`nx.shortest_path()`](https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.shortest_paths.generic.shortest_path.html) function. Notice how the maze’s `.entrance` and `.exit` properties help you specify the source and target nodes in the graph. In case NetworkX can’t find the shortest path between them, you handle the exception and return `None` to indicate that there’s no solution.
 
 That’s all you need to solve the maze with NetworkX! You can now test this pathfinding algorithm on your pocket-size maze:
 
->>>
+```Python
+>>> from pathlib import Path
+>>> from maze_solver.graphs.solver import solve
+>>> from maze_solver.models.maze import Maze
+>>> from maze_solver.view.renderer import SVGRenderer
 
-`>>> from pathlib import Path >>> from maze_solver.graphs.solver import solve >>> from maze_solver.models.maze import Maze >>> from maze_solver.view.renderer import SVGRenderer  >>> maze = Maze.load(Path("mazes") / "miniature.maze") >>> solution = solve(maze)  >>> len(solution) 6  >>> [square.index for square in solution] [8, 9, 11, 7, 6, 2]  >>> SVGRenderer().render(maze, solution).preview()`
+>>> maze = Maze.load(Path("mazes") / "miniature.maze")
+>>> solution = solve(maze)
+
+>>> len(solution)
+6
+
+>>> [square.index for square in solution]
+[8, 9, 11, 7, 6, 2]
+
+>>> SVGRenderer().render(maze, solution).preview()
+```
 
 The solution has six nodes, starting at a square with index eight and ending at a square with index two. When you render the solution, you’ll see the following image in your web browser:
 
@@ -2773,7 +3018,42 @@ Its solution has 121 nodes, which looks impressive! However, there’s a flaw in
 
 But there’s another problem. You’re currently unable to distinguish between multiple equivalent solutions. What if the maze had several paths with equal lengths? In such a case, you can call [`nx.all_shortest_paths()`](https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.shortest_paths.generic.all_shortest_paths.html), which will return an [iterator](https://realpython.com/python-iterators-iterables/#what-is-an-iterator-in-python) of the shortest paths in the graph:
 
-`# graphs/solver.py  import networkx as nx  from maze_solver.graphs.converter import make_graph from maze_solver.models.maze import Maze from maze_solver.models.solution import Solution  def solve(maze: Maze) -> Solution | None:     try:         return Solution(             squares=tuple(                 nx.shortest_path(                     make_graph(maze),                     source=maze.entrance,                     target=maze.exit,                 )             )         )     except nx.NetworkXException:         return None  def solve_all(maze: Maze) -> list[Solution]:     try:        return [            Solution(squares=tuple(path))            for path in nx.all_shortest_paths(                make_graph(maze),                source=maze.entrance,                target=maze.exit,            )        ]    except nx.NetworkXException:        return []`
+```Python
+# graphs/solver.py
+
+import networkx as nx
+
+from maze_solver.graphs.converter import make_graph
+from maze_solver.models.maze import Maze
+from maze_solver.models.solution import Solution
+
+def solve(maze: Maze) -> Solution | None:
+    try:
+        return Solution(
+            squares=tuple(
+                nx.shortest_path(
+                    make_graph(maze),
+                    source=maze.entrance,
+                    target=maze.exit,
+                )
+            )
+        )
+    except nx.NetworkXException:
+        return None
+
+def solve_all(maze: Maze) -> list[Solution]:
+    try:
+        return [
+            Solution(squares=tuple(path))
+            for path in nx.all_shortest_paths(
+                make_graph(maze),
+                source=maze.entrance,
+                target=maze.exit,
+            )
+        ]
+    except nx.NetworkXException:
+        return []
+```
 
 Your `solve_all()` function wraps each yielded path in a `Solution` instance using a [list comprehension](https://realpython.com/list-comprehension-python/) or returns an empty list if no solution exists.
 
@@ -2783,23 +3063,99 @@ The problem is that NetworkX calculates the cost of a solution based on the tota
 
 To fix that, you’re going to calculate the distance based on the actual **number of squares** in the maze along the path instead of the number of nodes in the graph. To convey the computed distance to NetworkX, you’ll add numeric **weights** to your graph edges.
 
-### Add Weights to Graph Edges[](https://realpython.com/python-maze-solver/#add-weights-to-graph-edges "Permanent link")
+### Add Weights to Graph Edges
 
 Go back to your `converter` module and update the `Edge` class by adding a property that’ll calculate the actual distance between its two nodes:
 
-`# graphs/converter.py  import math from typing import NamedTuple, TypeAlias  import networkx as nx  from maze_solver.models.border import Border from maze_solver.models.maze import Maze from maze_solver.models.role import Role from maze_solver.models.square import Square  Node: TypeAlias = Square  class Edge(NamedTuple):     node1: Node     node2: Node      @property    def distance(self) -> float:        return math.dist(            (self.node1.row, self.node1.column),            (self.node2.row, self.node2.column)        ) # ...`
+```Python
+# graphs/converter.py
+
+import math
+from typing import NamedTuple, TypeAlias
+
+import networkx as nx
+
+from maze_solver.models.border import Border
+from maze_solver.models.maze import Maze
+from maze_solver.models.role import Role
+from maze_solver.models.square import Square
+
+Node: TypeAlias = Square
+
+class Edge(NamedTuple):
+    node1: Node
+    node2: Node
+
+    @property
+    def distance(self) -> float:
+        return math.dist(
+            (self.node1.row, self.node1.column),
+            (self.node2.row, self.node2.column)
+        )
+
+# ...
+```
 
 You calculate the [Euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance) between the nodes using Python’s [`math`](https://realpython.com/python-math-module/) module, whose `dist()` function takes two points specified as sequences of coordinates. In this case, you provide tuples of the row and column indices of squares corresponding to the nodes. Note that you could define distance differently—for example, as the sum of [absolute values](https://realpython.com/python-absolute-value/) of differences in the horizontal and vertical directions.
 
 You can update the function `make_graph()` below to use your new property:
 
-`# graphs/converter.py  # ...  def make_graph(maze: Maze) -> nx.Graph:     return nx.Graph(        (edge.node1, edge.node2, {"weight": edge.distance})        for edge in get_edges(maze, get_nodes(maze))    ) # ...`
+```Python
+# graphs/converter.py
+
+# ...
+
+def make_graph(maze: Maze) -> nx.Graph:
+    return nx.Graph(
+        (edge.node1, edge.node2, {"weight": edge.distance})
+        for edge in get_edges(maze, get_nodes(maze))
+    )
+
+# ...
+```
 
 Notice how you changed the graph data passed to `nx.Graph`, which is now a sequence of tuples consisting of the two nodes and a dictionary with extra attributes. You specify only one attribute named `weight`, whose value is equal to the edge’s distance.
 
 Next, you should update the functions in the `solver` module to tell NetworkX which attribute to use as the weight:
 
-`# graphs/solver.py  import networkx as nx  from maze_solver.graphs.converter import make_graph from maze_solver.models.maze import Maze from maze_solver.models.solution import Solution  def solve(maze: Maze) -> Solution | None:     try:         return Solution(             squares=tuple(                 nx.shortest_path(                     make_graph(maze),                     source=maze.entrance,                     target=maze.exit,                     weight="weight",                )             )         )     except nx.NetworkXException:         return None  def solve_all(maze: Maze) -> list[Solution]:     try:         return [             Solution(squares=tuple(path))             for path in nx.all_shortest_paths(                 make_graph(maze),                 source=maze.entrance,                 target=maze.exit,                 weight="weight",            )         ]     except nx.NetworkXException:         return []`
+```Python
+# graphs/solver.py
+
+import networkx as nx
+
+from maze_solver.graphs.converter import make_graph
+from maze_solver.models.maze import Maze
+from maze_solver.models.solution import Solution
+
+def solve(maze: Maze) -> Solution | None:
+    try:
+        return Solution(
+            squares=tuple(
+                nx.shortest_path(
+                    make_graph(maze),
+                    source=maze.entrance,
+                    target=maze.exit,
+                    weight="weight",
+                )
+            )
+        )
+    except nx.NetworkXException:
+        return None
+
+def solve_all(maze: Maze) -> list[Solution]:
+    try:
+        return [
+            Solution(squares=tuple(path))
+            for path in nx.all_shortest_paths(
+                make_graph(maze),
+                source=maze.entrance,
+                target=maze.exit,
+                weight="weight",
+            )
+        ]
+    except nx.NetworkXException:
+        return []
+```
 
 The `weight` parameter lets you specify the name of an attribute in the dictionary associated with each graph edge.
 
@@ -2811,7 +3167,7 @@ Clearly, both paths have the same length, so it shouldn’t matter which one you
 
 Fantastic! Now that you have weights in your graph, you can use other factors besides the distance to influence the algorithm’s decision. For example, you may want to favor paths with fewer enemies or more rewards. You’ll find out how in the next section.
 
-### Introduce Enemies and Rewards to the Maze[](https://realpython.com/python-maze-solver/#introduce-enemies-and-rewards-to-the-maze "Permanent link")
+### Introduce Enemies and Rewards to the Maze
 
 Instead of using pure distance as an edge weight to assess how good a path is, you can take enemies and rewards into account to encourage or discourage certain paths in your maze.
 
@@ -2821,7 +3177,7 @@ The _smaller_ the weight, the lower the **cost of the edge** connecting two 
 
 You must carefully consider the scale and distribution of your edge weights. In particular, you shouldn’t have any **negative weights** in the graph because [Dijkstra’s algorithm](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm), which NetworkX uses by default, can’t cope with them. While you could try using the [Bellman-Ford algorithm](https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm) instead, it’ll fail as soon as it finds a negative [cycle](https://en.wikipedia.org/wiki/Cycle_(graph_theory)) in your graph, whose edges add up to a negative value. So, it’s best to avoid negative weights altogether.
 
-**Note:** To check if your graph contains negative weights, you can call [`nx.is_negatively_weighted()`](https://networkx.org/documentation/stable/reference/generated/networkx.classes.function.is_negatively_weighted.html) on the NetworkX graph object.
+> **Note:** To check if your graph contains negative weights, you can call [`nx.is_negatively_weighted()`](https://networkx.org/documentation/stable/reference/generated/networkx.classes.function.is_negatively_weighted.html) on the NetworkX graph object.
 
 How you assign the weights depends on the specific problem. You may need to experiment a little, but in this tutorial, you’re going to follow a few rules, illustrated below:
 
@@ -2843,57 +3199,204 @@ To ensure that all edge weights are greater than zero, you could offset them so 
 
 Instead, you’ll implement the following method in your `Edge` class to calculate the weight of a _directed_ edge:
 
-`# graphs/converter.py  import math from typing import NamedTuple, TypeAlias  import networkx as nx  from maze_solver.models.border import Border from maze_solver.models.maze import Maze from maze_solver.models.role import Role from maze_solver.models.square import Square  Node: TypeAlias = Square  class Edge(NamedTuple):     node1: Node     node2: Node      @property     def distance(self) -> int:         return math.dist(             (self.node1.row, self.node1.column),             (self.node2.row, self.node2.column)         )      def weight(self, bonus=1, penalty=2) -> float:        match self.node2.role:            case Role.REWARD:                return self.distance - bonus            case Role.ENEMY:                return self.distance + penalty            case _:                return self.distance # ...`
+```Python
+# graphs/converter.py
+
+import math
+from typing import NamedTuple, TypeAlias
+
+import networkx as nx
+
+from maze_solver.models.border import Border
+from maze_solver.models.maze import Maze
+from maze_solver.models.role import Role
+from maze_solver.models.square import Square
+
+Node: TypeAlias = Square
+
+class Edge(NamedTuple):
+    node1: Node
+    node2: Node
+
+    @property
+    def distance(self) -> int:
+        return math.dist(
+            (self.node1.row, self.node1.column),
+            (self.node2.row, self.node2.column)
+        )
+
+    def weight(self, bonus=1, penalty=2) -> float:
+        match self.node2.role:
+            case Role.REWARD:
+                return self.distance - bonus
+            case Role.ENEMY:
+                return self.distance + penalty
+            case _:
+                return self.distance
+
+# ...
+```
 
 By default, this method subtracts one point from the baseline distance if the current edge leads to a reward. On the other hand, if there’s an enemy at the end of this edge, then the method adds two penalty points to increase the cost of that connection. Otherwise, the weight of an edge is equal to its distance.
 
-**Note:** When both nodes connected by an edge are located on adjacent squares in the maze, the minimum distance is equal to one unit.
+> **Note:** When both nodes connected by an edge are located on adjacent squares in the maze, the minimum distance is equal to one unit.
 
 Feel free to tweak the bonus and penalty points to your liking—for example, to favor even more distant rewards, making bigger detours from the shortest path worthwhile. However, note that while you can safely bump up penalty points, using more bonus points will increase the risk of ending up with a negative weight, which would lead to an error.
 
 At the moment, the graph you made is undirected, meaning you can’t know whether the search algorithm is moving towards the first or the second node in the edge. Go ahead and replace it with a _directed_ graph, using your new method as the weight:
 
-`# graphs/converter.py  # ...  class Edge(NamedTuple):     node1: Node     node2: Node      @property    def flip(self) -> "Edge":        return Edge(self.node2, self.node1)     # ...  def make_graph(maze: Maze) -> nx.DiGraph:     return nx.DiGraph(        (edge.node1, edge.node2, {"weight": edge.weight()})        for edge in get_directed_edges(maze, get_nodes(maze))    ) def get_directed_edges(maze: Maze, nodes: set[Node]) -> set[Edge]:     return (edges := get_edges(maze, nodes)) | {edge.flip for edge in edges} # ...`
+```Python
+# graphs/converter.py
+
+# ...
+
+class Edge(NamedTuple):
+    node1: Node
+    node2: Node
+
+    @property
+    def flip(self) -> "Edge":
+        return Edge(self.node2, self.node1)
+
+    # ...
+
+def make_graph(maze: Maze) -> nx.DiGraph:
+    return nx.DiGraph(
+        (edge.node1, edge.node2, {"weight": edge.weight()})
+        for edge in get_directed_edges(maze, get_nodes(maze))
+    )
+
+def get_directed_edges(maze: Maze, nodes: set[Node]) -> set[Edge]:
+    return (edges := get_edges(maze, nodes)) | {edge.flip for edge in edges}
+
+# ...
+```
 
 The `.flip` property of an edge returns a new `Edge` instance with its two nodes reversed. You use it in `get_directed_edges()` below to return a set of edges in both directions based on the undirected edges. Depending on the direction, the same edge may have different weights. Finally, you create an [`nx.DiGraph`](https://networkx.org/documentation/stable/reference/classes/digraph.html) object instead of `nx.Graph` to represent the graph as directed.
 
 To put your new weights to the test, try solving the sample mazes, but this time, add enemies and rewards into them. You can streamline this process by first making your `maze_solver` package runnable.
 
-### Make a Runnable Script[](https://realpython.com/python-maze-solver/#make-a-runnable-script "Permanent link")
+### Make a Runnable Script
 
 In this section, you’ll provide a [command-line interface with `argparse`](https://realpython.com/command-line-interfaces-python-argparse/) to your Python package. It’ll take a path to a binary file with your maze as input. Then, it’ll try to find the maze’s solutions and render them in separate tabs in your web browser as scalable vector graphics. On the other hand, if it can’t find any solutions, then you’ll see an appropriate message in your console.
 
 Add the special [`__main__.py`](https://docs.python.org/3/library/__main__.html#main-py-in-python-packages) file in your project to turn it into a runnable Python package:
 
-`maze-solver/ │ ├── src/ │   │ │   └── maze_solver/ │       │ │       ├── graphs/ │       │   ├── __init__.py │       │   ├── converter.py │       │   └── solver.py │       │ │       ├── models/ │       │   ├── __init__.py │       │   ├── border.py │       │   ├── maze.py │       │   ├── role.py │       │   ├── solution.py │       │   └── square.py │       │ │       ├── persistence/ │       │   ├── __init__.py │       │   ├── file_format.py │       │   └── serializer.py │       │ │       ├── view/ │       │   ├── __init__.py │       │   ├── decomposer.py │       │   ├── primitives.py │       │   └── renderer.py │       │ │       ├── __init__.py │       └── __main__.py │ ├── pyproject.toml └── requirements.txt`
+```
+maze-solver/
+│
+├── src/
+│   │
+│   └── maze_solver/
+│       │
+│       ├── graphs/
+│       │   ├── __init__.py
+│       │   ├── converter.py
+│       │   └── solver.py
+│       │
+│       ├── models/
+│       │   ├── __init__.py
+│       │   ├── border.py
+│       │   ├── maze.py
+│       │   ├── role.py
+│       │   ├── solution.py
+│       │   └── square.py
+│       │
+│       ├── persistence/
+│       │   ├── __init__.py
+│       │   ├── file_format.py
+│       │   └── serializer.py
+│       │
+│       ├── view/
+│       │   ├── __init__.py
+│       │   ├── decomposer.py
+│       │   ├── primitives.py
+│       │   └── renderer.py
+│       │
+│       ├── __init__.py
+│       └── __main__.py
+│
+├── pyproject.toml
+└── requirements.txt
+```
 
 The file should live inside your `maze_solver` package, next to the empty `__init__.py` file. Its contents should look as follows:
 
-`# __main__.py  import argparse import pathlib  from maze_solver.graphs.solver import solve_all from maze_solver.models.maze import Maze from maze_solver.view.renderer import SVGRenderer  def main() -> None:     maze = Maze.load(parse_path())     solutions = solve_all(maze)     if solutions:         renderer = SVGRenderer()         for solution in solutions:             renderer.render(maze, solution).preview()     else:         print("No solution found")  def parse_path() -> pathlib.Path:     parser = argparse.ArgumentParser()     parser.add_argument("path", type=pathlib.Path)     return parser.parse_args().path  if __name__ == "__main__":     main()`
+```Python
+# __main__.py
+
+import argparse
+import pathlib
+
+from maze_solver.graphs.solver import solve_all
+from maze_solver.models.maze import Maze
+from maze_solver.view.renderer import SVGRenderer
+
+def main() -> None:
+    maze = Maze.load(parse_path())
+    solutions = solve_all(maze)
+    if solutions:
+        renderer = SVGRenderer()
+        for solution in solutions:
+            renderer.render(maze, solution).preview()
+    else:
+        print("No solution found")
+
+def parse_path() -> pathlib.Path:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("path", type=pathlib.Path)
+    return parser.parse_args().path
+
+if __name__ == "__main__":
+    main()
+```
 
 The file uses the [name-main idiom](https://realpython.com/if-name-main-python/) to protect the `main()` function from running if other modules import the package. It uses the `argparse` module to parse the file path, which is currently the only expected [command-line argument](https://realpython.com/python-command-line-arguments/). Later, you can add more if you want to, for example, allow for previewing mazes without a solution. Finally, the code finds, renders, and previews all the solutions of the loaded maze or prints an error message.
 
 To run this package, you can issue the following command in your terminal:
 
-`(venv) $ python -m maze_solver /path/to/file.maze`
+```Shell
+(venv) $ python -m maze_solver /path/to/file.maze
+```
 
 However, you can optionally specify a handy shortcut in your `pyproject.toml` file:
 
-`# pyproject.toml  [build-system] requires = ["setuptools>=64.0.0", "wheel"] build-backend = "setuptools.build_meta"  [project] name = "maze-solver" version = "1.0.0"  dependencies = [     "networkx == 3.0", ]  [project.scripts] solve = "maze_solver.__main__:main"`
+```TOML
+# pyproject.toml
+
+[build-system]
+requires = ["setuptools>=64.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "maze-solver"
+version = "1.0.0"
+
+dependencies = [
+    "networkx == 3.0",
+]
+
+[project.scripts]
+solve = "maze_solver.__main__:main"
+```
 
 You may have as many custom commands like this as you like, which should map to specific functions in the given module within your project. To register the new command in your virtual environment, you must install the package using `pip` again:
 
-`(venv) $ python -m pip install -e .`
+```Shell
+(venv) $ python -m pip install -e .
+```
 
 When you reinstall the package, you’ll be able to solve mazes using the `solve` command without explicitly calling out Python:
 
-`(venv) $ solve /path/to/file.maze`
+```Shell
+(venv) $ solve /path/to/file.maze
+```
 
 Note that you need to run it from your virtual environment. The `solve` command, which you just created, isn’t available outside of it!
 
 Great, now you have a working command-line interface to your Python package. While there are no further steps in this tutorial, you can always keep improving the project. For example, you may add more command-line arguments to control the rendering process or provide an option to save the results as an image instead of previewing them in the browser. The possibilities are endless!
 
-## Conclusion[](https://realpython.com/python-maze-solver/#conclusion "Permanent link")
+## Conclusion
 
 Congratulations on completing this in-depth tutorial!
 

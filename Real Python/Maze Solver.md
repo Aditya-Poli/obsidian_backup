@@ -11,42 +11,42 @@ by [Bartosz Zaczyński](https://realpython.com/python-maze-solver/#author)  M
 
 Table of Contents
 
-- [Demo: Python Maze Solver](https://realpython.com/python-maze-solver/#demo-python-maze-solver)
-- [Project Overview](https://realpython.com/python-maze-solver/#project-overview)
-- [Prerequisites](https://realpython.com/python-maze-solver/#prerequisites)
-- [Step 1: Lay the Groundwork for the Project](https://realpython.com/python-maze-solver/#step-1-lay-the-groundwork-for-the-project)
-    - [Define the Problem Constraints](https://realpython.com/python-maze-solver/#define-the-problem-constraints)
-    - [Scaffold the Project Structure](https://realpython.com/python-maze-solver/#scaffold-the-project-structure)
-- [Step 2: Represent the Maze Using an Object-Oriented Approach](https://realpython.com/python-maze-solver/#step-2-represent-the-maze-using-an-object-oriented-approach)
-    - [Identify the Building Blocks of the Maze](https://realpython.com/python-maze-solver/#identify-the-building-blocks-of-the-maze)
-    - [Assign Roles to Squares](https://realpython.com/python-maze-solver/#assign-roles-to-squares)
-    - [Create Border Patterns](https://realpython.com/python-maze-solver/#create-border-patterns)
-    - [Model the Square](https://realpython.com/python-maze-solver/#model-the-square)
-    - [Build the Maze](https://realpython.com/python-maze-solver/#build-the-maze)
-- [Step 3: Visualize the Maze With Scalable Vector Graphics (SVG)](https://realpython.com/python-maze-solver/#step-3-visualize-the-maze-with-scalable-vector-graphics-svg)
-    - [Model the Maze Solution](https://realpython.com/python-maze-solver/#model-the-maze-solution)
-    - [Implement Geometric Primitives](https://realpython.com/python-maze-solver/#implement-geometric-primitives)
-    - [Decompose a Border Into Primitives](https://realpython.com/python-maze-solver/#decompose-a-border-into-primitives)
-    - [Build the SVG Renderer](https://realpython.com/python-maze-solver/#build-the-svg-renderer)
-    - [Fill the SVG Body](https://realpython.com/python-maze-solver/#fill-the-svg-body)
-    - [Preview the Rendered Maze and Its Solution](https://realpython.com/python-maze-solver/#preview-the-rendered-maze-and-its-solution)
-- [Step 4: Load the Maze From a Binary File](https://realpython.com/python-maze-solver/#step-4-load-the-maze-from-a-binary-file)
-    - [Design the File Format](https://realpython.com/python-maze-solver/#design-the-file-format)
-    - [Choose Your Data Alignment](https://realpython.com/python-maze-solver/#choose-your-data-alignment)
-    - [Prepare the Placeholder Modules](https://realpython.com/python-maze-solver/#prepare-the-placeholder-modules)
-    - [Define the File Header](https://realpython.com/python-maze-solver/#define-the-file-header)
-    - [Define the File Body](https://realpython.com/python-maze-solver/#define-the-file-body)
-    - [Serialize the Maze](https://realpython.com/python-maze-solver/#serialize-the-maze)
-    - [Deserialize the Maze](https://realpython.com/python-maze-solver/#deserialize-the-maze)
-    - [Add the Serializing Methods to the Maze Class](https://realpython.com/python-maze-solver/#add-the-serializing-methods-to-the-maze-class)
-- [Step 5: Solve the Maze Using a Graph-Based Approach](https://realpython.com/python-maze-solver/#step-5-solve-the-maze-using-a-graph-based-approach)
-    - [Install the NetworkX Library](https://realpython.com/python-maze-solver/#install-the-networkx-library)
-    - [Transform the Maze Into a Graph](https://realpython.com/python-maze-solver/#transform-the-maze-into-a-graph)
-    - [Find the Shortest Path](https://realpython.com/python-maze-solver/#find-the-shortest-path)
-    - [Add Weights to Graph Edges](https://realpython.com/python-maze-solver/#add-weights-to-graph-edges)
-    - [Introduce Enemies and Rewards to the Maze](https://realpython.com/python-maze-solver/#introduce-enemies-and-rewards-to-the-maze)
-    - [Make a Runnable Script](https://realpython.com/python-maze-solver/#make-a-runnable-script)
-- [Conclusion](https://realpython.com/python-maze-solver/#conclusion)
+- [Demo: Python Maze Solver](#demo-python-maze-solver)
+- [Project Overview](#project-overview)
+- [Prerequisites](#prerequisites)
+- [Step 1: Lay the Groundwork for the Project](#step-1-lay-the-groundwork-for-the-project)
+    - [Define the Problem Constraints](#define-the-problem-constraints)
+    - [Scaffold the Project Structure](#scaffold-the-project-structure)
+- [Step 2: Represent the Maze Using an Object-Oriented Approach](#step-2-represent-the-maze-using-an-object-oriented-approach)
+    - [Identify the Building Blocks of the Maze](#identify-the-building-blocks-of-the-maze)
+    - [Assign Roles to Squares](#assign-roles-to-squares)
+    - [Create Border Patterns](#create-border-patterns)
+    - [Model the Square](#model-the-square)
+    - [Build the Maze](#build-the-maze)
+- [Step 3: Visualize the Maze With Scalable Vector Graphics (SVG)](#step-3-visualize-the-maze-with-scalable-vector-graphics-svg)
+    - [Model the Maze Solution](#model-the-maze-solution)
+    - [Implement Geometric Primitives](#implement-geometric-primitives)
+    - [Decompose a Border Into Primitives](#decompose-a-border-into-primitives)
+    - [Build the SVG Renderer](#build-the-svg-renderer)
+    - [Fill the SVG Body](#fill-the-svg-body)
+    - [Preview the Rendered Maze and Its Solution](#preview-the-rendered-maze-and-its-solution)
+- [Step 4: Load the Maze From a Binary File](#step-4-load-the-maze-from-a-binary-file)
+    - [Design the File Format](#design-the-file-format)
+    - [Choose Your Data Alignment](#choose-your-data-alignment)
+    - [Prepare the Placeholder Modules](#prepare-the-placeholder-modules)
+    - [Define the File Header](#define-the-file-header)
+    - [Define the File Body](#define-the-file-body)
+    - [Serialize the Maze](#serialize-the-maze)
+    - [Deserialize the Maze](#deserialize-the-maze)
+    - [Add the Serializing Methods to the Maze Class](#add-the-serializing-methods-to-the-maze-class)
+- [Step 5: Solve the Maze Using a Graph-Based Approach](#step-5-solve-the-maze-using-a-graph-based-approach)
+    - [Install the NetworkX Library](#install-the-networkx-library)
+    - [Transform the Maze Into a Graph](#transform-the-maze-into-a-graph)
+    - [Find the Shortest Path](#find-the-shortest-path)
+    - [Add Weights to Graph Edges](#add-weights-to-graph-edges)
+    - [Introduce Enemies and Rewards to the Maze](#introduce-enemies-and-rewards-to-the-maze)
+    - [Make a Runnable Script](#make-a-runnable-script)
+- [Conclusion](#conclusion)
 
 
 If you’re up for a little challenge and would like to take your programming skills to the next level, then you’ve come to the right place! In this hands-on tutorial, you’ll practice object-oriented programming, among several other good practices, while building a cool maze solver project in Python.
@@ -2544,6 +2544,7 @@ There are a few ways to work around this problem, each with its pros and cons, b
 Start refactoring your code by first deleting the following [import statement](https://realpython.com/python-import/) from the `serializer` module:
 
  ```File Changes (diff)
+ # File Changes (diff)
  # persistence/serializer.py
 
  import array
@@ -2561,6 +2562,7 @@ Start refactoring your code by first deleting the following [import statement](
 As soon as you do that, your code editor should flag all unresolved `Maze` class references in this module. You’ll find the first one in your `dump()` function at the top of the file. The function currently accepts a maze object as an argument, which you can replace with intermediary [data transfer objects (DTOs)](https://en.wikipedia.org/wiki/Data_transfer_object), such as Python built-in types or other models:
 
 ```File Changes (diff)
+ # File Changes (diff)
  # persistence/serializer.py
 
  # ...
@@ -2586,6 +2588,7 @@ Rather than serializing a `Maze` instance, you’ll now serialize its building
 You must also cascade this change down to the called function, `serialize()`, while `compress()` and `decompress()` will remain intact:
 
 ```File Changes (diff)
+ # File Changes (diff)
  # persistence/serializer.py
 
  # ...
@@ -2610,6 +2613,7 @@ With this update, both `dump_squares()` and `serialize()` have compatible [
 You’ll modify your deserializing code in a similar way by getting rid of the dependency on `Maze` from both `load()` and `deserialize()`:
 
 ```File Changes (diff)
+ # 
  # persistence/serializer.py
 
  import array

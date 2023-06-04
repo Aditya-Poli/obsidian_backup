@@ -656,3 +656,123 @@ class Solution {
 }
 ```
 
+
+## [1304. Find N Unique Integers Sum up to Zero](https://leetcode.com/problems/find-n-unique-integers-sum-up-to-zero/description/)[👍]
+Given an integer `n`, return **any** array containing `n` **unique** integers such that they add up to `0`.
+
+**Example 1:**
+
+**Input:** n = 5
+**Output:** [-7,-1,1,3,4]
+**Explanation:** These arrays also are accepted [-5,-1,1,2,3] , [-3,-1,2,-2,4].
+
+**Example 2:**
+
+**Input:** n = 3
+**Output:** [-1,0,1]
+
+**Example 3:**
+
+**Input:** n = 1
+**Output:** [0]
+
+**Constraints:**
+
+- `1 <= n <= 1000`
+
+### Solution
+### **Intuition**
+
+Naive idea  
+`n = 1, [0]`  
+`n = 2, [-1, 1]`
+
+Now write more based on this  
+`n = 3, [-2, 0, 2]`  
+`n = 4, [-3, -1, 1, 3]`  
+`n = 5, [-4, -2, 0, 2, 4]`
+
+It spreads like the wave.  
+  
+
+### **Explanation**
+
+Find the rule  
+`A[i] = i * 2 - n + 1`  
+  
+
+### **Math Observation**
+
+@zzg_zzm helps explain in math.
+
+Actually, this rule could be derived from constructing an arithmetic sequence.
+
+(Note that any arithmetic sequence must have unique values if the common delta is non-zero)
+
+We need the sequence sum, so that
+
+`(a[0] + a[n-1]) * n / 2 = 0`, which means `a[0] + a[n-1] = 0`.
+
+Note that `a[n-1] - a[0] = (n-1) * delta`, which is `-2 * a[0]`,
+
+so we simply set `delta = 2, a[0] = 1 - n`  
+  
+
+### **Note**
+
+It's not bad to sum up `1 + 2 + 3 + ... + (N - 1)`.  
+Personally I don't really like it much.  
+What is the possible problem of this approach?  
+It doesn't work if `N` goes up to `10^5`  
+  
+
+### **Complexity**
+
+Time `O(N)`  
+Space `O(N)`  
+  
+
+**Java:**
+
+```java
+    public int[] sumZero(int n) {
+        int[] A = new int[n];
+        for (int i = 0; i < n; ++i)
+            A[i] = i * 2 - n + 1;
+        return A;
+    }
+```
+
+**C++:**
+
+```cpp
+    vector<int> sumZero(int n) {
+        vector<int> A(n);
+        for (int i = 0; i < n; ++i)
+            A[i] = i * 2 - n + 1;
+        return A;
+    }
+```
+
+**Python:**
+
+```python
+    def sumZero(self, n):
+        return range(1 - n, n, 2)
+```
+
+## Solution 2
+- start filling up from left and right complementary values (so if we insert 1 from left, insert -1 from right, then insert 2 from left and insert -2 from right and so on) :
+
+```java
+public int[] sumZero(int n) {
+        int[] res = new int[n];
+        int left = 0, right = n - 1, start = 1;
+        while (left < right) {
+            res[left++] = start;
+            res[right--] = -start;
+            start++;
+        }
+        return res;
+    }
+```

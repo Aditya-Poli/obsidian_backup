@@ -4,28 +4,16 @@
     "type": "split",
     "children": [
       {
-        "id": "caa80a8dbad27a88",
+        "id": "6f34c636d060fcb2",
         "type": "tabs",
         "children": [
           {
-            "id": "e76ac3d7f48c299b",
+            "id": "91574b7f9b43a866",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Leetcode/A general approach to backtracking questions in Java (Subsets, Permutations, Combination Sum, Palind....md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "97a054a08ed17b7f",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Leetcode/Medium Problems.md",
+                "file": "Leetcode/Easy Problems.md",
                 "mode": "source",
                 "source": false
               }
@@ -97,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Leetcode/A general approach to backtracking questions in Java (Subsets, Permutations, Combination Sum, Palind....md",
+                "file": "Leetcode/Easy Problems.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -124,7 +112,7 @@
       "markdown-importer:Open format converter": false
     }
   },
-  "active": "e76ac3d7f48c299b",
+  "active": "91574b7f9b43a866",
   "lastOpenFiles": [
     "Leetcode/Medium Problems.md",
     "Leetcode/A general approach to backtracking questions in Java (Subsets, Permutations, Combination Sum, Palind....md",

@@ -25,14 +25,13 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Leetcode/A general approach to backtracking questions in Java (Subsets, Permutations, Combination Sum, Palind....md",
+                "file": "Leetcode/Medium Problems.md",
                 "mode": "source",
                 "source": false
               }
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -125,7 +124,7 @@
       "markdown-importer:Open format converter": false
     }
   },
-  "active": "97a054a08ed17b7f",
+  "active": "e76ac3d7f48c299b",
   "lastOpenFiles": [
     "Leetcode/Medium Problems.md",
     "Leetcode/A general approach to backtracking questions in Java (Subsets, Permutations, Combination Sum, Palind....md",

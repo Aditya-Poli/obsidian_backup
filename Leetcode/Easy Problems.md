@@ -761,7 +761,7 @@ Space `O(N)`
         return range(1 - n, n, 2)
 ```
 
-## Solution 2
+### Solution 2
 - start filling up from left and right complementary values (so if we insert 1 from left, insert -1 from right, then insert 2 from left and insert -2 from right and so on) :
 
 ```java
@@ -776,3 +776,6 @@ public int[] sumZero(int n) {
         return res;
     }
 ```
+
+
+## [203. Remove Linked List Elements](https://leetcode.com/problems/remove-linked-list-elements/description/)[👎]

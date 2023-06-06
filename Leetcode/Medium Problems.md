@@ -2055,3 +2055,76 @@ class Solution {
 
 
 
+
+## [103. Binary Tree Zigzag Level Order Traversal](https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/description/?envType=list&envId=o8wvvpl2)[👎]
+Given the `root` of a binary tree, return _the zigzag level order traversal of its nodes' values_. (i.e., from left to right, then right to left for the next level and alternate between).
+
+**Example 1:**
+
+![](https://assets.leetcode.com/uploads/2021/02/19/tree1.jpg)
+
+**Input:** root = [3,9,20,null,null,15,7]
+**Output:** [[3],[20,9],[15,7]]
+
+**Example 2:**
+
+**Input:** root = [1]
+**Output:** [[1]]
+
+**Example 3:**
+
+**Input:** root = []
+**Output:** []
+
+**Constraints:**
+
+- The number of nodes in the tree is in the range `[0, 2000]`.
+- `-100 <= Node.val <= 100`
+
+### Solution
+```java
+public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+   TreeNode c=root;
+   List<List<Integer>> ans =new ArrayList<List<Integer>>();
+   if(c==null) return ans;
+   Stack<TreeNode> s1=new Stack<TreeNode>();
+   Stack<TreeNode> s2=new Stack<TreeNode>();
+   s1.push(root);
+   while(!s1.isEmpty()||!s2.isEmpty())
+   {
+       List<Integer> tmp=new ArrayList<Integer>();
+        while(!s1.isEmpty())
+        {
+            c=s1.pop();
+            tmp.add(c.val);
+            if(c.left!=null) s2.push(c.left);
+            if(c.right!=null) s2.push(c.right);
+        }
+        ans.add(tmp);
+        tmp=new ArrayList<Integer>();
+        while(!s2.isEmpty())
+        {
+            c=s2.pop();
+            tmp.add(c.val);
+            if(c.right!=null)s1.push(c.right);
+            if(c.left!=null)s1.push(c.left);
+        }
+        if(!tmp.isEmpty()) ans.add(tmp);
+   }
+   return ans;
+}
+```
+
+Because of the FILO property of stack, when you fill up a stack with one level of node, the output order of stack is reversed order of the input order. So you do it level by level, you will get zigzag order. Hope it helps.
+
+`while(!s1.isEmpty()||!s2.isEmpty())`
+
+is not necessary, because when s1 is empty s2 must be empty, so just judge
+
+`while(!s1.isEmpty())` is enough.
+
+### [Solution Page](https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/solutions/33904/java-double-stack-solution/?envType=list&envId=o8wvvpl2)
+
+
+
+

@@ -2128,3 +2128,275 @@ is not necessary, because when s1 is empty s2 must be empty, so just judge
 
 
 
+
+## [56. Merge Intervals](https://leetcode.com/problems/merge-intervals/description/?envType=list&envId=o8wvvpl2)[👍]
+Given an array of `intervals` where `intervals[i] = [starti, endi]`, merge all overlapping intervals, and return _an array of the non-overlapping intervals that cover all the intervals in the input_.
+
+**Example 1:**
+
+**Input:** intervals = [[1,3],[2,6],[8,10],[15,18]]
+**Output:** [[1,6],[8,10],[15,18]]
+**Explanation:** Since intervals [1,3] and [2,6] overlap, merge them into [1,6].
+
+**Example 2:**
+
+**Input:** intervals = [[1,4],[4,5]]
+**Output:** [[1,5]]
+**Explanation:** Intervals [1,4] and [4,5] are considered overlapping.
+
+**Constraints:**
+
+- 1 <= intervals.length <= 10<sup>4</sup>
+- `intervals[i].length == 2`
+- 0 <= starti <= endi <= 10<sup>4</sup>
+
+### Solution
+
+> **Note:** Debug sortIntervals is s not working properly.
+```java
+class Solution {
+    public int[][] merge(int[][] intervals) {
+
+        sortIntervals(intervals);
+        List<int[]> list = new ArrayList<>();
+
+        int i = 0;
+
+        while(i < intervals.length){
+            int[] bound = intervals[i];
+            while(i < intervals.length && in(intervals[i], bound[1])){
+                bound[1] = Math.max(intervals[i][1], bound[1]);
+                i++;
+            }
+
+            list.add(bound);
+
+        }
+
+        int[][] mergedIntervals = new int[list.size()][2];
+        for(i = 0; i < mergedIntervals.length; i++){
+            mergedIntervals[i] = list.get(i);
+        }
+
+        return mergedIntervals;
+        
+    }
+
+    static boolean in(int[] array, int val){
+        return val >= array[0] && (val <= array[1] || val > array[1]);
+    }
+
+    static void sortIntervals(int[][] intervals){
+        for(int i = 0; i < intervals.length; i++){
+            for(int j = i + 1; j < intervals.length - i; j++){
+                if(isLess(intervals[j], intervals[i])){
+                    swap(intervals, i, j);
+                }
+            }
+        }
+    }
+
+    static boolean isLess(int[] int1, int[] int2){
+        return int1[0] < int2[0];
+    }
+
+    static void swap(int[][] array, int idx1, int idx2){
+        int[] temp = array[idx1];
+        array[idx1] = array[idx2];
+        array[idx2] = temp;
+    }
+}
+```
+
+### Solution 2
+```java
+class Solution {
+    public int[][] merge(int[][] intervals) {
+
+        Arrays.sort(intervals, (i1, i2) -> Integer.compare(i1[0], i2[0]));
+        List<int[]> list = new ArrayList<>();
+
+        int i = 0;
+
+        while(i < intervals.length){
+            int[] bound = intervals[i];
+            while(i < intervals.length && in(intervals[i], bound[1])){
+                bound[1] = Math.max(intervals[i][1], bound[1]);
+                i++;
+            }
+
+            list.add(bound);
+
+        }
+
+        int[][] mergedIntervals = new int[list.size()][2];
+        for(i = 0; i < mergedIntervals.length; i++){
+            mergedIntervals[i] = list.get(i);
+        }
+
+        return mergedIntervals;
+        
+    }
+
+    static boolean in(int[] array, int val){
+        return val >= array[0] && (val <= array[1] || val > array[1]);
+    }
+
+    
+}
+```
+
+### Solution 3
+The idea is to sort the intervals by their starting points. Then, we take the first interval and compare its end with the next intervals starts. As long as they overlap, we update the end to be the max end of the overlapping intervals. Once we find a non overlapping interval, we can add the previous "extended" interval and start over.
+
+Sorting takes O(n log(n)) and merging the intervals takes O(n). So, the resulting algorithm takes O(n log(n)).
+
+I used a lambda comparator (Java 8) and a for-each loop to try to keep the code clean and simple.
+
+EDIT: The function signature changed in april 2019.  
+Here is a new version of the algorithm with arrays. To make more memory efficient, I reused the initial array (sort of "in-place") but it would be easy to create new subarrays if you wanted to keep the initial data.  
+It takes less memory than 99% of the other solutions (sometimes 90% depending on the run) and is more than 10 times faster than the previous version with lists.
+
+```java
+class Solution {
+	public int[][] merge(int[][] intervals) {
+		if (intervals.length <= 1)
+			return intervals;
+
+		// Sort by ascending starting point
+		Arrays.sort(intervals, (i1, i2) -> Integer.compare(i1[0], i2[0]));
+
+		List<int[]> result = new ArrayList<>();
+		int[] newInterval = intervals[0];
+		result.add(newInterval);
+		for (int[] interval : intervals) {
+			if (interval[0] <= newInterval[1]) // Overlapping intervals, move the end if needed
+				newInterval[1] = Math.max(newInterval[1], interval[1]);
+			else {                             // Disjoint intervals, add the new interval to the list
+				newInterval = interval;
+				result.add(newInterval);
+			}
+		}
+
+		return result.toArray(new int[result.size()][]);
+	}
+}
+```
+
+Previous version with lists.
+
+```java
+public List<Interval> merge(List<Interval> intervals) {
+    if (intervals.size() <= 1)
+        return intervals;
+    
+    // Sort by ascending starting point using an anonymous Comparator
+    intervals.sort((i1, i2) -> Integer.compare(i1.start, i2.start));
+    
+    List<Interval> result = new LinkedList<Interval>();
+    int start = intervals.get(0).start;
+    int end = intervals.get(0).end;
+    
+    for (Interval interval : intervals) {
+        if (interval.start <= end) // Overlapping intervals, move the end if needed
+            end = Math.max(end, interval.end);
+        else {                     // Disjoint intervals, add the previous one and reset bounds
+            result.add(new Interval(start, end));
+            start = interval.start;
+            end = interval.end;
+        }
+    }
+    
+    // Add the last interval
+    result.add(new Interval(start, end));
+    return result;
+}
+```
+
+EDIT: Updated with Java 8 lambda comparator.  
+EDIT 25/05/2019: Updated for new method signature.
+
+```csharp
+public int[][] merge(int[][] intervals) {
+        List<int[]> res = new ArrayList<>();
+        if(intervals.length == 0 || intervals == null) return res.toArray(new int[0][]);
+        
+        Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
+        
+        int start = intervals[0][0];
+        int end = intervals[0][1];
+        
+        for(int[] i : intervals) {
+            if(i[0] <= end) {
+                end = Math.max(end, i[1]);
+            }
+            else {
+                res.add(new int[]{start, end});
+                start = i[0];
+                end = i[1];
+            }
+        }
+        res.add(new int[]{start, end});
+       return res.toArray(new int[0][]);
+         
+    }
+```
+
+Mine is similar, but one difference is I use the iterator to iterate through the original list and then directly modify it, So the final results are already in the "intervals" list.
+
+```ruby
+	public List<Interval> merge(List<Interval> intervals) {
+	if (intervals == null || intervals.isEmpty())
+		return intervals;
+	Collections.sort(intervals, new Comparator<Interval>() {
+		public int compare(Interval i1, Interval i2) {
+			if (i1.start != i2.start) {
+				return i1.start - i2.start;
+			}
+			return i1.end - i2.end;
+		}
+	});
+	ListIterator<Interval> it = intervals.listIterator();
+	Interval cur = it.next();
+	while (it.hasNext()) {
+		Interval next = it.next();
+		if (cur.end < next.start) {
+			cur = next;
+			continue;
+		} else {
+			cur.end = Math.max(cur.end, next.end);
+			it.remove();
+		}
+	}
+	return intervals;
+}
+```
+
+Was asked to solve this question by FB without using the new operator (ie creating new objects). Below is my solution in O(1) space.
+
+```csharp
+public class Solution {
+    public List<Interval> merge(List<Interval> itv) {
+        if (itv == null)    throw new IllegalArgumentException();
+        
+        Collections.sort(itv, new Comparator<Interval>(){
+            @Override
+            public int compare(Interval a, Interval b) {
+                if (a.start == b.start)     return b.end - a.end;
+                return a.start - b.start;
+            }
+        });
+        
+        int i = 0;
+        while (i < itv.size() - 1) {
+            Interval a = itv.get(i), b = itv.get(i + 1);
+            if (a.end >= b.start) {
+                a.end = Math.max(a.end, b.end);
+                itv.remove(i + 1);
+            }
+            else    i++;
+        }
+        return itv;
+    }
+}
+```

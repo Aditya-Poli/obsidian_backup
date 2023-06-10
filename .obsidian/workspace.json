@@ -13,13 +13,26 @@
             "state": {
               "type": "markdown",
               "state": {
+                "file": "Leetcode/Hard Problems.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "250d86df0330ee5e",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
                 "file": "Leetcode/Medium Problems.md",
                 "mode": "source",
                 "source": false
               }
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -112,10 +125,11 @@
       "markdown-importer:Open format converter": false
     }
   },
-  "active": "8d8f5d92e4ca4d62",
+  "active": "250d86df0330ee5e",
   "lastOpenFiles": [
-    "Leetcode/Easy Problems.md",
+    "Leetcode/Hard Problems.md",
     "Leetcode/Medium Problems.md",
+    "Leetcode/Easy Problems.md",
     "Leetcode/A general approach to backtracking questions in Java (Subsets, Permutations, Combination Sum, Palind....md",
     "Real Python/Maze Solver.md",
     "().md",
@@ -132,7 +146,6 @@
     "GFG/Maximize Number of 1's.md",
     "GFG",
     "Leetcode/My Notes - LeetCode.pdf",
-    "Leetcode/Hard Problems.md",
     "README.md",
     "LeetCode/leetcode_obsidian/Medium Problems.md",
     "Linear_Data_Structures.md",

@@ -2400,3 +2400,104 @@ public class Solution {
     }
 }
 ```
+
+## [11. Container With Most Water](https://leetcode.com/problems/container-with-most-water/description/)[👍]
+You are given an integer array `height` of length `n`. There are `n` vertical lines drawn such that the two endpoints of the `ith` line are `(i, 0)` and `(i, height[i])`.
+
+Find two lines that together with the x-axis form a container, such that the container contains the most water.
+
+Return _the maximum amount of water a container can store_.
+
+**Notice** that you may not slant the container.
+
+**Example 1:**
+
+![](https://s3-lc-upload.s3.amazonaws.com/uploads/2018/07/17/question_11.jpg)
+
+**Input:** height = [1,8,6,2,5,4,8,3,7]
+**Output:** 49
+**Explanation:** The above vertical lines are represented by array [1,8,6,2,5,4,8,3,7]. In this case, the max area of water (blue section) the container can contain is 49.
+
+**Example 2:**
+
+**Input:** height = [1,1]
+**Output:** 1
+
+**Constraints:**
+
+- `n == height.length`
+- 2 <= n <= 10<sup>5</sup>
+- 0 <= height[i] <= 10<sup>4</sup>
+
+### Solution - My Submission
+
+**Brute Force Method**
+Last Executed Input
+
+---
+
+[6801,4040,7716,493,526,2755,957,1298,2477,6189,6442,8476,4745,8663,2812,8476,3802,7743,7746,2513,4434,3625,2470,4902,8135,5773,5457,4527,6798,8800,8824,9067,3494,915,68,4671,5868,7224,371,4667,38,595...
+
+```java
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+class Solution {
+    public int maxArea(int[] height) {
+
+			int area = 0;
+
+			for(int i = 0; i< height.length; i++){
+					for(int j = i + 1; j < height.length; j++){
+							area = max(area, trap(height, i, j));
+					}
+			}
+
+      return area;
+    }
+
+    static int trap(int[] height, int i, int j) {
+			int mini = min(height[i], height[j]);
+			return (j - i)*mini;
+	}
+}
+```
+**Final Submission - Optimized and understood from the trapping rain water**
+```java
+import static java.lang.Math.max;
+
+class Solution {
+
+    public int maxArea(int[] height) {
+
+      int area = 0;
+
+      int l = 0, r = height.length - 1;
+
+  
+
+      while(l < r){
+
+        if(height[l] < height[r]){
+
+          area = max(area, (r - l)*height[l++]);
+
+        } else {
+
+          area = max(area, (r - l)*height[r--]);
+
+        }
+
+      }
+
+  
+
+      return area;
+
+    }
+
+  
+
+}
+```
+
+### Solution

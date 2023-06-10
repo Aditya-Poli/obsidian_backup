@@ -1254,3 +1254,82 @@ This solution to median of two sorted arrays uses binary search, so the time com
 
 This problem is an extension of median of arrays of equal size problem. It can be solved by a simpler approach if we directly merge the arrays while keeping the final array sorted. But the more efficient approach would be to use binary search because it uses no extra space and the time complexity is also significantly low.
 
+
+## [42. Trapping Rain Water](https://leetcode.com/problems/trapping-rain-water/)[👍]
+
+Given `n` non-negative integers representing an elevation map where the width of each bar is `1`, compute how much water it can trap after raining.
+
+**Example 1:**
+
+![](https://assets.leetcode.com/uploads/2018/10/22/rainwatertrap.png)
+
+**Input:** height = [0,1,0,2,1,0,1,3,2,1,2,1]
+**Output:** 6
+**Explanation:** The above elevation map (black section) is represented by array [0,1,0,2,1,0,1,3,2,1,2,1]. In this case, 6 units of rain water (blue section) are being trapped.
+
+**Example 2:**
+
+**Input:** height = [4,2,0,3,2,5]
+**Output:** 9
+
+**Constraints:**
+
+- `n == height.length`
+- 1 <= n <= 2 * 10<sup>4</sup>
+- 0 <= height[i] <= 10<sup>5</sup>
+
+### Solution
+Indeed this question can be solved in one pass and O(1) space, but it's probably hard to come up with in a short interview. If you have read the stack O(n) solution for Largest Rectangle in Histogram, you will find this solution is very very similar.
+
+The main idea is : if we want to find out how much water on a bar(bot), we need to find out the left larger bar's index (il), and right larger bar's index(ir), so that the water is (min(A[il],A[ir])-A[bot])*(ir-il-1), use min since only the lower boundary can hold water, and we also need to handle the edge case that there is no il.
+
+To implement this we use a stack that store the indices with decreasing bar height, once we find a bar who's height is larger, then let the top of the stack be bot, the cur bar is ir, and the previous bar is il.
+
+```java
+public int trap(int[] A) {
+        if (A==null) return 0;
+        Stack<Integer> s = new Stack<Integer>();
+        int i = 0, maxWater = 0, maxBotWater = 0;
+        while (i < A.length){
+            if (s.isEmpty() || A[i]<=A[s.peek()]){
+                s.push(i++);
+            }
+            else {
+                int bot = s.pop();
+                maxBotWater = s.isEmpty()? // empty means no il
+                0:(Math.min(A[s.peek()],A[i])-A[bot])*(i-s.peek()-1);
+                maxWater += maxBotWater;
+            }
+        }
+        return maxWater;
+    }
+```
+
+Make it more readable and add some comments
+
+```java
+class Solution {
+    public int trap(int[] height) {
+        if (height == null || height.length < 2) return 0;
+        
+        Stack<Integer> stack = new Stack<>();
+        int water = 0, i = 0;
+        while (i < height.length) {
+            if (stack.isEmpty() || height[i] <= height[stack.peek()]) {
+                stack.push(i++);
+            } else {
+                int pre = stack.pop();
+                if (!stack.isEmpty()) {
+                    // find the smaller height between the two sides
+                    int minHeight = Math.min(height[stack.peek()], height[i]);
+                    // calculate the area
+                    water += (minHeight - height[pre]) * (i - stack.peek() - 1);
+                }
+            }
+        }
+        return water;
+    }
+}
+```
+
+### S

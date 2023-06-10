@@ -2501,3 +2501,476 @@ class Solution {
 ```
 
 ### Solution
+How's going Ladies - n - Gentlemen, today we are going to solve another coolest problem i.e **Container With Most Water**
+
+Okay, so let's understand what the problem statement is saying,
+
+```php
+You are given an integer array height of length n
+
+Return the maximum amount of water a container can store.
+```
+
+Let's take one example in order to understand this problem,  
+**Input**: height = [1,8,6,2,5,4,8,3,7]  
+**Output**: 49
+
+![image](https://assets.leetcode.com/users/images/8e3e5a1c-7a11-401d-a4d7-03cce76fd7f3_1649120493.739683.png)
+
+So, we need to find max area in which most water can contains, where **`area = width * height`**
+
+As, **height** is already given in our Array!  
+But what about **width?**
+
+So, to find **width** of a container, all we have to do is get the difference of line.
+
+```
+8				|	                                    |
+7				|	                                    |	            |
+6				|	    |	                            |	            |
+5				|	    |	            |	            |	            |
+4				|	    |	            |	    |	    |	            |
+3				|	    |	            |	    |	    |	    |	    |
+2				|	    |	    |	    |	    |	    |	    |	    |
+1	   |	    |	    |	    |	    |	    |	    |	    |	    |
+       0        1       2       3       4       5       6       7       8
+	            ^                                       ^
+```
+
+So, my one pointer is on index 1 & another pointer is on index 6
+
+Therefore, **`width = right - left`** i.e. **`6 - 1 => 5`**
+
+And if we look at height,  
+**`height = min(8, 8)`**  
+Thus, area will be:-  
+**`area = 5 * 8 => 40`**
+
+Now you'll ask why we are choosing the min height because, the water we fill in our container will got overflow, so to avoid that we are gabbing the min line.
+
+So, now you ask. How do we solve this problem efficiently. We gonna solve this in linear time.
+
+So, for that we have
+
+```python
+> max area which is intially 0
+> Then, we going to have 2 pointers. One in left start at 0th index & one right start from last index.
+```
+
+Now, if I calculate the width & height our area will be:
+
+```swift
+8				|	                                    |
+7				|	                                    |	            |                             width = 8 - 0 = 8
+6				|	    |	                            |	            |                             height = min(1, 7)
+5				|	    |	            |	            |	            |                             Area = 8 * 1 = 8
+4				|	    |	            |	    |	    |	            |
+3				|	    |	            |	    |	    |	    |	    |                             max = 0 -> max = 8
+2				|	    |	    |	    |	    |	    |	    |	    |
+1	   |	    |	    |	    |	    |	    |	    |	    |	    |
+       0        1       2       3       4       5       6       7       8
+	   ^                                                                ^
+	  left                                                            right
+```
+
+By this pretty much we have get one formula all it is **`area = width * height`**  
+i.e. **`area = (right - left) * min(height[left], height[right])`**
+
+So, now you ask which pointer we suppose to move. It's preety simple. We gonna move the smaller height pointer. **Why?**  
+Because, we are trying to find very max. container
+
+If we have smaller height on left or right we don't care about it. We always want a higher height line on our left & right.
+
+**Okay, so now moving forward.** left pointer has smaller height, so it will move forward
+
+```swift
+8				|	                                    |
+7				|	                                    |	            |                             width = 8 - 1 = 7
+6				|	    |	                            |	            |                             height = min(8, 7)
+5				|	    |	            |	            |	            |                             Area = 7 * 7 = 49
+4				|	    |	            |	    |	    |	            |
+3				|	    |	            |	    |	    |	    |	    |                             max = 8 -> max = 49
+2				|	    |	    |	    |	    |	    |	    |	    |
+1	   |	    |	    |	    |	    |	    |	    |	    |	    |
+       0        1       2       3       4       5       6       7       8
+	            ^                                                       ^
+	           left                                                   right
+```
+
+**Okay, so now moving forward.** right pointer has smaller height, so it will move backward
+
+```python
+8				|	                                    |
+7				|	                                    |	            |                             width = 7 - 1 = 6
+6				|	    |	                            |	            |                             height = min(8, 3)
+5				|	    |	            |	            |	            |                             Area = 6 * 3 = 18
+4				|	    |	            |	    |	    |	            |
+3				|	    |	            |	    |	    |	    |	    |                             max = 49
+2				|	    |	    |	    |	    |	    |	    |	    |
+1	   |	    |	    |	    |	    |	    |	    |	    |	    |
+       0        1       2       3       4       5       6       7       8
+	            ^                                               ^
+	           left                                           right
+```
+
+**Okay, so now moving forward.** right pointer has smaller height, so it will move backward
+
+```python
+8				|	                                    |
+7				|	                                    |	            |                             width = 6 - 1 = 5
+6				|	    |	                            |	            |                             height = min(8, 8)
+5				|	    |	            |	            |	            |                             Area = 8 * 5 = 40
+4				|	    |	            |	    |	    |	            |
+3				|	    |	            |	    |	    |	    |	    |                             max = 49
+2				|	    |	    |	    |	    |	    |	    |	    |
+1	   |	    |	    |	    |	    |	    |	    |	    |	    |
+       0        1       2       3       4       5       6       7       8
+	            ^                                       ^
+	           left                                   right
+```
+
+**Okay, so now moving forward.** now left & right pointer both have same height, so in this case we gonna move both the pointer's!!
+
+```python
+8				|	                                    |
+7				|	                                    |	            |                             width = 5 - 2 = 3
+6				|	    |	                            |	            |                             height = min(4, 6)
+5				|	    |	            |	            |	            |                             Area = 4 * 3 = 12
+4				|	    |	            |	    |	    |	            |
+3				|	    |	            |	    |	    |	    |	    |                             max = 49
+2				|	    |	    |	    |	    |	    |	    |	    |
+1	   |	    |	    |	    |	    |	    |	    |	    |	    |
+       0        1       2       3       4       5       6       7       8
+	                    ^                       ^
+	                   left                   right
+```
+
+**Okay, so now moving forward.** right pointer has smaller height, so it will move backward
+
+```python
+8				|	                                    |
+7				|	                                    |	            |                             width = 4 - 2 = 2
+6				|	    |	                            |	            |                             height = min(5, 6)
+5				|	    |	            |	            |	            |                             Area = 5 * 2 = 10
+4				|	    |	            |	    |	    |	            |
+3				|	    |	            |	    |	    |	    |	    |                             max = 49
+2				|	    |	    |	    |	    |	    |	    |	    |
+1	   |	    |	    |	    |	    |	    |	    |	    |	    |
+       0        1       2       3       4       5       6       7       8
+	                    ^               ^
+	                   left           right
+```
+
+**Okay, so now moving forward.** right pointer has smaller height, so it will move backward
+
+```python
+8				|	                                    |
+7				|	                                    |	            |                             width = 3 - 2 = 1
+6				|	    |	                            |	            |                             height = min(2, 6)
+5				|	    |	            |	            |	            |                             Area = 2 * 1 = 2
+4				|	    |	            |	    |	    |	            |
+3				|	    |	            |	    |	    |	    |	    |                             max = 49
+2				|	    |	    |	    |	    |	    |	    |	    |
+1	   |	    |	    |	    |	    |	    |	    |	    |	    |
+       0        1       2       3       4       5       6       7       8
+	                    ^       ^
+	                   left   right
+```
+
+The max area we get is **49**
+
+I hope so, ladies & gentlemen approach is clear, **Let's code it**
+
+**Java**
+
+```java
+class Solution {
+    public int maxArea(int[] height) {
+        int left = 0;
+        int right = height.length - 1;
+        int max = 0;
+        while(left < right){
+            int w = right - left;
+            int h = Math.min(height[left], height[right]);
+            int area = h * w;
+            max = Math.max(max, area);
+            if(height[left] < height[right]) left++;
+            else if(height[left] > height[right]) right--;
+            else {
+                left++;
+                right--;
+            }
+        }
+        return max;
+    }
+}
+```
+
+**C++**
+
+```cpp
+class Solution {
+public:
+    int maxArea(vector<int>& height) {
+        int left = 0;
+        int right = height.size() - 1;
+        int maxi = 0;
+        while(left < right){
+            int w = right - left;
+            int h = min(height[left], height[right]);
+            int area = h * w;
+            maxi = max(maxi, area);
+            if(height[left] < height[right]) left++;
+            else if(height[left] > height[right]) right--;
+            else {
+                left++;
+                right--;
+            }
+        }
+        return maxi;
+    }
+};
+```
+
+ANALYSIS :-
+
+- **Time Complexity :-** BigO(N)
+    
+- **Space COmplexity :-** BigO(1)
+
+
+### Solution 2
+_(Note: This is part of a series of Leetcode solution explanations. If you like this solution or find it useful,_ _**please upvote**_ _this post.)_
+
+---
+
+_**Idea:**_
+
+The first thing we should realize is that the amount of water contained is always going to be a rectangle whose area is defined as **length * width**. The width of any container will be the difference between the index of the two lines (**i** and **j**), and the height will be whichever of the two sides is the lowest (**min(H[i], H[j])**).
+
+The brute force approach would be to compare every single pair of indexes in **H**, but that would be far too slow. Instead, we can observe that if we start with the lines on the opposite ends and move inward, the only possible time the area could be larger is when the height increases, since the width will continuously get smaller.
+
+This is very easily observed with the use of visuals. Let's say we start with a graph of **H** like this:
+
+![Visual 1](https://i.imgur.com/2xU6MPx.png)
+
+The first step would be to find our starting container described by the lines on either end:
+
+![Visual 2](https://i.imgur.com/bWpX3VY.png)
+
+We can tell that the line on the right end will never make a better match, because any further match would have a smaller width and the container is already the maximum height that that line can support. That means that our next move should be to slide **j** to the left and pick a new line:
+
+![Visual 3](https://i.imgur.com/pcyUfzx.png)
+
+This is a clear improvement over the last container. We only moved over one line, but we more than doubled the height. Now, it's the line on the left end that's the limiting factor, so the next step will be to slide **i** to the right. Just looking at the visual, however, it's obvious that we can skip the next few lines because they're already underwater, so we should go to the first line that's larger than the current water height:
+
+![Visual 4](https://i.imgur.com/25MGHYY.png)
+
+This time, it doesn't look like we made much of a gain, despite the fact that the water level rose a bit, because we lost more in width than we made up for in height. That means that we always have to check at each new possible stop to see if the new container area is better than the current best. Just lik before we can slide **j** to the left again:
+
+![Visual 5](https://i.imgur.com/c4VBpqn.png)
+
+This move also doesn't appear to have led to a better container. But here we can see that it's definitely possible to have to move the same side twice in a row, as the **j** line is still the lower of the two:
+
+![Visual 6](https://i.imgur.com/R6AAkNd.png)
+
+This is obviously the last possible container to check, and like the last few before it, it doesn't appear to be the best match. Still, we can understand that it's entirely possible for the best container in a different example to be only one index apart, if both lines are extremely tall.
+
+Putting together everything, it's clear that we need to make a **2-pointer sliding window solution**. We'll start from either end and at each step we'll check the container area, then we'll shift the lower-valued pointer inward. Once the two pointers meet, we know that we must have exhausted all possible containers and we should **return** our answer (**ans**).
+
+---
+
+_**Implementation:**_
+
+Javascript was weirdly more performant when using both **Math.max()** and **Math.min()** rather than performing more basic comparisons, even with duplicated effort in the ternary.
+
+For the other languages, it made more sense (and was ultimately more performant) to only have to do the basic comparisons once each.
+
+---
+
+_**Javascript Code:**_
+
+The best result for the code below is **68ms / 41.1MB** (beats 100% / 41%).
+
+```javascript
+var maxArea = function(H) {
+    let ans = 0, i = 0, j = H.length-1
+    while (i < j) {
+        ans = Math.max(ans, Math.min(H[i], H[j]) * (j - i))
+        H[i] <= H[j] ? i++ : j--
+    }
+    return ans
+};
+```
+
+---
+
+_**Python Code:**_
+
+The best result for the code below is **140ms / 16.4MB** (beats 100% / 75%).
+
+```java
+class Solution:
+    def maxArea(self, H: List[int]) -> int:
+        ans, i, j = 0, 0, len(H)-1
+        while (i < j):
+            if H[i] <= H[j]:
+                res = H[i] * (j - i)
+                i += 1
+            else:
+                res = H[j] * (j - i)
+                j -= 1
+            if res > ans: ans = res
+        return ans
+```
+
+---
+
+_**Java Code:**_
+
+The best result for the code below is **1ms / 40.3MB** (beats 100% / 88%).
+
+```cpp
+class Solution {
+    public int maxArea(int[] H) {
+        int ans = 0, i = 0, j = H.length-1, res = 0;
+        while (i < j) {
+            if (H[i] <= H[j]) {
+                res = H[i] * (j - i);
+                i++;
+            } else {
+                res = H[j] * (j - i);
+                j--;
+            }
+            if (res > ans) ans = res;
+        }
+        return ans;
+    }
+}
+```
+
+---
+
+_**C++ Code:**_
+
+The best result for the code below is **12ms / 17.6MB** (beats 100% / 100%).
+
+```cpp
+class Solution {
+public:
+    int maxArea(vector<int>& H) {
+        int ans = 0, i = 0, j = H.size()-1, res = 0;
+        while (i < j) {
+            if (H[i] <= H[j]) {
+                res = H[i] * (j - i);
+                i++;
+            } else {
+                res = H[j] * (j - i);
+                j--;
+            }
+            if (res > ans) ans = res;
+        }
+        return ans;
+    }
+};
+```
+
+
+### Solution 3
+[Leetcode](https://leetcode.com/) [11. Container With Most Water](https://leetcode.com/problems/container-with-most-water/).
+
+Here shows **2** Approaches to slove this problem: **Brute Force** and **Two Pointers**.
+
+#### Intuition
+
+![Problem 11](https://s3-lc-upload.s3.amazonaws.com/uploads/2018/07/17/question_11.jpg)
+
+Suppose two pointers iii, jjj, the heights of the vertical lines are h[i]h[i]h[i], h[j]h[j]h[j], and the area in this state is S(i,j)S(i, j)S(i,j).
+
+As we all known, the container is determined by the short line, the area formula can be easily obtained:
+
+S(i,j)=min(h[i],h[j])×(j−i)S(i, j)= min(h[i], h[j]) \times (j - i)S(i,j)=min(h[i],h[j])×(j−i)
+
+#### Brute Froce
+
+It's easy to use the brute force approach, the total states is C(n,2)=n×(n−1)/2C(n, 2)= n \times (n - 1) / 2C(n,2)=n×(n−1)/2, we have to **enumerate all these states** to get the max area.
+
+The time complexity is O(n2)O(n^2)O(n2), exceed the time limit.
+
+```python
+    // BF time: O(n^2) space: O(1)
+    // TimeOut
+    public static int maxArea_bf(int[] height) {
+        int len = height.length;
+        int max = 0;
+        for (int i = 0; i < len - 1; i++) {
+            for (int j = i + 1; j < len; j++) {
+                int area = Math.min(height[i], height[j]) * (j - i);
+                max = Math.max(max, area);
+            }
+        }
+
+        return max;
+    }
+```
+
+##### Analysis
+
+- **Time Complexity**: O(n<sup>2</sup>)
+- **Space Complexity**: O(1)
+
+#### Two Pointers
+
+In each state S(i,j)S(i, j)S(i,j), no matter whether the left line or right line moves to the middle, it will cause less wide to width−1width - 1width−1:
+
+- Move the short line, the short line min(h[i],h[j])min(h[i], h[j])min(h[i],h[j]) of the container may hold more water, the area may increase.
+- Move the long line, the short line min(h[i],h[j])min(h[i], h[j])min(h[i],h[j]) of the container will **remain the same or less**, so the area will definitely become less.
+
+Therefore, we can use two pointers to the left and right line of the container. We move the short line in each round, update the max area until the two pointers met each other as the below pictures show.
+
+![Problem 11 1](https://assets.leetcode.com/users/images/1bbdebff-40e8-43b6-b975-050eced682e6_1649125223.181647.png)
+
+![Problem 11 2](https://assets.leetcode.com/users/images/e7d55353-7491-44b2-af67-51e4aeee414f_1649125223.358524.png)
+
+![Problem 11 3](https://assets.leetcode.com/users/images/395bbe7e-1218-4750-a744-21c590c5981c_1649125223.3798895.png)
+
+##### Proof
+
+Assuming that h[i]<h[j]h[i] \lt h[j]h[i]<h[j] under the state S(i,j)S(i, j)S(i,j), move the short line to S(i+1,j)S(i + 1, j)S(i+1,j), which means that we eliminate S(i,j−1),S(i,j−2),...,S(i,i+1)S(i, j - 1), S(i, j - 2), ... , S(i, i + 1)S(i,j−1),S(i,j−2),...,S(i,i+1) states. The area of all eliminated states must be smaller than the current area:
+
+1. Short line height: same or less than S(i,j)S(i, j)S(i,j) (≤h[i]\le h[i]≤h[i]);
+2. Width: less than S(i,j)S(i, j)S(i,j).
+
+Therefore, each round moves the short line, and all the eliminated states will not cause the loss of the maximum area.
+
+```python
+    // Two Pointers time: O(n) space: O(1)
+    public static int maxArea_tp(int[] height) {
+        int len = height.length;
+        int left = 0;
+        int right = len - 1;
+        int max = Math.min(height[left], height[right]) * (right - left);
+        while (left < right) {
+            // Move the shorter lines each time
+            if (height[left] <= height[right]) {
+                left++;
+            } else {
+                right--;
+            }
+
+            // update the max area
+            max = Math.max(max, Math.min(height[left], height[right]) * (right - left));
+        }
+
+        return max;
+    }
+```
+
+##### Analysis
+
+- **Time Complexity**: O(n)
+- **Space Complexity**: O(1)
+
+
+
+

@@ -3267,7 +3267,7 @@ A **shift** on `s` consists of moving the leftmost character of `s` to the
 - `1 <= s.length, goal.length <= 100`
 - `s` and `goal` consist of lowercase English letters.
 
-## My solution - but failed
+### My solution - but failed
 ```java
 class Solution {
 
@@ -3463,4 +3463,18 @@ Python
 ```python
 return len(A) == len(B) and B in A + A
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

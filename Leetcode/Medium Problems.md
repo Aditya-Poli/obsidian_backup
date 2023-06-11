@@ -3426,8 +3426,41 @@ class Solution {
 	    return true;
 	  else
 	    return false;
-	   
-	 
-	
 	}
+}
 ```
+
+### Solution 2
+```java
+  StringBuilder temp = new StringBuilder(s1);
+    
+    for(int i=0;i<s1.length();i++){
+        temp.deleteCharAt(0);
+        temp.append(s1.charAt(i));
+        if(temp.toString().equals(s2)){
+            return true;
+        }
+    }
+    return false;
+}
+```
+
+### One Line
+C++
+
+```php
+return A.size() == B.size() && (A + A).find(B) != string::npos;
+```
+
+Java
+
+```kotlin
+return A.length() == B.length() && (A + A).contains(B);
+```
+
+Python
+
+```python
+return len(A) == len(B) and B in A + A
+```
+

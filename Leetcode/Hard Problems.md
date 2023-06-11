@@ -1336,7 +1336,7 @@ class Solution {
 Reference: [LeetCode](https://leetcode.com/problems/trapping-rain-water/)  
 Difficulty: Hard
 
-## Problem
+#### Problem
 
 > Given `n` non-negative integers representing an elevation map where the width of each bar is `1`, compute how much water it is able to trap after raining.
 
@@ -1349,7 +1349,7 @@ Input: [0,1,0,2,1,0,1,3,2,1,2,1]
 Output: 6
 ```
 
-## Analysis
+#### Analysis
 
 **Wrong Idea:** One pointer to detect increase or decrease. My mind was influenced by the solution to the longest mountain in an array.
 
@@ -1361,7 +1361,7 @@ The correct answer is `w1 + w2`. To compute the amount, we can't just go by the
 
 Come up with the brute-force first!
 
-### Brute-Force
+#### Brute-Force
 
 For each position `i` in `height[0...n-1]`, calculate how much water it contains. The amount of water can be computed by `min(leftMax, rightMax) - height[i]`. where `leftMax` is the highest left bar in `height[0...i-1]` and `rightMax` is the highest right bar in `height[i+1...n-1]`. What does it mean? No Picture You Say J8~
 
@@ -1395,7 +1395,7 @@ public int trap(int[] height) {
 **Time:** `O(N^2)` since computing `leftMax` and `rightMax` in each round takes `O(N)`.  
 **Space:** `O(1)`
 
-### DP (pre-compute)
+#### DP (pre-compute)
 
 Based on the brute-force approach, we can pre-compute all `leftMax` and `rightMax` in advance, which reduces time complexity to `O(N)`.
 
@@ -1429,7 +1429,7 @@ public int trap(int[] height) {
 **Time:** `O(N)`  
 **Space:** `O(N)`
 
-### Divide and Conquer
+#### Divide and Conquer
 
 We can also solve this problem by divide-and-conquer approach.
 
@@ -1499,7 +1499,7 @@ It depends on how the problem is divided into two subproblems by the highest bar
 
 **Note:** Time complexity can be reduced to O(N)O(N)O(N) if the divide step `findMax()` takes O(1)O(1)O(1) (pre-compute), no matter how the problem is divided.
 
-### Two Pointers (no extra space, clever)
+#### Two Pointers (no extra space, clever)
 
 **Note:** We have `leftMax` and `rightMax` that record the largest heights `lo` and `hi` have seen so far.
 
@@ -1550,7 +1550,7 @@ public int trap(int[] height) {
 **Time:** `O(N)`  
 **Space:** `O(1)`
 
-### Two Pointers (my first attempt)
+#### Two Pointers (my first attempt)
 
 Here is the solution I first came up with... It just uses `two pointers` to keep track of two bars and compute the water by levels constrained by the minimum height of two bars. (a bit similar to Skyline problem...)
 
@@ -1558,7 +1558,7 @@ Left/right pointers are both aiming for higher bars when they move on to the cen
 
 How could I write such a solution instead of brute-force at first?
 
-![](https://bloggg-1254259681.cos.na-siliconvalley.myqcloud.com/bufdh.png)
+
 
 **See a better approach below.**
 
@@ -1594,5 +1594,12 @@ public int trap(int[] height) {
 
 **Time:** `O(N^2)`  
 **Space:** `O(1)`
+
+
+
+
+
+
+
 
 

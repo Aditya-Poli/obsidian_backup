@@ -2974,3 +2974,272 @@ Therefore, each round moves the short line, and all the eliminated states will n
 
 
 
+
+## [396. Rotate Function](https://leetcode.com/problems/rotate-function/description/)[👎]
+You are given an integer array `nums` of length `n`.
+
+Assume `arrk` to be an array obtained by rotating `nums` by `k` positions clock-wise. We define the **rotation function** `F` on `nums` as follow:
+
+- `F(k) = 0 * arrk[0] + 1 * arrk[1] + ... + (n - 1) * arrk[n - 1].`
+
+Return _the maximum value of_ `F(0), F(1), ..., F(n-1)`.
+
+The test cases are generated so that the answer fits in a **32-bit** integer.
+
+**Example 1:**
+
+**Input:** nums = [4,3,2,6]
+**Output:** 26
+**Explanation:**
+F(0) = (0 * 4) + (1 * 3) + (2 * 2) + (3 * 6) = 0 + 3 + 4 + 18 = 25
+F(1) = (0 * 6) + (1 * 4) + (2 * 3) + (3 * 2) = 0 + 4 + 6 + 6 = 16
+F(2) = (0 * 2) + (1 * 6) + (2 * 4) + (3 * 3) = 0 + 6 + 8 + 9 = 23
+F(3) = (0 * 3) + (1 * 2) + (2 * 6) + (3 * 4) = 0 + 2 + 12 + 12 = 26
+So the maximum value of F(0), F(1), F(2), F(3) is F(3) = 26.
+
+**Example 2:**
+
+**Input:** nums = [100]
+**Output:** 0
+
+**Constraints:**
+
+- `n == nums.length`
+- 1 <= n <= 10<sup>5</sup>
+- `-100 <= nums[i] <= 100`
+
+### Solution
+my brute force approach (45/58 testcases passed)
+```java
+class Solution {
+
+    public int maxRotateFunction(int[] nums) {
+
+        int SOP = sop(nums);
+
+        int maxSOP = SOP;
+
+        for(int i = 0; i < nums.length - 1; i++){
+
+            rr(nums);
+
+            SOP = sop(nums);
+
+            maxSOP = Math.max(SOP, maxSOP);
+
+        }
+
+  
+
+        return maxSOP;
+
+    }
+
+  
+
+    static void rr(int[] nums){
+
+        if(nums.length <=1) return;
+
+        int end = nums[nums.length - 1];
+
+        for(int i = nums.length - 2; i >= 0; i--){
+
+            nums[i+1] = nums[i];
+
+        }
+
+        nums[0] = end;
+
+    }
+
+  
+
+    static int sop(int[] nums){
+
+        int ans = 0;
+
+        for(int i = 0;i < nums.length; i++){
+
+            ans += (i*nums[i]);
+
+        }
+
+        return ans;
+
+    }
+
+}
+```
+
+### Solution 1
+**EXPLANATION**
+
+Let us do some pre-processing using basic Maths.
+
+Let the array elements be: [_a b c d e_].
+
+**Length of array _represented by N_** = 5  
+**Sum of elements of array _represented by SUM_** = a + b + c + d + e
+
+Now, as per the question :
+
+F(0) = (0 * a) + (1 * b) + (2 * c) + (3 * d) + (4 * e) = 0 + b + 2c + 3d + 4e  
+F(1) = (1 * a) + (2 * b) + (3 * c) + (4 * d) + (0 * e) = a + 2b + 3c + 4d + 0  
+F(2) = (2 * a) + (3 * b) + (4 * c) + (0 * d) + (1 * e) = 2a + 3b + 4c + 0 + e
+
+Now subtracting 2 equations,
+
+**F(1) - F(0)** = a + b + c + d - 4e = a + b + c + d + e - 5e  
+Therefore, **F(1)** = **F(0)** + a + b + c + d + e - 5e = **F(0) + SUM - N***e
+
+**F(2) - F(1)** = a + b + c + e - 4d = a + b + c + d + e - 5d  
+Therefore, **F(2)** = **F(1)** + a + b + c + d + e - 5d = **F(1) + SUM - N***d
+
+Generalizing it, we get the following relation:
+
+**F(K) = F(K-1) + SUM - N * (( K-1)th element from end of array)**  
+i.e. **F(K) = F(K-1) + SUM - N * (array [N - 1 - (K-1)])** = **F(K-1) + SUM - N * (array [N - K])**
+
+Now, I think it is pretty much clear that we can use a 1D DP array to solve this question as depicted in the code below.
+
+_------Please upvote if you liked the solution. Please put your thoughts/doubts/queries in the comment section below. I will try my best to answer them.------_
+
+```python
+class Solution {
+    public int maxRotateFunction (int[] A) {
+        if (A == null || A.length == 0)
+            return 0;
+        int sum = 0, F0 = 0, max = Integer.MIN_VALUE;
+        for (int i = 0; i < A.length; i++) {
+            sum += A [i];
+            F0 += i * A [i];
+        }
+        int dp [] = new int [A.length];
+        dp [0] = F0;
+        max = dp [0];
+        for (int i = 1; i < A.length; i++) {
+            dp [i] = dp [i-1] + sum - A.length * A [A.length - i];
+            max = Math.max (max, dp [i]);
+        }
+        return max;
+    }
+}
+```
+
+Great solution, but no need to maintain DP. It is enough to maintain previous value.
+
+```cpp
+int maxRotateFunction(vector<int>& nums) {
+    int maxval,sum=0,F0=0,cur,prev,n=nums.size();
+    for(int i=0;i<n;i++)
+    {
+        sum+=nums[i];
+        F0+=i*nums[i];
+    }
+    maxval=F0;
+    prev=F0;
+    for(int i=1;i<n;i++)
+    {
+        cur=prev+sum-n*nums[n-i];
+        prev=cur;
+        maxval=max(cur,maxval);
+    }
+    return maxval;
+    }
+```
+
+### Solution 2
+Consider we have 5 coins A,B,C,D,E
+
+According to the problem statement  
+F(0) = (0_A) + (1_B) + (2_C) + (3_D) + (4_E)  
+F(1) = (4_A) + (0_B) + (1_C) + (2_D) + (3_E)  
+F(2) = (3_A) + (4_B) + (0_C) + (1_D) + (2*E)
+
+This problem at a glance seem like a difficult problem. I am not very strong in mathematics, so this is how I visualize this problem
+
+We can construct F(1) from F(0) by two step:  
+Step 1. taking away one count of each coin from F(0), this is done by subtracting "sum" from "iteration" in the code below  
+after step 1 F(0) = (-1_A) + (0_B) + (1_C) + (2_D) + (3*E)
+
+Step 2. Add n times the element which didn't contributed in F(0), which is A. This is done by adding "A[j-1]_len" in the code below.  
+after step 2 F(0) = (4_A) + (0_B) + (1_C) + (2_D) + (3_E)
+
+At this point F(0) can be considered as F(1) and F(2) to F(4) can be constructed by repeating the above steps.
+
+Hope this explanation helps, cheers!
+
+```java
+    public int maxRotateFunction(int[] A) {
+        if(A.length == 0){
+            return 0;
+        }
+        
+        int sum =0, iteration = 0, len = A.length;
+        
+        for(int i=0; i<len; i++){
+            sum += A[i];
+            iteration += (A[i] * i);
+        }
+        
+        int max = iteration;
+        for(int j=1; j<len; j++){
+            // for next iteration lets remove one entry value of each entry and the prev 0 * k
+            iteration = iteration - sum + A[j-1]*len;
+            max = Math.max(max, iteration);
+        }
+        
+        return max;
+    }
+```
+
+### Solution 2
+```
+F(k) = 0 * Bk[0] + 1 * Bk[1] + ... + (n-1) * Bk[n-1]
+F(k-1) = 0 * Bk-1[0] + 1 * Bk-1[1] + ... + (n-1) * Bk-1[n-1]
+       = 0 * Bk[1] + 1 * Bk[2] + ... + (n-2) * Bk[n-1] + (n-1) * Bk[0]
+```
+
+Then,
+
+```python
+F(k) - F(k-1) = Bk[1] + Bk[2] + ... + Bk[n-1] + (1-n)Bk[0]
+              = (Bk[0] + ... + Bk[n-1]) - nBk[0]
+              = sum - nBk[0]
+```
+
+Thus,
+
+```python
+F(k) = F(k-1) + sum - nBk[0]
+```
+
+What is Bk[0]?
+
+```python
+k = 0; B[0] = A[0];
+k = 1; B[0] = A[len-1];
+k = 2; B[0] = A[len-2];
+...
+```
+
+```python
+int allSum = 0;
+int len = A.length;
+int F = 0;
+for (int i = 0; i < len; i++) {
+    F += i * A[i];
+    allSum += A[i];
+}
+int max = F;
+for (int i = len - 1; i >= 1; i--) {
+    F = F + allSum - len * A[i];
+    max = Math.max(F, max);
+}
+return max;   
+```
+
+
+
+

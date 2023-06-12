@@ -3571,3 +3571,83 @@ Therefore, the ideas is simple and straightforward. We could use recursive to so
     }
 ```
 
+### Solution -Submitted
+```java
+class Solution {
+
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+
+        /* Sort the array */
+
+        Arrays.sort(nums);
+
+  
+
+        List<List<Integer>> list = new ArrayList<>();
+
+  
+
+        int n = nums.length;
+
+  
+
+        for(int i = 0; i < n; i++){
+
+            if(i > 0 && nums[i] == nums[i-1]) continue;
+
+            for(int j = i+1; j < n; j++){
+
+                if(j != i + 1 && nums[j] == nums[j-1]) continue;
+
+                int k = j + 1;
+
+                int l = n - 1;
+
+                while(k < l){
+
+                    long sum = nums[i] + nums[j];
+
+                    sum += nums[k];
+
+                    sum += nums[l];
+
+  
+
+                    if(sum == target){
+
+                        Integer[] quad = {nums[i], nums[j], nums[k], nums[l]};
+
+                        list.add(Arrays.asList(quad));
+
+                        k++;
+
+                        l--;
+
+                        while(k < n && nums[k] == nums[k-1]) k++;
+
+                        while(l >= 0 && nums[l] == nums[l+1]) l--;
+
+                    } else if(sum < target) k++;
+
+                    else l--;
+
+                }
+
+            }
+
+        }
+
+  
+
+        return list;
+
+    }
+
+}
+```
+
+
+
+
+
+

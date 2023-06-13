@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "DSA/Recursion on Subsequences.md",
+                "file": "DSA/Algorithms/Power set.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "DSA/Recursion on Subsequences.md",
+                "file": "DSA/Algorithms/Power set.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -114,8 +114,9 @@
   },
   "active": "c760dd47b65931f8",
   "lastOpenFiles": [
-    "Leetcode/Glossary.md",
     "DSA/Recursion on Subsequences.md",
+    "DSA/Algorithms/Power set.md",
+    "Leetcode/Glossary.md",
     "Leetcode/Medium Problems.md",
     "Leetcode/Hard Problems.md",
     "Leetcode/Easy Problems.md",

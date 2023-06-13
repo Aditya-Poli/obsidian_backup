@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Leetcode/Medium Problems.md",
+                "file": "DSA/Recursion.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Leetcode/Medium Problems.md",
+                "file": "DSA/Recursion.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -114,8 +114,9 @@
   },
   "active": "250d86df0330ee5e",
   "lastOpenFiles": [
-    "Leetcode/Hard Problems.md",
     "Leetcode/Medium Problems.md",
+    "DSA/Recursion.md",
+    "Leetcode/Hard Problems.md",
     "Leetcode/Easy Problems.md",
     "Leetcode/A general approach to backtracking questions in Java (Subsets, Permutations, Combination Sum, Palind....md",
     "Real Python/Maze Solver.md",

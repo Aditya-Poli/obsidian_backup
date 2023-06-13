@@ -4,16 +4,16 @@
     "type": "split",
     "children": [
       {
-        "id": "fc86370542a7e70f",
+        "id": "42e9a1a6b7fdb5a4",
         "type": "tabs",
         "children": [
           {
-            "id": "250d86df0330ee5e",
+            "id": "c760dd47b65931f8",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "DSA/Recursion.md",
+                "file": "DSA/Recursion on Subsequences.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "DSA/Recursion.md",
+                "file": "DSA/Recursion on Subsequences.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -112,10 +112,11 @@
       "markdown-importer:Open format converter": false
     }
   },
-  "active": "250d86df0330ee5e",
+  "active": "c760dd47b65931f8",
   "lastOpenFiles": [
+    "Leetcode/Glossary.md",
+    "DSA/Recursion on Subsequences.md",
     "Leetcode/Medium Problems.md",
-    "DSA/Recursion.md",
     "Leetcode/Hard Problems.md",
     "Leetcode/Easy Problems.md",
     "Leetcode/A general approach to backtracking questions in Java (Subsets, Permutations, Combination Sum, Palind....md",
@@ -130,7 +131,6 @@
     "DSA/Algorithms/Kadane's Algorithm.md",
     "DSA/Algorithms",
     "DSA",
-    "Leetcode/Glossary.md",
     "GFG/Maximize Number of 1's.md",
     "GFG",
     "Leetcode/My Notes - LeetCode.pdf",

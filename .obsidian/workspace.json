@@ -4,16 +4,16 @@
     "type": "split",
     "children": [
       {
-        "id": "42e9a1a6b7fdb5a4",
+        "id": "b0129d88dcdf1317",
         "type": "tabs",
         "children": [
           {
-            "id": "c760dd47b65931f8",
+            "id": "4b915989794474fa",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "DSA/Algorithms/Power set.md",
+                "file": "DSA/Dynamic Programming.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "DSA/Algorithms/Power set.md",
+                "file": "DSA/Dynamic Programming.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -112,10 +112,11 @@
       "markdown-importer:Open format converter": false
     }
   },
-  "active": "c760dd47b65931f8",
+  "active": "4b915989794474fa",
   "lastOpenFiles": [
-    "DSA/Recursion on Subsequences.md",
+    "DSA/Dynamic Programming.md",
     "DSA/Algorithms/Power set.md",
+    "DSA/Recursion on Subsequences.md",
     "Leetcode/Glossary.md",
     "Leetcode/Medium Problems.md",
     "Leetcode/Hard Problems.md",

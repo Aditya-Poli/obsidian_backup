@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "DSA/Dynamic Programming/198. House Robber.md",
+                "file": "DSA/Dynamic Programming/From good to great. How to approach most of DP problems..md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "DSA/Dynamic Programming/198. House Robber.md",
+                "file": "DSA/Dynamic Programming/From good to great. How to approach most of DP problems..md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -112,10 +112,10 @@
       "markdown-importer:Open format converter": false
     }
   },
-  "active": "0797987a14150268",
+  "active": "1d5c7a18c6fb30e8",
   "lastOpenFiles": [
-    "DSA/Dynamic Programming/From good to great. How to approach most of DP problems..md",
     "DSA/Dynamic Programming/198. House Robber.md",
+    "DSA/Dynamic Programming/From good to great. How to approach most of DP problems..md",
     "DSA/Dynamic Programming/Untitled",
     "DSA/Dynamic Programming/Dynamic Programming.md",
     "Pasted image 20230615112341.png",

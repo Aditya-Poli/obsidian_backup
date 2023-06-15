@@ -4,19 +4,15 @@
     "type": "split",
     "children": [
       {
-        "id": "1a893ccd3764c2b5",
+        "id": "7e6e4590301849aa",
         "type": "tabs",
         "children": [
           {
-            "id": "d731fb7a855316f3",
+            "id": "1d5c7a18c6fb30e8",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "DSA/Dynamic Programming/746. Min Cost Climbing Stairs ✔.md",
-                "mode": "source",
-                "source": false
-              }
+              "type": "empty",
+              "state": {}
             }
           }
         ]
@@ -85,7 +81,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "DSA/Dynamic Programming/746. Min Cost Climbing Stairs ✔.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -112,7 +107,7 @@
       "markdown-importer:Open format converter": false
     }
   },
-  "active": "d731fb7a855316f3",
+  "active": "1d5c7a18c6fb30e8",
   "lastOpenFiles": [
     "DSA/Dynamic Programming/746. Min Cost Climbing Stairs ✔.md",
     "DSA/Dynamic Programming/Dynamic Programming.md",

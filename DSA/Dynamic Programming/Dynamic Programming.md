@@ -1,4 +1,4 @@
-
+![](https://assets.leetcode.com/static_assets/others/Dynamic_Programming_static_cover_picture.png  =100x100)
 ## Fibonacci Style
 
 [Climbing Stairs](https://leetcode.com/problems/climbing-stairs/?envType=study-plan-v2&envId=dynamic-programming)✔

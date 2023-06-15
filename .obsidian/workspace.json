@@ -11,8 +11,12 @@
             "id": "1d5c7a18c6fb30e8",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {}
+              "type": "markdown",
+              "state": {
+                "file": "DSA/Dynamic Programming/Dynamic Programming.md",
+                "mode": "source",
+                "source": false
+              }
             }
           }
         ]
@@ -81,6 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "DSA/Dynamic Programming/Dynamic Programming.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -109,6 +114,7 @@
   },
   "active": "1d5c7a18c6fb30e8",
   "lastOpenFiles": [
+    "Pasted image 20230615112341.png",
     "DSA/Dynamic Programming/746. Min Cost Climbing Stairs ✔.md",
     "DSA/Dynamic Programming/Dynamic Programming.md",
     "DSA/Dynamic Programming",
@@ -144,7 +150,6 @@
     "Module 2 - Advanced flow control (if, else, switch 6ca9e178d0d84f3c8d51043ba53b285c.md",
     "Module_2_-_Advanced_flow_control_(if_else_switch_loops)_and_data_aggregates.pdf",
     "Module 3 - Extending expressive power pointers, fu dc33296891704e50b3e1b001452cef80.md",
-    "Udacity Deep Learning Syllabus.pdf",
-    "Module 1 - Introduction to computer programming, v 7c8c4db1e07640babaab85542bbe9160.md"
+    "Udacity Deep Learning Syllabus.pdf"
   ]
 }

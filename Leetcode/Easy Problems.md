@@ -963,3 +963,152 @@ class Solution {
 ](https://leetcode.com/problems/remove-linked-list-elements/solutions/57324/ac-java-solution/)
 
 
+
+
+## [110. Balanced Binary Tree](https://leetcode.com/problems/balanced-binary-tree/?envType=list&envId=o8wvvpl2)[👍]
+
+Given a binary tree, determine if it is 
+
+**height-balanced**
+
+.
+
+**Example 1:**
+
+![](https://assets.leetcode.com/uploads/2020/10/06/balance_1.jpg)
+
+**Input:** root = [3,9,20,null,null,15,7]
+**Output:** true
+
+**Example 2:**
+
+![](https://assets.leetcode.com/uploads/2020/10/06/balance_2.jpg)
+
+**Input:** root = [1,2,2,3,3,null,null,4,4]
+**Output:** false
+
+**Example 3:**
+
+**Input:** root = []
+**Output:** true
+
+**Constraints:**
+
+- The number of nodes in the tree is in the range `[0, 5000]`.
+- -10<sup>4</sup> <= Node.val <= 10<sup>4</sup>
+
+### Solution
+#### **Java Solution:**
+
+Runtime: 0 ms, faster than 100.00% of Java online submissions for Balanced Binary Tree.  
+Memory Usage: 41.9 MB, less than 94.34% of Java online submissions for Balanced Binary Tree.
+
+```kotlin
+class Solution {
+    public boolean isBalanced(TreeNode root) {
+        // If the tree is empty, we can say it’s balanced...
+        if (root == null)  return true;
+        // Height Function will return -1, when it’s an unbalanced tree...
+		if (Height(root) == -1)  return false;
+		return true;
+	}
+    // Create a function to return the “height” of a current subtree using recursion...
+	public int Height(TreeNode root) {
+        // Base case...
+		if (root == null)  return 0;
+        // Height of left subtree...
+		int leftHeight = Height(root.left);
+        // Height of height subtree...
+		int rightHight = Height(root.right);
+        // In case of left subtree or right subtree unbalanced, return -1...
+		if (leftHeight == -1 || rightHight == -1)  return -1;
+        // If their heights differ by more than ‘1’, return -1...
+        if (Math.abs(leftHeight - rightHight) > 1)  return -1;
+        // Otherwise, return the height of this subtree as max(leftHeight, rightHight) + 1...
+		return Math.max(leftHeight, rightHight) + 1;
+    }
+}
+```
+
+#### **C++ Solution:**
+
+```cpp
+class Solution {
+public:
+    bool isBalanced(TreeNode* root) {
+        // If the tree is empty, we can say it’s balanced...
+        if (root == NULL)  return true;
+        // Height Function will return -1, when it’s an unbalanced tree...
+		if (Height(root) == -1)  return false;
+		return true;
+	}
+    // Create a function to return the “height” of a current subtree using recursion...
+	int Height(TreeNode* root) {
+        // Base case...
+		if (root == NULL)  return 0;
+        // Height of left subtree...
+		int leftHeight = Height(root->left);
+        // Height of height subtree...
+		int rightHight = Height(root->right);
+        // In case of left subtree or right subtree unbalanced or their heights differ by more than ‘1’, return -1...
+		if (leftHeight == -1 || rightHight == -1 || abs(leftHeight - rightHight) > 1)  return -1;
+        // Otherwise, return the height of this subtree as max(leftHeight, rightHight) + 1...
+		return max(leftHeight, rightHight) + 1;
+    }
+};
+```
+
+#### **Python Solution:**
+
+```python
+class Solution(object):
+    def isBalanced(self, root):
+        return (self.Height(root) >= 0)
+    def Height(self, root):
+        if root is None:  return 0
+        leftheight, rightheight = self.Height(root.left), self.Height(root.right)
+        if leftheight < 0 or rightheight < 0 or abs(leftheight - rightheight) > 1:  return -1
+        return max(leftheight, rightheight) + 1
+```
+
+#### **JavaScript Solution:**
+
+```javascript
+var isBalanced = function(root) {
+    // If the tree is empty, we can say it’s balanced...
+    if (root == null)  return true;
+    // Height Function will return -1, when it’s an unbalanced tree...
+	if (Height(root) == -1)  return false;
+	return true;
+}
+// Create a function to return the “height” of a current subtree using recursion...
+var Height = function(root) {
+    // Base case...
+	if (root == null)  return 0;
+    // Height of left subtree...
+	let leftHeight = Height(root.left);
+    // Height of height subtree...
+	let rightHight = Height(root.right);
+    // In case of left subtree or right subtree unbalanced, return -1...
+	if (leftHeight == -1 || rightHight == -1)  return -1;
+    // If their heights differ by more than ‘1’, return -1...
+    if (Math.abs(leftHeight - rightHight) > 1)  return -1;
+    // Otherwise, return the height of this subtree as max(leftHeight, rightHight) + 1...
+	return Math.max(leftHeight, rightHight) + 1;
+};
+```
+
+#### **Python3 Solution:**
+
+```ruby
+class Solution:
+    def isBalanced(self, root: Optional[TreeNode]) -> bool:
+        return (self.Height(root) >= 0)
+    def Height(self, root: Optional[TreeNode]) -> bool:
+        if root is None:  return 0
+        leftheight, rightheight = self.Height(root.left), self.Height(root.right)
+        if leftheight < 0 or rightheight < 0 or abs(leftheight - rightheight) > 1:  return -1
+        return max(leftheight, rightheight) + 1
+```
+
+

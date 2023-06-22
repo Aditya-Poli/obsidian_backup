@@ -91,6 +91,107 @@ public class Solution {
 }
 ```
 
+# Submitted
+```java
+class Solution {
+
+    public void nextPermutation(int[] nums) {
+
+        int idx1 = -1; // to keep track of pivot
+
+        int idx2 = -1; // to keep track of pivot succesor from right
+
+  
+
+        // find the pivot idx
+
+        for(int i = nums.length - 2; i >= 0; i--){
+
+            if(nums[i] < nums[i+1]){
+
+                idx1 = i;
+
+                break;
+
+            }
+
+        }
+
+  
+
+        // if all elements are in decreasing order
+
+        // pivot idx = -1
+
+        if(idx1 == -1){
+
+            // reverse the entire array
+
+            reverse(nums, 0);
+
+        } else {
+
+            // find the pivot succesor from right
+
+            for(int i = nums.length-1; i >= 0; i--){
+
+                if(nums[i] > nums[idx1]){
+
+                    idx2 = i;
+
+                    break;
+
+                }
+
+            }
+
+  
+
+            // swap the pivot and its succesor
+
+            swap(nums, idx1, idx2);
+
+            // reverse the subarray
+
+            reverse(nums, idx1+1);
+
+        }
+
+    }
+
+  
+
+    void swap(int[] nums,int i,int j){
+
+        int temp=nums[i];
+
+        nums[i]=nums[j];
+
+        nums[j]=temp;
+
+    }
+
+    void reverse(int[] nums,int start){
+
+        int i=start;
+
+        int j=nums.length-1;
+
+        while(i<j){
+
+            swap(nums,i,j);
+
+            i++;
+
+            j--;
+
+        }
+
+    }
+
+}
+```
+
 boolean nextPermutation(int[] array) {
     // Find longest non-increasing suffix
     int i = array.length - 1;

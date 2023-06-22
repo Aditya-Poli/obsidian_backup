@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "e09013c923f0cc0c",
+        "id": "daae68dea0502a85",
         "type": "tabs",
         "children": [
           {
-            "id": "d6617657ef28f19e",
+            "id": "94ffefc912e2a5f6",
             "type": "leaf",
             "state": {
               "type": "empty",
@@ -107,7 +107,7 @@
       "markdown-importer:Open format converter": false
     }
   },
-  "active": "d6617657ef28f19e",
+  "active": "94ffefc912e2a5f6",
   "lastOpenFiles": [
     "DSA/Next Permutation.md",
     "Leetcode/Easy Problems.md",

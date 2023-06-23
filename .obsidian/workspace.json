@@ -11,8 +11,12 @@
             "id": "94ffefc912e2a5f6",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {}
+              "type": "markdown",
+              "state": {
+                "file": "DSA/BST from Preorder Traversal.md",
+                "mode": "source",
+                "source": false
+              }
             }
           }
         ]
@@ -81,6 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "DSA/BST from Preorder Traversal.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -109,6 +114,7 @@
   },
   "active": "94ffefc912e2a5f6",
   "lastOpenFiles": [
+    "DSA/BST from Preorder Traversal.md",
     "DSA/Next Permutation.md",
     "Leetcode/Easy Problems.md",
     "DSA/Dynamic Programming/From good to great. How to approach most of DP problems..md",
@@ -145,7 +151,6 @@
     "LeetCode/Medium Problems.md",
     "LeetCode/leetcode_obsidian/README.md",
     "LeetCode/leetcode_obsidian",
-    "LeetCode/Hard Problems.md",
     "Module_2_-_Advanced_flow_control_(if_else_switch_loops)_and_data_aggregates.pdf"
   ]
 }

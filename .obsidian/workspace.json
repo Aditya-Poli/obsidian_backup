@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Leetcode/421. Maximum XOR of Two Numbers in an Array.md",
+                "file": "Leetcode/137. Single Number II.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Leetcode/421. Maximum XOR of Two Numbers in an Array.md",
+                "file": "Leetcode/137. Single Number II.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,6 +115,7 @@
   "active": "e9d0038272ca9270",
   "lastOpenFiles": [
     "Leetcode/421. Maximum XOR of Two Numbers in an Array.md",
+    "Leetcode/137. Single Number II.md",
     "Leetcode/124. Binary Tree Maximum Path Sum.md",
     "Leetcode/Easy Problems.md",
     "DSA/BST from Preorder Traversal.md",
@@ -149,7 +150,6 @@
     "README.md",
     "LeetCode/leetcode_obsidian/Medium Problems.md",
     "Linear_Data_Structures.md",
-    "LeetCode/leetcode_obsidian/Hard Problems.md",
     "LeetCode/leetcode_obsidian",
     "Module_2_-_Advanced_flow_control_(if_else_switch_loops)_and_data_aggregates.pdf"
   ]

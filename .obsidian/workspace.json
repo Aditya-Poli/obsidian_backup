@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "3578c57e78a14795",
+        "id": "457cc3b15719e3e8",
         "type": "tabs",
         "children": [
           {
-            "id": "48bda442a6d5d60e",
+            "id": "ba8f802e8510e5c2",
             "type": "leaf",
             "state": {
               "type": "empty",
@@ -107,8 +107,10 @@
       "markdown-importer:Open format converter": false
     }
   },
-  "active": "48bda442a6d5d60e",
+  "active": "ba8f802e8510e5c2",
   "lastOpenFiles": [
+    "DSA/Algorithms/Graph Algorithms + Problems to Practice.md",
+    "DSA/Graphs.md",
     "Leetcode/137. Single Number II.md",
     "Leetcode/421. Maximum XOR of Two Numbers in an Array.md",
     "Leetcode/124. Binary Tree Maximum Path Sum.md",
@@ -143,8 +145,6 @@
     "GFG",
     "Leetcode/My Notes - LeetCode.pdf",
     "README.md",
-    "LeetCode/leetcode_obsidian/Medium Problems.md",
-    "Linear_Data_Structures.md",
     "LeetCode/leetcode_obsidian",
     "Module_2_-_Advanced_flow_control_(if_else_switch_loops)_and_data_aggregates.pdf"
   ]

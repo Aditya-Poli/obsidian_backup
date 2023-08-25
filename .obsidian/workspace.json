@@ -4,29 +4,18 @@
     "type": "split",
     "children": [
       {
-        "id": "172ce60691ad8770",
+        "id": "28ab5b838a08ccf9",
         "type": "tabs",
         "children": [
           {
-            "id": "fcd5955b9ab1425f",
+            "id": "84e0979ae218b990",
             "type": "leaf",
             "state": {
               "type": "empty",
               "state": {}
             }
-          },
-          {
-            "id": "1b27df1ca03d48c6",
-            "type": "leaf",
-            "state": {
-              "type": "release-notes",
-              "state": {
-                "currentVersion": "1.3.7"
-              }
-            }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -118,10 +107,10 @@
       "markdown-importer:Open format converter": false
     }
   },
-  "active": "1b27df1ca03d48c6",
+  "active": "84e0979ae218b990",
   "lastOpenFiles": [
-    "DSA/Become Master In Graphs.md",
     "DSA/Algorithms/Graph Algorithms + Problems to Practice.md",
+    "DSA/Become Master In Graphs.md",
     "Leetcode/137. Single Number II.md",
     "Leetcode/421. Maximum XOR of Two Numbers in an Array.md",
     "Leetcode/124. Binary Tree Maximum Path Sum.md",

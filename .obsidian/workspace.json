@@ -11,8 +11,12 @@
             "id": "84e0979ae218b990",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {}
+              "type": "markdown",
+              "state": {
+                "file": "DSA/Dynamic Programming/97. Interleaving String.md",
+                "mode": "preview",
+                "source": false
+              }
             }
           }
         ]
@@ -81,6 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "DSA/Dynamic Programming/97. Interleaving String.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -109,6 +114,7 @@
   },
   "active": "84e0979ae218b990",
   "lastOpenFiles": [
+    "DSA/Dynamic Programming/97. Interleaving String.md",
     "DSA/Algorithms/Graph Algorithms + Problems to Practice.md",
     "DSA/Become Master In Graphs.md",
     "Leetcode/137. Single Number II.md",
@@ -144,7 +150,6 @@
     "GFG/Maximize Number of 1's.md",
     "GFG",
     "Leetcode/My Notes - LeetCode.pdf",
-    "README.md",
     "LeetCode/leetcode_obsidian",
     "Module_2_-_Advanced_flow_control_(if_else_switch_loops)_and_data_aggregates.pdf"
   ]

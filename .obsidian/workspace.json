@@ -18,8 +18,19 @@
                 "source": false
               }
             }
+          },
+          {
+            "id": "668c74fa466c862f",
+            "type": "leaf",
+            "state": {
+              "type": "release-notes",
+              "state": {
+                "currentVersion": "1.4.13"
+              }
+            }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -112,7 +123,7 @@
       "markdown-importer:Open format converter": false
     }
   },
-  "active": "8310351976e1d6eb",
+  "active": "668c74fa466c862f",
   "lastOpenFiles": [
     "Leetcode/847. Shortest Path Visiting All Nodes.md",
     "DSA/Dynamic Programming/97. Interleaving String.md",

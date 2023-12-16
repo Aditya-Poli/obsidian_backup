@@ -13,24 +13,13 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Leetcode/847. Shortest Path Visiting All Nodes.md",
+                "file": "Trash/Equations.md",
                 "mode": "source",
                 "source": false
               }
             }
-          },
-          {
-            "id": "668c74fa466c862f",
-            "type": "leaf",
-            "state": {
-              "type": "release-notes",
-              "state": {
-                "currentVersion": "1.4.13"
-              }
-            }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -96,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Leetcode/847. Shortest Path Visiting All Nodes.md",
+                "file": "Trash/Equations.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -123,9 +112,10 @@
       "markdown-importer:Open format converter": false
     }
   },
-  "active": "668c74fa466c862f",
+  "active": "8310351976e1d6eb",
   "lastOpenFiles": [
     "Leetcode/847. Shortest Path Visiting All Nodes.md",
+    "Trash/Equations.md",
     "DSA/Dynamic Programming/97. Interleaving String.md",
     "DSA/Algorithms/Graph Algorithms + Problems to Practice.md",
     "DSA/Become Master In Graphs.md",
@@ -156,7 +146,6 @@
     "DSA/Searching & Sorting/Boyer-Moore Majority Voting Algorithm.md",
     "DSA/Searching & Sorting/Cyclic Sort.md",
     "DSA/Searching & Sorting",
-    "DSA/Algorithms/Kadane's Algorithm.md",
     "DSA/Algorithms",
     "DSA",
     "GFG",

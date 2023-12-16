@@ -17,27 +17,7 @@
                 "mode": "source",
                 "source": false
               }
-            },
-            "group": "ceb3d413ef94b00b"
-          }
-        ]
-      },
-      {
-        "id": "64b0a00487ac0203",
-        "type": "tabs",
-        "children": [
-          {
-            "id": "5c73bce8e64b83d4",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Trash/Equations.md",
-                "mode": "preview",
-                "source": false
-              }
-            },
-            "group": "ceb3d413ef94b00b"
+            }
           }
         ]
       }
@@ -132,7 +112,7 @@
       "markdown-importer:Open format converter": false
     }
   },
-  "active": "5c73bce8e64b83d4",
+  "active": "8310351976e1d6eb",
   "lastOpenFiles": [
     "Leetcode/847. Shortest Path Visiting All Nodes.md",
     "Trash/Equations.md",

@@ -11,12 +11,8 @@
             "id": "8310351976e1d6eb",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Trash/Equations.md",
-                "mode": "source",
-                "source": false
-              }
+              "type": "empty",
+              "state": {}
             }
           }
         ]
@@ -85,7 +81,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Trash/Equations.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -112,7 +107,7 @@
       "markdown-importer:Open format converter": false
     }
   },
-  "active": "8310351976e1d6eb",
+  "active": "0797987a14150268",
   "lastOpenFiles": [
     "Leetcode/847. Shortest Path Visiting All Nodes.md",
     "Trash/Equations.md",

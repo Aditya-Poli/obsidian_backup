@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "2950e0a78b019e54",
+        "id": "6824ed9d9056f412",
         "type": "tabs",
         "children": [
           {
-            "id": "8310351976e1d6eb",
+            "id": "eecde6853cf9a8be",
             "type": "leaf",
             "state": {
               "type": "empty",
@@ -107,18 +107,22 @@
       "markdown-importer:Open format converter": false
     }
   },
-  "active": "8310351976e1d6eb",
+  "active": "eecde6853cf9a8be",
   "lastOpenFiles": [
+    "Leetcode/Medium Problems.md",
+    "Leetcode/Easy Problems.md",
+    "Leetcode/137. Single Number II.md",
+    "Leetcode/My Notes - LeetCode.pdf",
+    "Real Python/Maze Solver.md",
+    "Real Python",
+    "DSA/BST from Preorder Traversal.md",
+    "DSA/Become Master In Graphs.md",
     "Trash/Equations.md",
     "Leetcode/847. Shortest Path Visiting All Nodes.md",
     "DSA/Dynamic Programming/97. Interleaving String.md",
     "DSA/Algorithms/Graph Algorithms + Problems to Practice.md",
-    "DSA/Become Master In Graphs.md",
-    "Leetcode/137. Single Number II.md",
     "Leetcode/421. Maximum XOR of Two Numbers in an Array.md",
     "Leetcode/124. Binary Tree Maximum Path Sum.md",
-    "Leetcode/Easy Problems.md",
-    "DSA/BST from Preorder Traversal.md",
     "DSA/Next Permutation.md",
     "DSA/Dynamic Programming/From good to great. How to approach most of DP problems..md",
     "DSA/Dynamic Programming/198. House Robber.md",
@@ -130,22 +134,17 @@
     "DSA/Algorithms/Power set.md",
     "DSA/Recursion on Subsequences.md",
     "Leetcode/Glossary.md",
-    "Leetcode/Medium Problems.md",
     "Leetcode/Hard Problems.md",
     "Leetcode/A general approach to backtracking questions in Java (Subsets, Permutations, Combination Sum, Palind....md",
-    "Real Python/Maze Solver.md",
+    "Leetcode/Real Python/Maze Solver.md",
     "().md",
-    "Real Python",
+    "Leetcode/Real Python",
     "pr.canvas",
     "DSA/Complexity Analysis.md",
-    "DSA/Searching & Sorting/Boyer-Moore Majority Voting Algorithm.md",
-    "DSA/Searching & Sorting/Cyclic Sort.md",
     "DSA/Searching & Sorting",
     "DSA/Algorithms",
     "DSA",
     "GFG",
-    "Leetcode/My Notes - LeetCode.pdf",
-    "LeetCode/leetcode_obsidian",
-    "Module_2_-_Advanced_flow_control_(if_else_switch_loops)_and_data_aggregates.pdf"
+    "LeetCode/leetcode_obsidian"
   ]
 }

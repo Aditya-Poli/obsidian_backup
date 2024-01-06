@@ -4,16 +4,18 @@
     "type": "split",
     "children": [
       {
-        "id": "6824ed9d9056f412",
+        "id": "e70c2477f4be633a",
         "type": "tabs",
         "children": [
           {
-            "id": "eecde6853cf9a8be",
+            "id": "078281b382245921",
             "type": "leaf",
             "state": {
-              "type": "release-notes",
+              "type": "markdown",
               "state": {
-                "currentVersion": "1.5.3"
+                "file": "Leetcode/287. Find the Duplicate Number.md",
+                "mode": "source",
+                "source": false
               }
             }
           }
@@ -83,6 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "Leetcode/287. Find the Duplicate Number.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -109,8 +112,9 @@
       "markdown-importer:Open format converter": false
     }
   },
-  "active": "eecde6853cf9a8be",
+  "active": "078281b382245921",
   "lastOpenFiles": [
+    "Leetcode/287. Find the Duplicate Number.md",
     "Leetcode/Medium Problems.md",
     "Leetcode/Easy Problems.md",
     "Leetcode/137. Single Number II.md",
